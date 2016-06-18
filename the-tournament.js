@@ -11,13 +11,28 @@ var competitorA = {
 }
 
 var competitorB = {
+  rating: 1400,
+  wins:   0,
+  losses: 0
+}
+
+var competitorC = {
+  rating: 1600,
+  wins:   0,
+  losses: 0
+}
+
+var competitorD = {
   rating: 1800,
   wins:   0,
   losses: 0
 }
 
+
 var k = 8
 var n = 1
+
+var arrayOfCompetitors = [{competitorA},{competitorB},{competitorC},{competitorD}]
 
 var ratingsAdjuster = function(competitorA,competitorB) {
 
@@ -85,7 +100,7 @@ var ratingsAdjuster = function(competitorA,competitorB) {
       competitor[competitorStats[0]] = newRating
 
     }
-    
+
     console.log("competitor:",competitor)
 
   }
@@ -97,3 +112,11 @@ var ratingsAdjuster = function(competitorA,competitorB) {
 
 ratingsAdjuster(competitorA,competitorB)
 
+var tournament = function(array){
+
+  console.log("array:",array)
+
+
+}
+
+tournament(arrayOfCompetitors)
