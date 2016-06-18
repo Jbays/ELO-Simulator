@@ -5,7 +5,7 @@ var fs = require('fs');
 var _  = require('lodash');
 
 var competitorA = {
-  rating: 1600,
+  rating: 1200,
   wins: 0,
   losses: 0
 }
@@ -72,8 +72,20 @@ var ratingsAdjuster = function(competitorA,competitorB) {
     var rawNewRating = competitorRating + k*(competitorWins-(probabilityOfVictory*n))
     var newRating = Math.round(rawNewRating)
 
-    competitor[competitorStats[0]] = newRating
+    if (newRating === competitorRating && competitorRating < rawNewRating ) {
 
+      competitor[competitorStats[0]] = newRating+1
+
+    } else if ( newRating === competitorRating && competitorRating > rawNewRating ) {
+
+      competitor[competitorStats[0]] = newRating-1
+
+    } else {
+
+      competitor[competitorStats[0]] = newRating
+
+    }
+    
     console.log("competitor:",competitor)
 
   }
