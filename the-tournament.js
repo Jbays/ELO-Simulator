@@ -113,7 +113,7 @@ var ratingsAdjuster = function(array) {
   //END step two!
 
   //BEGIN step three!
-  var newRatingCalculator = function(array1){
+  var newRatingCalculator = function(array){
 
     // console.log("this should be the competitionMat:",array1)
 
@@ -169,7 +169,7 @@ var ratingsAdjuster = function(array) {
   //BEGIN step four!
   var matEvacuator = function(array){
 
-    console.log("this should be the competitionFloor!:",array)
+    // console.log("this should be the competitionFloor!:",array)
 
     if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
 
@@ -200,21 +200,33 @@ var ratingsAdjuster = function(array) {
   //END step four!
 
 
-  
+
   // working!
+
+  // tournament(arrayOfCompetitors)
 
 
 }
 
 //working too
 // ratingsAdjuster(competitorA,competitorB)
+var matPopulator = function(array){
+
+  // console.log("this should be array of competitors:",array)
+
+  theCompetitionMat.push(array.pop())
+  theCompetitionMat.push(array.pop())
+
+  console.log("theCompetitionMat:",theCompetitionMat)
+
+}
 
 var tournament = function(array){
 
   // console.log("this should be the array of competitors:",array)
 
-  theCompetitionMat.push(array.pop())
-  theCompetitionMat.push(array.pop())
+  matPopulator(array)
+
 
   // console.log("Reporting on the competition floor!:",theCompetitionMat)
 
@@ -223,3 +235,6 @@ var tournament = function(array){
 }
 
 tournament(arrayOfCompetitors)
+
+
+// matPopulator(arrayOfCompetitors)
