@@ -66,24 +66,15 @@ var ratingsAdjuster = function(competitorA,competitorB) {
   var newRatingCalculator = function(competitor,probabilityOfVictory,numberOfVictories){
 
     var competitorStats = Object.keys(competitor)
-    console.log("competitorStats:",competitorStats)
-
     var competitorRating = competitor[competitorStats[0]]
-    console.log("competitorRating:",competitorRating)
-
     var competitorWins = competitor[competitorStats[1]]
     var competitorLosses = competitor[competitorStats[2]]
-
-    console.log("competitorWins:",competitorWins)
-    console.log("competitorLosses:",competitorLosses)
-
     var rawNewRating = competitorRating + k*(competitorWins-(probabilityOfVictory*n))
+    var newRating = Math.round(rawNewRating)
+
+    competitor[competitorStats[0]] = newRating
 
     console.log("competitor:",competitor)
-    console.log("probabilityOfVictory:",probabilityOfVictory)
-    console.log("rawNewRating:",rawNewRating)
-
-    // var newRating = Math.round(rawNewRating)
 
   }
 
