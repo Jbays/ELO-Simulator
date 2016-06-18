@@ -18,13 +18,14 @@ var competitorB = {
 
 var ratingsAdjuster = function(competitorA,competitorB){
 
-
   var competitorARating = competitorA.rating
   var competitorBRating = competitorB.rating
 
-  console.log("competitorA.rating:",competitorA.rating)
-  console.log("competitorB.rating:",competitorB.rating)
+  var probabilityOfVictoryForA = 1 / (1 + Math.pow(10,((competitorBRating-competitorARating)/400)))
+  var probabilityOfVictoryForB = 1 / (1 + Math.pow(10,((competitorARating-competitorBRating)/400)))
 
+  console.log("probabilityOfVictoryForA:",probabilityOfVictoryForA)
+  console.log("probabilityOfVictoryForB:",probabilityOfVictoryForB)
 
 
 }
