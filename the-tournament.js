@@ -18,8 +18,14 @@ var competitorB = {
 
 var ratingsAdjuster = function(competitorA,competitorB){
 
-  console.log("competitorA:",competitorA)
-  console.log("competitorB:",competitorB)
+
+  var competitorARating = competitorA.rating
+  var competitorBRating = competitorB.rating
+
+  console.log("competitorA.rating:",competitorA.rating)
+  console.log("competitorB.rating:",competitorB.rating)
+
+
 
 }
 
