@@ -16,14 +16,17 @@ var competitorB = {
   losses: 0
 }
 
+var k = 8
+var n = 1
+
 var ratingsAdjuster = function(competitorA,competitorB) {
 
   var competitorARating = competitorA.rating
   var competitorBRating = competitorB.rating
-  var recordWinsForA   = competitorA.wins
-  var recordWinsForB   = competitorB.wins
-  var recordLossesForA = competitorA.losses
-  var recordLossesForB = competitorB.losses
+  var recordWinsForA    = competitorA.wins
+  var recordWinsForB    = competitorB.wins
+  var recordLossesForA  = competitorA.losses
+  var recordLossesForB  = competitorB.losses
 
   var probabilityOfVictoryForA = 1 / (1 + Math.pow(10, ((competitorBRating - competitorARating) / 400)))
   var probabilityOfVictoryForB = 1 / (1 + Math.pow(10, ((competitorARating - competitorBRating) / 400)))
@@ -53,15 +56,32 @@ var ratingsAdjuster = function(competitorA,competitorB) {
 
     }
 
-    console.log("competitorA:",competitorA)
-    console.log("competitorB:",competitorB)
+    // console.log("competitorA:",competitorA)
+    // console.log("competitorB:",competitorB)
 
   }
 
   outcomeCalculator(probabilityOfVictoryForA,probabilityOfVictoryForB)
 
+  var newRatingCalculator = function(competitor,probabilityOfVictory,numberOfVictories){
+
+    var competitorStats = Object.keys(competitor)
+    var competitorRating = competitor[competitorStats[0]]
+    var competitorWins = competitor[competitorStats[1]]
+    var competitorLosses = competitor[competitorStats[2]]
+    var rawNewRating = competitorRating + k*(competitorWins-(probabilityOfVictory*n))
+    var newRating = Math.round(rawNewRating)
+
+    competitor[competitorStats[0]] = newRating
+
+    console.log("competitor:",competitor)
+
+  }
+
+  newRatingCalculator(competitorA,probabilityOfVictoryForA)
+  newRatingCalculator(competitorB,probabilityOfVictoryForB)
+
 }
 
 ratingsAdjuster(competitorA,competitorB)
-
 
