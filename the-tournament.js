@@ -59,9 +59,18 @@ var ratingsAdjuster = function(competitorA,competitorB) {
   }
 
   outcomeCalculator(probabilityOfVictoryForA,probabilityOfVictoryForB)
+  var newRatingCalculator = function(competitor,probabilityOfVictory,numberOfVictories){
+
+    var competitorStats = Object.keys(competitor)
+
+    console.log("competitorStats:",competitorStats)
+
+  }
+
+  newRatingCalculator(competitorA,probabilityOfVictoryForA)
+  newRatingCalculator(competitorA,probabilityOfVictoryForB)
 
 }
 
 ratingsAdjuster(competitorA,competitorB)
-
 
