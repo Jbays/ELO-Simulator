@@ -16,14 +16,17 @@ var competitorB = {
   losses: 0
 }
 
+var k = 8
+var n = 1
+
 var ratingsAdjuster = function(competitorA,competitorB) {
 
   var competitorARating = competitorA.rating
   var competitorBRating = competitorB.rating
-  var recordWinsForA   = competitorA.wins
-  var recordWinsForB   = competitorB.wins
-  var recordLossesForA = competitorA.losses
-  var recordLossesForB = competitorB.losses
+  var recordWinsForA    = competitorA.wins
+  var recordWinsForB    = competitorB.wins
+  var recordLossesForA  = competitorA.losses
+  var recordLossesForB  = competitorB.losses
 
   var probabilityOfVictoryForA = 1 / (1 + Math.pow(10, ((competitorBRating - competitorARating) / 400)))
   var probabilityOfVictoryForB = 1 / (1 + Math.pow(10, ((competitorARating - competitorBRating) / 400)))
@@ -53,22 +56,39 @@ var ratingsAdjuster = function(competitorA,competitorB) {
 
     }
 
-    console.log("competitorA:",competitorA)
-    console.log("competitorB:",competitorB)
+    // console.log("competitorA:",competitorA)
+    // console.log("competitorB:",competitorB)
 
   }
 
   outcomeCalculator(probabilityOfVictoryForA,probabilityOfVictoryForB)
+
   var newRatingCalculator = function(competitor,probabilityOfVictory,numberOfVictories){
 
     var competitorStats = Object.keys(competitor)
-
     console.log("competitorStats:",competitorStats)
+
+    var competitorRating = competitor[competitorStats[0]]
+    console.log("competitorRating:",competitorRating)
+
+    var competitorWins = competitor[competitorStats[1]]
+    var competitorLosses = competitor[competitorStats[2]]
+
+    console.log("competitorWins:",competitorWins)
+    console.log("competitorLosses:",competitorLosses)
+
+    var rawNewRating = competitorRating + k*(competitorWins-(probabilityOfVictory*n))
+
+    console.log("competitor:",competitor)
+    console.log("probabilityOfVictory:",probabilityOfVictory)
+    console.log("rawNewRating:",rawNewRating)
+
+    // var newRating = Math.round(rawNewRating)
 
   }
 
   newRatingCalculator(competitorA,probabilityOfVictoryForA)
-  newRatingCalculator(competitorA,probabilityOfVictoryForB)
+  newRatingCalculator(competitorB,probabilityOfVictoryForB)
 
 }
 
