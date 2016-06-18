@@ -38,6 +38,29 @@ var n = 1
 
 var arrayOfCompetitors = [{competitorA},{competitorB},{competitorC},{competitorD}]
 
+
+/**
+ * @name matPopulator
+ * @description - Takes two competitors from arrayOfCompetitors and
+ *                puts them into theCompetitionMat array.
+ * @param arrayOfCompetitors
+ **/
+
+var matPopulator = function(array){
+
+  theCompetitionMat.push(array.pop())
+  theCompetitionMat.push(array.pop())
+
+}
+
+matPopulator(arrayOfCompetitors)
+
+// var probabilityCalculator = function(array){
+//
+//
+//
+// }
+
 var ratingsAdjuster = function(array) {
 
   //BEGIN step one!
@@ -210,22 +233,12 @@ var ratingsAdjuster = function(array) {
 
 //working too
 // ratingsAdjuster(competitorA,competitorB)
-var matPopulator = function(array){
-
-  // console.log("this should be array of competitors:",array)
-
-  theCompetitionMat.push(array.pop())
-  theCompetitionMat.push(array.pop())
-
-  console.log("theCompetitionMat:",theCompetitionMat)
-
-}
 
 var tournament = function(array){
 
   // console.log("this should be the array of competitors:",array)
 
-  matPopulator(array)
+
 
 
   // console.log("Reporting on the competition floor!:",theCompetitionMat)
@@ -234,7 +247,7 @@ var tournament = function(array){
 
 }
 
-tournament(arrayOfCompetitors)
+// tournament(arrayOfCompetitors)
 
 
 // matPopulator(arrayOfCompetitors)
