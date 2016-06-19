@@ -63,7 +63,7 @@ var tournamentCoordinator = function(array){
 
   console.log("arrayOfCompetitors.length:",array.length)
 
-  do {
+  while ( array.length ) {
 
     var matPopulator = function(array){
 
@@ -246,19 +246,37 @@ var tournamentCoordinator = function(array){
     matEvacuator(theCompetitionMat)
     // console.log("after matEvacuator --> theCompetitionMat:",theCompetitionMat)
 
-  } while (array.length)
-
-  if ( array.length === 0 ) {
-    console.log("condition array.length === 0 satisfied")
-
-    console.log("after tournamentCoordinator does his work--> theCompetitionMat:",array.length)
-    console.log("winnersBracket:",winnersBracket)
-    theCompetitionMat = winnersBracket
-
-    console.log("theCompetitionMat:",theCompetitionMat)
-
-
   }
+
+  // if ( array.length === 0 ) {
+  //   console.log("condition array.length === 0 satisfied")
+  //
+  //   console.log("after tournamentCoordinator does his work--> theCompetitionMat:",array.length)
+    console.log("winnersBracket:",winnersBracket)
+    console.log("losersBracket:",losersBracket)
+  //   var newArrayOfCompetitors = winnersBracket
+  //
+  //   console.log("newArrayOfCompetitors:",newArrayOfCompetitors)
+  //
+  //   // tournamentCoordinator(newArrayOfCompetitors)
+  // }
+
+  // if ( array.length === 0 ) {
+  //
+  //   if ( winnersBracket.length === 1 ) {
+  //
+  //     console.log("winnersBracket.length === 1 --> winnersBracket:",winnersBracket)
+  //     return
+  //
+  //   } else {
+  //
+  //     console.log("else winnersBracket.length !== 1 --> winnersBracket:",winnersBracket)
+  //
+  //   }
+  //
+  // }
+
+
 }
 
 tournamentCoordinator(arrayOfCompetitors)
