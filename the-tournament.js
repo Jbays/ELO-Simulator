@@ -28,10 +28,22 @@ var competitorD = {
   losses: 0
 }
 
-var theCompetitionMat = []
+var theCompetitionMat  = []
 var competitionMatOdds = []
-var winnersBracket    = []
-var losersBracket     = []
+var winnersBracket     = []
+var losersBracket      = []
+var firstCompetitorRating  = 0
+var secondCompetitorRating = 0
+var firstCompetitorsProbabilityOfVictory = 0
+var secondCompetitorsProbabilityOfVictory = 0
+var firstCompetitor = null
+var secondCompetitor = null
+var nameOfFirstCompetitor  = null
+var nameOfSecondCompetitor = null
+
+var firstCompetitorRating = null
+var secondCompetitorRating = null
+
 
 var k = 8
 var n = 1
@@ -55,51 +67,59 @@ var matPopulator = function(array){
 
 matPopulator(arrayOfCompetitors)
 
-// var probabilityCalculator = function(array){
-//
-//
-//
-// }
+var probabilityCalculator = function(array){
 
-var ratingsAdjuster = function(array) {
+  firstCompetitor  = array[0]
+  secondCompetitor = array[1]
+  nameOfFirstCompetitor  = Object.keys(firstCompetitor)[0]
+  nameOfSecondCompetitor = Object.keys(secondCompetitor)[0]
 
-  //BEGIN step one!
-  // console.log("theCompetitionFloor:",array)
-
-  var firstCompetitor  = array[0]
-  var secondCompetitor = array[1]
-  var nameOfFirstCompetitor  = Object.keys(firstCompetitor)[0]
-  var nameOfSecondCompetitor = Object.keys(secondCompetitor)[0]
+  firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
+  secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
 
   // console.log("firstOpponent:",firstCompetitor)
   // console.log("Name of First Competitor:",nameOfFirstCompetitor)
   // console.log("secondOpponent:",secondCompetitor)
   // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
-
-  var firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
-  var secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
-
   // console.log("firstCompetitorRating:",firstCompetitorRating)
   // console.log("secondCompetitorRating:",secondCompetitorRating)
+}
 
-  // TODO: rename these next six variables!
+probabilityCalculator(theCompetitionMat)
+
+var ratingAdjustersss = function(array){
   var recordWinsForA    = firstCompetitor[nameOfFirstCompetitor]['wins']
   var recordWinsForB    = secondCompetitor[nameOfSecondCompetitor]['wins']
   var recordLossesForA  = firstCompetitor[nameOfFirstCompetitor]['losses']
   var recordLossesForB  = secondCompetitor[nameOfSecondCompetitor]['losses']
 
-  var probabilityOfVictoryForA = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
-  var probabilityOfVictoryForB = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
+  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
+  secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
 
-  competitionMatOdds.push(probabilityOfVictoryForA)
-  competitionMatOdds.push(probabilityOfVictoryForB)
+  // competitionMatOdds.push(probabilityOfVictoryForA)
+  // competitionMatOdds.push(probabilityOfVictoryForB)
 
-  // console.log("probabilityOfVictoryForA:", probabilityOfVictoryForA)
-  // console.log("probabilityOfVictoryForB:", probabilityOfVictoryForB)
+  // console.log("firstCompetitorsProbabilityOfVictory:", firstCompetitorsProbabilityOfVictory)
+  // console.log("secondCompetitorsProbabilityOfVictory:", secondCompetitorsProbabilityOfVictory)
   // console.log("recordWinsForA:",recordWinsForA)
   // console.log("recordWinsForB:",recordWinsForB)
   // console.log("recordLossesForA:",recordLossesForA)
   // console.log("recordLossesForB:",recordLossesForB)
+  //
+  // console.log("theCompetitionFloor:",array)
+
+}
+
+ratingAdjustersss(theCompetitionMat)
+
+
+
+var ratingsAdjuster = function(array) {
+
+  //BEGIN step one!
+  console.log("theCompetitionFloor:",array)
+
+  // TODO: rename these next six variables!
 
   //END step one!
 
