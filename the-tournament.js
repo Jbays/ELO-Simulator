@@ -185,58 +185,30 @@ ratingsAdjuster(theCompetitionMat)
 
 var matEvacuator = function(array){
 
-  console.log("this should be the competitionFloor!:",array)
+  // console.log("this should be the competitionFloor!:",array)
 
   if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
 
-    console.log("the first competitor lost!")
+    // console.log("the first competitor lost!")
     winnersBracket.push(array.pop())
     losersBracket.push(array.pop())
-    console.log("winnersBracket:",winnersBracket)
-    console.log("losersBracket:",losersBracket)
+    // console.log("winnersBracket:",winnersBracket)
+    // console.log("losersBracket:",losersBracket)
 
   } else {
 
-    console.log("the second person lost!")
+    // console.log("the second person lost!")
     losersBracket.push(array.pop())
     winnersBracket.push(array.pop())
 
-    console.log("losersBracket:",losersBracket)
-    console.log("winnersBracket:",winnersBracket)
+    // console.log("losersBracket:",losersBracket)
+    // console.log("winnersBracket:",winnersBracket)
 
-    console.log("array after populating losers and winners brackets:",array)
-    console.log("arrayOfCompetitors:",arrayOfCompetitors)
+    // console.log("array after populating losers and winners brackets:",array)
+    // console.log("arrayOfCompetitors:",arrayOfCompetitors)
 
   }
 }
 
 matEvacuator(theCompetitionMat)
 
-
-  // working!
-
-  // tournament(arrayOfCompetitors)
-
-
-// }
-
-//working too
-// ratingsAdjuster(competitorA,competitorB)
-
-var tournament = function(array){
-
-  // console.log("this should be the array of competitors:",array)
-
-
-
-
-  // console.log("Reporting on the competition floor!:",theCompetitionMat)
-
-  ratingsAdjuster(theCompetitionMat)
-
-}
-
-// tournament(arrayOfCompetitors)
-
-
-// matPopulator(arrayOfCompetitors)
