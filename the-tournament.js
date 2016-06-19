@@ -41,9 +41,13 @@ var secondCompetitor = null
 var nameOfFirstCompetitor  = null
 var nameOfSecondCompetitor = null
 
-var firstCompetitorRating = null
+var firstCompetitorRating  = null
 var secondCompetitorRating = null
 
+var recordWinsForA    = null
+var recordWinsForB    = null
+var recordLossesForA  = null
+var recordLossesForB  = null
 
 var k = 8
 var n = 1
@@ -83,11 +87,7 @@ var probabilityCalculator = function(array){
   // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
   // console.log("firstCompetitorRating:",firstCompetitorRating)
   // console.log("secondCompetitorRating:",secondCompetitorRating)
-}
 
-probabilityCalculator(theCompetitionMat)
-
-var ratingAdjustersss = function(array){
   var recordWinsForA    = firstCompetitor[nameOfFirstCompetitor]['wins']
   var recordWinsForB    = secondCompetitor[nameOfSecondCompetitor]['wins']
   var recordLossesForA  = firstCompetitor[nameOfFirstCompetitor]['losses']
@@ -105,13 +105,39 @@ var ratingAdjustersss = function(array){
   // console.log("recordWinsForB:",recordWinsForB)
   // console.log("recordLossesForA:",recordLossesForA)
   // console.log("recordLossesForB:",recordLossesForB)
-  //
+
   // console.log("theCompetitionFloor:",array)
+}
+
+probabilityCalculator(theCompetitionMat)
+
+var referee = function(probability){
+
+  var randomNumber = Math.random()
+
+  if ( probability > randomNumber ) {
+
+    recordWinsForA++
+    recordLossesForB++
+
+    firstCompetitor[nameOfFirstCompetitor]['wins']     = recordWinsForA
+    secondCompetitor[nameOfSecondCompetitor]['losses'] = recordLossesForB
+
+  } else {
+
+    recordLossesForA++
+    recordWinsForB++
+
+    firstCompetitor[nameOfFirstCompetitor]['losses'] = recordLossesForA
+    secondCompetitor[nameOfSecondCompetitor]['wins'] = recordWinsForB
+
+  }
 
 }
 
-ratingAdjustersss(theCompetitionMat)
+referee(firstCompetitorsProbabilityOfVictory)
 
+console.log("theCompetitionMat:",theCompetitionMat)
 
 
 var ratingsAdjuster = function(array) {
@@ -127,7 +153,7 @@ var ratingsAdjuster = function(array) {
 
   var outcomeCalculator = function (probabilityOfVictoryForA) {
 
-    var randomNumber = Math.random()
+    // var randomNumber = Math.random()
 
     if ( probabilityOfVictoryForA > randomNumber ) {
 
