@@ -88,6 +88,8 @@ var probabilityCalculator = function(array){
   // console.log("firstCompetitorRating:",firstCompetitorRating)
   // console.log("secondCompetitorRating:",secondCompetitorRating)
 
+  // TODO: rename these next six variables!
+
   var recordWinsForA    = firstCompetitor[nameOfFirstCompetitor]['wins']
   var recordWinsForB    = secondCompetitor[nameOfSecondCompetitor]['wins']
   var recordLossesForA  = firstCompetitor[nameOfFirstCompetitor]['losses']
@@ -132,140 +134,87 @@ var referee = function(probability){
     secondCompetitor[nameOfSecondCompetitor]['wins'] = recordWinsForB
 
   }
-
 }
 
 referee(firstCompetitorsProbabilityOfVictory)
 
-console.log("theCompetitionMat:",theCompetitionMat)
-
+// console.log("after referee() theCompetitionMat:",theCompetitionMat)
 
 var ratingsAdjuster = function(array) {
 
-  //BEGIN step one!
-  console.log("theCompetitionFloor:",array)
+  console.log("ratingsAdjuster's array:",array)
 
-  // TODO: rename these next six variables!
+  console.log("firstCompetitorRating:",firstCompetitorRating)
+  console.log("secondCompetitorRating:",secondCompetitorRating)
 
-  //END step one!
+  var rawNewRatingForFirst = firstCompetitorRating + k*(firstCompetitor[nameOfFirstCompetitor]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
+  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[nameOfSecondCompetitor]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
 
-  //BEGIN step two!
+  console.log("rawNewRatingForFirst:",rawNewRatingForFirst)
+  console.log("rawNewRatingForSecond:",rawNewRatingForSecond)
 
-  var outcomeCalculator = function (probabilityOfVictoryForA) {
+  var newRatingForFirst = Math.round(rawNewRatingForFirst)
+  var newRatingForSecond = Math.round(rawNewRatingForSecond)
 
-    // var randomNumber = Math.random()
+  console.log("newRatingForFirst:",newRatingForFirst)
+  console.log("newRatingForSecond:",newRatingForSecond)
 
-    if ( probabilityOfVictoryForA > randomNumber ) {
+  firstCompetitor[nameOfFirstCompetitor]['rating']   = newRatingForFirst
+  secondCompetitor[nameOfSecondCompetitor]['rating'] = newRatingForSecond
 
-      recordWinsForA++
-      recordLossesForB++
-
-      firstCompetitor[nameOfFirstCompetitor]['wins']     = recordWinsForA
-      secondCompetitor[nameOfSecondCompetitor]['losses'] = recordLossesForB
-
-    } else {
-
-      recordLossesForA++
-      recordWinsForB++
-
-      firstCompetitor[nameOfFirstCompetitor]['losses'] = recordLossesForA
-      secondCompetitor[nameOfSecondCompetitor]['wins'] = recordWinsForB
-
-    }
-
-    // console.log("after outcomeCalculator firstCompetitor:",firstCompetitor)
-    // console.log("after outcomeCalculator secondCompetitor:",secondCompetitor)
-
-  }
-
-  outcomeCalculator(probabilityOfVictoryForA)
-  //END step two!
-
-  //BEGIN step three!
-  var newRatingCalculator = function(array){
-
-    // console.log("this should be the competitionMat:",array1)
-
-    // var probabilityOfVictoryForFirst = array2[0]
-    // var probabilityOfVictoryForSecond = array2[1]
-
-    // console.log("**firstOpponent:",firstCompetitor)
-    // console.log("**Name of First Competitor:",nameOfFirstCompetitor)
-    // console.log("**secondOpponent:",secondCompetitor)
-    // console.log("**Name of Second Competitor:",nameOfSecondCompetitor)
-
-    // console.log("firstCompetitorRating:",firstCompetitorRating)
-    // console.log("secondCompetitorRating:",secondCompetitorRating)
-
-    var rawNewRatingForFirst = firstCompetitorRating + k*(firstCompetitor[nameOfFirstCompetitor]['wins'] - (probabilityOfVictoryForA*n))
-    var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[nameOfSecondCompetitor]['wins'] - (probabilityOfVictoryForB*n))
-
-    // console.log("rawNewRatingForFirst:",rawNewRatingForFirst)
-    // console.log("rawNewRatingForSecond:",rawNewRatingForSecond)
-
-    var newRatingForFirst = Math.round(rawNewRatingForFirst)
-    var newRatingForSecond = Math.round(rawNewRatingForSecond)
-
-    // console.log("newRatingForFirst:",newRatingForFirst)
-    // console.log("newRatingForSecond:",newRatingForSecond)
-
-    firstCompetitor[nameOfFirstCompetitor]['rating']   = newRatingForFirst
-    secondCompetitor[nameOfSecondCompetitor]['rating'] = newRatingForSecond
-
-    // console.log("after the smoke has cleared:",array1)
+  console.log("after everything --> ratingsAdjuster's array:",array)
 
 
-    // if (newRating === competitorRating && competitorRating < rawNewRating ) {
-    //
-    //   competitor[competitorStats[0]] = newRating+1
-    //
-    // } else if ( newRating === competitorRating && competitorRating > rawNewRating ) {
-    //
-    //   competitor[competitorStats[0]] = newRating-1
-    //
-    // } else {
-    //
-    //   competitor[competitorStats[0]] = newRating
-    //
-    // }
+  //TODO: this needs to be refactored to handle two newRatings simultaneously
+  // if (newRating === competitorRating && competitorRating < rawNewRating ) {
+  //
+  //   competitor[competitorStats[0]] = newRating+1
+  //
+  // } else if ( newRating === competitorRating && competitorRating > rawNewRating ) {
+  //
+  //   competitor[competitorStats[0]] = newRating-1
+  //
+  // } else {
+  //
+  //   competitor[competitorStats[0]] = newRating
+  //
+  // }
+}
 
-    // console.log("competitor:",competitor)
+ratingsAdjuster(theCompetitionMat)
 
-  }
-  newRatingCalculator(theCompetitionMat)
-  //END step three!
 
   //BEGIN step four!
-  var matEvacuator = function(array){
-
-    // console.log("this should be the competitionFloor!:",array)
-
-    if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
-
-      // console.log("the first competitor lost!")
-      winnersBracket.push(array.pop())
-      losersBracket.push(array.pop())
-      // console.log("winnersBracket:",winnersBracket)
-      // console.log("losersBracket:",losersBracket)
-
-    } else {
-
-      // console.log("the second person lost!")
-
-      losersBracket.push(array.pop())
-      winnersBracket.push(array.pop())
-
-      // console.log("losersBracket:",losersBracket)
-      // console.log("winnersBracket:",winnersBracket)
-
-      console.log("array after populating losers and winners brackets:",array)
-      console.log("arrayOfCompetitors:",arrayOfCompetitors)
-
-    }
-
-
-  }
-  matEvacuator(theCompetitionMat)
+  // var matEvacuator = function(array){
+  //
+  //   // console.log("this should be the competitionFloor!:",array)
+  //
+  //   if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
+  //
+  //     // console.log("the first competitor lost!")
+  //     winnersBracket.push(array.pop())
+  //     losersBracket.push(array.pop())
+  //     // console.log("winnersBracket:",winnersBracket)
+  //     // console.log("losersBracket:",losersBracket)
+  //
+  //   } else {
+  //
+  //     // console.log("the second person lost!")
+  //
+  //     losersBracket.push(array.pop())
+  //     winnersBracket.push(array.pop())
+  //
+  //     // console.log("losersBracket:",losersBracket)
+  //     // console.log("winnersBracket:",winnersBracket)
+  //
+  //     // console.log("array after populating losers and winners brackets:",array)
+  //     // console.log("arrayOfCompetitors:",arrayOfCompetitors)
+  //
+  //   }
+  //
+  //
+  // }
+  // matEvacuator(theCompetitionMat)
   //END step four!
 
 
@@ -275,7 +224,7 @@ var ratingsAdjuster = function(array) {
   // tournament(arrayOfCompetitors)
 
 
-}
+// }
 
 //working too
 // ratingsAdjuster(competitorA,competitorB)
