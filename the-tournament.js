@@ -35,10 +35,10 @@ var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory = 0
 var secondCompetitorsProbabilityOfVictory = 0
 
-var recordWinsForA    = 0
-var recordWinsForB    = 0
-var recordLossesForA  = 0
-var recordLossesForB  = 0
+var recordWinsForFirstCompetitor    = 0
+var recordWinsForSecondCompetitor   = 0
+var recordLossesForFirstCompetitor  = 0
+var recordLossesForSecondCompetitor = 0
 
 var k = 8
 var n = 1
@@ -65,6 +65,8 @@ var tournamentCoordinator = function(array){
     var firstCompetitorRating  = null
     var secondCompetitorRating = null
 
+
+
     var matPopulator = function(array){
 
       theCompetitionMat.push(array.pop())
@@ -81,12 +83,36 @@ var tournamentCoordinator = function(array){
       firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
       secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
 
-      // console.log("firstCompetitor:",firstCompetitor)
+      console.log("firstCompetitor[name]['wins']:",firstCompetitor[nameOfFirstCompetitor]['wins'])
       // console.log("Name of First Competitor:",nameOfFirstCompetitor)
-      // console.log("secondCompetitor:",secondCompetitor)
+      console.log("secondCompetitor[name]:",secondCompetitor[nameOfSecondCompetitor])
       // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
       // console.log("firstCompetitorRating:",firstCompetitorRating)
       // console.log("secondCompetitorRating:",secondCompetitorRating)
+
+      if ( firstCompetitor[nameOfFirstCompetitor]['wins'] !== 0 ) {
+
+        firstCompetitor[nameOfFirstCompetitor]['wins'] = recordWinsForFirstCompetitor
+
+      }
+
+      if ( firstCompetitor[nameOfFirstCompetitor]['losses'] !== 0 ) {
+
+        firstCompetitor[nameOfFirstCompetitor]['losses'] = recordLossesForFirstCompetitor
+
+      }
+
+      if ( secondCompetitor[nameOfSecondCompetitor]['wins'] !== 0 ) {
+
+        secondCompetitor[nameOfSecondCompetitor]['wins'] = recordWinsForSecondCompetitor
+
+      }
+
+      if ( secondCompetitor[nameOfSecondCompetitor]['losses'] !== 0 ) {
+
+        secondCompetitor[nameOfSecondCompetitor]['losses'] = recordLossesForSecondCompetitor
+
+      }
 
     }
     var probabilityCalculator = function(array){
@@ -114,43 +140,46 @@ var tournamentCoordinator = function(array){
     }
     var referee = function(array,probability){
 
-      console.log("should be theCompetitionMats:",array)
+      // console.log("firstCompetitor:",firstCompetitor)
+      // console.log("Name of First Competitor:",nameOfFirstCompetitor)
+      // console.log("secondCompetitor:",secondCompetitor)
+      // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
+      // console.log("firstCompetitorRating:",firstCompetitorRating)
+      // console.log("secondCompetitorRating:",secondCompetitorRating)
+
 
       var randomNumber = Math.random()
 
       if ( probability > randomNumber ) {
 
-        recordWinsForA++
-        recordLossesForB++
+        recordWinsForFirstCompetitor++
+        recordLossesForSecondCompetitor++
 
-        // console.log("recordWinsForA:",recordWinsForA)
-        // console.log("recordWinsForB:",recordWinsForB)
-
-        firstCompetitor[nameOfFirstCompetitor]['wins']     = recordWinsForA
+        firstCompetitor[nameOfFirstCompetitor]['wins']     = recordWinsForFirstCompetitor
         // console.log("*****firstCompetitor:",firstCompetitor)
         // console.log("*****firstCompetitor[nameOfFirstCompetitor]:",firstCompetitor[nameOfFirstCompetitor])
 
         // console.log("firstCompetitor[nameOfFirstCompetitor]['wins']:",firstCompetitor[nameOfFirstCompetitor]['wins'])
-        secondCompetitor[nameOfSecondCompetitor]['losses'] = recordLossesForB
+        secondCompetitor[nameOfSecondCompetitor]['losses'] = recordLossesForSecondCompetitor
         // console.log("secondCompetitor[nameOfFirstCompetitor]['losses']:",secondCompetitor[nameOfFirstCompetitor]['losses'])
 
 
       } else {
 
-        recordLossesForA++
-        recordWinsForB++
+        recordLossesForFirstCompetitor++
+        recordWinsForSecondCompetitor++
 
         // console.log("recordWinsForA:",recordWinsForA)
         // console.log("recordWinsForB:",recordWinsForB)
 
-        firstCompetitor[nameOfFirstCompetitor]['losses'] = recordLossesForA
+        firstCompetitor[nameOfFirstCompetitor]['losses'] = recordLossesForFirstCompetitor
         // console.log("*****firstCompetitor:",firstCompetitor)
 
         // console.log("*****firstCompetitor[nameOfFirstCompetitor]:",firstCompetitor[nameOfFirstCompetitor])
         // console.log("*****firstCompetitor[nameOfFirstCompetitor]['losses']:",firstCompetitor[nameOfFirstCompetitor]['losses'])
 
 
-        secondCompetitor[nameOfSecondCompetitor]['wins'] = recordWinsForB
+        secondCompetitor[nameOfSecondCompetitor]['wins'] = recordWinsForSecondCompetitor
         // console.log("secondCompetitor[nameOfFirstCompetitor]['wins']:",secondCompetitor[nameOfFirstCompetitor]['wins'])
 
       }
@@ -233,12 +262,6 @@ var tournamentCoordinator = function(array){
     variableAssigner(theCompetitionMat)
     // console.log("after matPopulator --> theCompetitionMat:",theCompetitionMat)
 
-    console.log("firstCompetitor:",firstCompetitor)
-    console.log("Name of First Competitor:",nameOfFirstCompetitor)
-    console.log("secondCompetitor:",secondCompetitor)
-    console.log("Name of Second Competitor:",nameOfSecondCompetitor)
-    console.log("firstCompetitorRating:",firstCompetitorRating)
-    console.log("secondCompetitorRating:",secondCompetitorRating)
 
     // console.log("before probabilityCalculator --> firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
     probabilityCalculator(theCompetitionMat)
