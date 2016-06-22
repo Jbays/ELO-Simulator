@@ -34,13 +34,12 @@ var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory = 0
 var secondCompetitorsProbabilityOfVictory = 0
-var firstCompetitor = null
-var secondCompetitor = null
-var nameOfFirstCompetitor  = null
-var nameOfSecondCompetitor = null
+// var firstCompetitor = null
+// var secondCompetitor = null
+// var nameOfFirstCompetitor  = null
+// var nameOfSecondCompetitor = null
 
-var firstCompetitorRating  = null
-var secondCompetitorRating = null
+
 
 var recordWinsForA    = 0
 var recordWinsForB    = 0
@@ -63,7 +62,14 @@ var tournamentCoordinator = function(array){
 
   console.log("arrayOfCompetitors.length:",array.length)
 
-  while ( array.length ) {
+  while ( array.length/2 ) {
+
+    var firstCompetitor        = null
+    var secondCompetitor       = null
+    var nameOfFirstCompetitor  = null
+    var nameOfSecondCompetitor = null
+    var firstCompetitorRating  = null
+    var secondCompetitorRating = null
 
     var matPopulator = function(array){
 
@@ -71,7 +77,9 @@ var tournamentCoordinator = function(array){
       theCompetitionMat.push(array.pop())
 
     }
-    var probabilityCalculator = function(array){
+    var variableAssigner = function(array){
+
+      console.log("this should also be theCompetitionMats:",array)
 
       firstCompetitor  = array[0]
       secondCompetitor = array[1]
@@ -87,6 +95,9 @@ var tournamentCoordinator = function(array){
       // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
       // console.log("firstCompetitorRating:",firstCompetitorRating)
       // console.log("secondCompetitorRating:",secondCompetitorRating)
+
+    }
+    var probabilityCalculator = function(array){
 
       // TODO: rename these next six variables!
 
@@ -107,10 +118,11 @@ var tournamentCoordinator = function(array){
       // console.log("recordWinsForB:",recordWinsForB)
       // console.log("recordLossesForA:",recordLossesForA)
       // console.log("recordLossesForB:",recordLossesForB)
-
       // console.log("theCompetitionFloor:",array)
     }
-    var referee = function(probability){
+    var referee = function(array,probability){
+
+      console.log("should be theCompetitionMats:",array)
 
       var randomNumber = Math.random()
 
@@ -226,7 +238,15 @@ var tournamentCoordinator = function(array){
 
     // console.log("before matPopulator --> theCompetitionMat:",theCompetitionMat)
     matPopulator(array)
+    variableAssigner(theCompetitionMat)
     // console.log("after matPopulator --> theCompetitionMat:",theCompetitionMat)
+
+    console.log("firstCompetitor:",firstCompetitor)
+    console.log("Name of First Competitor:",nameOfFirstCompetitor)
+    console.log("secondCompetitor:",secondCompetitor)
+    console.log("Name of Second Competitor:",nameOfSecondCompetitor)
+    console.log("firstCompetitorRating:",firstCompetitorRating)
+    console.log("secondCompetitorRating:",secondCompetitorRating)
 
     // console.log("before probabilityCalculator --> firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
     probabilityCalculator(theCompetitionMat)
@@ -234,7 +254,7 @@ var tournamentCoordinator = function(array){
 
     // console.log("before referee --> theCompetitionMat:",theCompetitionMat)
     // console.log("before firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
-    referee(firstCompetitorsProbabilityOfVictory)
+    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
     // console.log("after referee --> theCompetitionMat:",theCompetitionMat)
     // console.log("after firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
 
