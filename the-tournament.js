@@ -34,12 +34,6 @@ var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory = 0
 var secondCompetitorsProbabilityOfVictory = 0
-// var firstCompetitor = null
-// var secondCompetitor = null
-// var nameOfFirstCompetitor  = null
-// var nameOfSecondCompetitor = null
-
-
 
 var recordWinsForA    = 0
 var recordWinsForB    = 0
@@ -78,8 +72,6 @@ var tournamentCoordinator = function(array){
 
     }
     var variableAssigner = function(array){
-
-      console.log("this should also be theCompetitionMats:",array)
 
       firstCompetitor  = array[0]
       secondCompetitor = array[1]
