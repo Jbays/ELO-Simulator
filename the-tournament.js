@@ -308,11 +308,18 @@ var tournamentCoordinator = function(array){
 
     matPopulator(winnersBracket)
     console.log("*****3rd INSTANCE AFTER matPopulator --> theCompetitionMat:",theCompetitionMat)
+    variableAssigner(theCompetitionMat)
+    probabilityCalculator(theCompetitionMat)
+    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
+    console.log("*****3rd INSTANCE AFTER referee --> theCompetitionMat:",theCompetitionMat)
+    ratingsAdjuster()
+    matEvacuator(theCompetitionMat)
+    console.log("*****3rd INSTANCE after matEvacuator --> theCompetitionMat:",theCompetitionMat)
 
   // }
-
-    // console.log("winnersBracket:",winnersBracket)
-    // /console.log("losersBracket:",losersBracket)
+    console.log("arrayOfCompetitors:",arrayOfCompetitors)
+    console.log("winnersBracket:",winnersBracket)
+    console.log("losersBracket:",losersBracket)
 
 
 
