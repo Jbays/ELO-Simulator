@@ -51,7 +51,7 @@ var tournamentCoordinator = function(array){
 
   // console.log("arrayOfCompetitors.length:",array.length)
 
-  // while ( array.length/2 ) {
+  for ( var i = 0; i < array.length; i++ ) {
 
     var firstCompetitor        = null
     var secondCompetitor       = null
@@ -265,16 +265,11 @@ var tournamentCoordinator = function(array){
       }
     }
 
-    // matPopulator(arrayOfCompetitors)
-    // probabilityCalculator(theCompetitionMat)
-    // referee(firstCompetitorsProbabilityOfVictory)
-    // ratingsAdjuster()
-    // matEvacuator(theCompetitionMat)
 
-    // console.log("before matPopulator --> theCompetitionMat:",theCompetitionMat)
-    matPopulator(arrayOfCompetitors)
+    console.log("before matPopulator --> theCompetitionMat:",theCompetitionMat)
+    matPopulator(array)
+    console.log("after matPopulator --> theCompetitionMat:",theCompetitionMat)
     variableAssigner(theCompetitionMat)
-    // console.log("after matPopulator --> theCompetitionMat:",theCompetitionMat)
 
     // console.log("before probabilityCalculator --> firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
     probabilityCalculator(theCompetitionMat)
@@ -283,7 +278,7 @@ var tournamentCoordinator = function(array){
     // console.log("before referee --> theCompetitionMat:",theCompetitionMat)
     // console.log("before firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-    console.log("after referee --> theCompetitionMat:",theCompetitionMat)
+    // console.log("after referee --> theCompetitionMat:",theCompetitionMat)
     // console.log("after firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
 
     // console.log("before ratingsAdjuster --> theCompetitionMat:",theCompetitionMat)
@@ -292,34 +287,40 @@ var tournamentCoordinator = function(array){
 
     // console.log("before matEvacuator --> theCompetitionMat:",theCompetitionMat)
     matEvacuator(theCompetitionMat)
-    console.log("after matEvacuator --> theCompetitionMat:",theCompetitionMat)
-    console.log("winnersBracket:",winnersBracket)
+    // console.log("after matEvacuator --> theCompetitionMat:",theCompetitionMat)
+    // console.log("winnersBracket:",winnersBracket)
 
 
-    matPopulator(arrayOfCompetitors)
-    console.log("*****2nd INSTANCE AFTER matPopulator --> theCompetitionMat:",theCompetitionMat)
-    variableAssigner(theCompetitionMat)
-    probabilityCalculator(theCompetitionMat)
-    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-    console.log("*****2nd INSTANCE AFTER referee --> theCompetitionMat:",theCompetitionMat)
-    ratingsAdjuster()
-    matEvacuator(theCompetitionMat)
-    console.log("*****2nd INSTANCE after matEvacuator --> theCompetitionMat:",theCompetitionMat)
+    // matPopulator(arrayOfCompetitors)
+    // console.log("*****2nd INSTANCE AFTER matPopulator --> theCompetitionMat:",theCompetitionMat)
+    // variableAssigner(theCompetitionMat)
+    // probabilityCalculator(theCompetitionMat)
+    // referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
+    // console.log("*****2nd INSTANCE AFTER referee --> theCompetitionMat:",theCompetitionMat)
+    // ratingsAdjuster()
+    // matEvacuator(theCompetitionMat)
+    // console.log("*****2nd INSTANCE after matEvacuator --> theCompetitionMat:",theCompetitionMat)
+    //
+    // matPopulator(winnersBracket)
+    // console.log("*****3rd INSTANCE AFTER matPopulator --> theCompetitionMat:",theCompetitionMat)
+    // variableAssigner(theCompetitionMat)
+    // probabilityCalculator(theCompetitionMat)
+    // referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
+    // console.log("*****3rd INSTANCE AFTER referee --> theCompetitionMat:",theCompetitionMat)
+    // ratingsAdjuster()
+    // matEvacuator(theCompetitionMat)
+    // console.log("*****3rd INSTANCE after matEvacuator --> theCompetitionMat:",theCompetitionMat)
 
-    matPopulator(winnersBracket)
-    console.log("*****3rd INSTANCE AFTER matPopulator --> theCompetitionMat:",theCompetitionMat)
-    variableAssigner(theCompetitionMat)
-    probabilityCalculator(theCompetitionMat)
-    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-    console.log("*****3rd INSTANCE AFTER referee --> theCompetitionMat:",theCompetitionMat)
-    ratingsAdjuster()
-    matEvacuator(theCompetitionMat)
-    console.log("*****3rd INSTANCE after matEvacuator --> theCompetitionMat:",theCompetitionMat)
+  }
 
-  // }
-    console.log("arrayOfCompetitors:",arrayOfCompetitors)
-    console.log("winnersBracket:",winnersBracket)
-    console.log("losersBracket:",losersBracket)
+  console.log("arrayOfCompetitors:",arrayOfCompetitors)
+  console.log("winnersBracket:",winnersBracket)
+  console.log("losersBracket:",losersBracket)
+
+  if ( array.length === 0 ) {
+    console.log("you ran out of competitors!")
+    tournamentCoordinator(winnersBracket)
+  }
 
 
 
