@@ -96,12 +96,21 @@ var competitorGenerator = function(number) {
 
     var bullPen = []
 
-    console.log("from bullPenCreator --> object:",object)
+    // console.log("from bullPenCreator --> object:",object)
+
+    var competitorsList = JSON.stringify(object)
+
+    var arrayifiedCompetitorsList = "["+competitorsList.slice(1,competitorsList.length-2)+"]"
+
+    console.log("arrayifiedCompetitorsList:",arrayifiedCompetitorsList)
+
+    // var donut = JSON.parse('["c1":{"rating":1600,"wins":0,"losses":0},"c2":{"rating":1600,"wins":0,"losses":0}]')
+    // console.log(donut)
 
     var competitorsName = Object.keys(object)
     var numberOfCompetitors = competitorsName.length
 
-
+    // console.log(_.values(object))
     // console.log("competitorsName:",competitorsName)
     // console.log("numberOfCompetitors:",numberOfCompetitors)
 
@@ -109,8 +118,6 @@ var competitorGenerator = function(number) {
 
       //_.values(obj) might be the way
 
-      //this seems like the wrong direction
-      // console.log("object[k]:",object[competitorsName[k]])
 
       // bullPen.push(object[k])
 
