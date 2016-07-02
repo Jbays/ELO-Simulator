@@ -1,6 +1,8 @@
 /**
  * Created by justin.baize on 6/16/16.
  */
+
+'use strict'
 var fs = require('fs');
 var _  = require('lodash');
 
