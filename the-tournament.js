@@ -66,7 +66,7 @@ var arrayOfCompetitors = [
 var competitorGenerator = function(number) {
 
   var outputArr = []
-  var outputObj = {}
+  var allCompetitorsObj = {}
   var squared = number * number
   var tempArr = []
   var tempArr2 = []
@@ -79,8 +79,8 @@ var competitorGenerator = function(number) {
       tempArr.push(name)
       tempArr2.push(prototypeC)
     }
-    outputObj = _.zipObject(tempArr, tempArr2)
-    console.log("outputObj:", outputObj)
+    allCompetitorsObj = _.zipObject(tempArr, tempArr2)
+    console.log("allCompetitorsObj:", allCompetitorsObj)
   }
 
   //this will output an object with
@@ -92,7 +92,7 @@ var competitorGenerator = function(number) {
   //           }
   competitorCreator(squared)
 
-
+  // bullPenCreator(allCompetitorsObj)
     // for ( var k = 0; k )
 
   // console.log("tempArr:",tempArr)
