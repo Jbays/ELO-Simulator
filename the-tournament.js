@@ -101,13 +101,8 @@ var tournamentCoordinator = function(array){
   // console.log("secondCompetitorRating:",secondCompetitorRating)
 
     var matPopulator = function(array){
-
-      // console.log("matPopulator's array argument:",array)
-      // console.log("array.unshift():",array.unshift())
-
       theCompetitionMat.push(array.shift())
       theCompetitionMat.push(array.shift())
-
     }
     var variableAssigner = function(array){
 
