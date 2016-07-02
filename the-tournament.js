@@ -4,49 +4,97 @@
 var fs = require('fs');
 var _  = require('lodash');
 
-var competitorA = {
+var compA = {
   rating: 1600,
   wins: 0,
   losses: 0
 }
 
-var competitorB = {
+var compB = {
   rating: 1600,
   wins:   0,
   losses: 0
 }
 
-var competitorC = {
+var compC = {
   rating: 1600,
   wins:   0,
   losses: 0
 }
 
-var competitorD = {
+var compD = {
   rating: 1600,
   wins:   0,
   losses: 0
 }
 
-var competitorE = {
+var compE = {
   rating: 1600,
   wins: 0,
   losses: 0
 }
 
-var competitorF = {
+var compF = {
   rating: 1600,
   wins: 0,
   losses: 0
 }
 
-var competitorG = {
+var compG = {
   rating: 1600,
   wins: 0,
   losses: 0
 }
 
-var competitorH = {
+var compH = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var compI = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var compJ = {
+  rating: 1600,
+  wins:   0,
+  losses: 0
+}
+
+var compK = {
+  rating: 1600,
+  wins:   0,
+  losses: 0
+}
+
+var compL = {
+  rating: 1600,
+  wins:   0,
+  losses: 0
+}
+
+var compM = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var compN = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var compO = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var compP = {
   rating: 1600,
   wins: 0,
   losses: 0
@@ -63,8 +111,11 @@ var k = 8
 var n = 1
 
 var arrayOfCompetitors = [
-  {competitorA},{competitorB},{competitorC},{competitorD},
-  {competitorE},{competitorF},{competitorG},{competitorH}]
+  {compA},{compB},{compC},{compD},
+  {compE},{compF},{compG},{compH},
+  {compI},{compJ},{compK},{compL},
+  {compM},{compN},{compO},{compP}
+]
 
 /**
  * @name matPopulator
