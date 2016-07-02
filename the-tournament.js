@@ -42,8 +42,9 @@ var c32 = { rating:1600, wins:0, losses:0 }
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
-var firstCompetitorsProbabilityOfVictory = 0
+var firstCompetitorsProbabilityOfVictory  = 0
 var secondCompetitorsProbabilityOfVictory = 0
+var numberOfRequiredRounds = 4
 
 var k = 16
 var n = 1
@@ -62,10 +63,40 @@ var arrayOfCompetitors = [
  * @param arrayOfCompetitors
  **/
 
+var competitorGenerator = function(number) {
+
+  var outputArr = []
+  var squared = number*number
+  var tempArr = []
+  var prototypeC = { rating:1600, wins:0, losses:0 }
+
+  console.log("number:",number)
+
+  for ( var j = 1; j <= squared; j++ ) {
+
+    console.log("j:",j)
+    var name = "c"+ j.toString()
+
+    tempArr.push(name)
+    tempArr.push(prototypeC)
+
+    console.log("name:",name)
+    console.log("tempArr:",tempArr)
+
+    //try a flatten here
+    //or maybe a join?
+
+
+  }
+
+
+}
+
+competitorGenerator(numberOfRequiredRounds)
+
 var tournamentCoordinator = function(array){
 
   // console.log("tournamentCoordinator's array:",array)
-
   // console.log("arrayOfCompetitors.length:",array.length)
 
   for ( var i = 0; i < array.length; i++ ) {
@@ -306,4 +337,4 @@ var tournamentCoordinator = function(array){
 
 }
 
-tournamentCoordinator(arrayOfCompetitors)
+// tournamentCoordinator(arrayOfCompetitors)
