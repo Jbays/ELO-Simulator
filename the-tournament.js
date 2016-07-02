@@ -6,101 +6,22 @@
 var fs = require('fs');
 var _  = require('lodash');
 
-var compA = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compB = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var compC = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var compD = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var compE = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compF = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compG = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compH = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compI = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compJ = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var compK = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var compL = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var compM = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compN = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compO = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var compP = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
+var c01 = { rating:1600, wins:0, losses:0 }
+var c02 = { rating:1600, wins:0, losses:0 }
+var c03 = { rating:1600, wins:0, losses:0 }
+var c04 = { rating:1600, wins:0, losses:0 }
+var c05 = { rating:1600, wins:0, losses:0 }
+var c06 = { rating:1600, wins:0, losses:0 }
+var c07 = { rating:1600, wins:0, losses:0 }
+var c08 = { rating:1600, wins:0, losses:0 }
+var c09 = { rating:1600, wins:0, losses:0 }
+var c10 = { rating:1600, wins:0, losses:0 }
+var c11 = { rating:1600, wins:0, losses:0 }
+var c12 = { rating:1600, wins:0, losses:0 }
+var c13 = { rating:1600, wins:0, losses:0 }
+var c14 = { rating:1600, wins:0, losses:0 }
+var c15 = { rating:1600, wins:0, losses:0 }
+var c16 = { rating:1600, wins:0, losses:0 }
 
 var theCompetitionMat  = []
 var competitionMatOdds = []
@@ -113,10 +34,10 @@ var k = 8
 var n = 1
 
 var arrayOfCompetitors = [
-  {compA},{compB},{compC},{compD},
-  {compE},{compF},{compG},{compH},
-  {compI},{compJ},{compK},{compL},
-  {compM},{compN},{compO},{compP}
+  {c01},{c02},{c03},{c04},
+  {c05},{c06},{c07},{c08},
+  {c09},{c10},{c11},{c12},
+  {c13},{c14},{c15},{c16}
 ]
 
 /**
