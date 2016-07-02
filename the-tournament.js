@@ -68,20 +68,7 @@ var competitorGenerator = function(number) {
   var outputArr = []
   var allCompetitorsObj = {}
   var squared = number * number
-  var tempArr = []
-  var tempArr2 = []
-  var prototypeC = {rating: 1600, wins: 0, losses: 0}
-
-  var competitorCreator = function (squared) {
-    for (var j = 1; j <= squared; j++) {
-      var name = "c" + j.toString()
-
-      tempArr.push(name)
-      tempArr2.push(prototypeC)
-    }
-    allCompetitorsObj = _.zipObject(tempArr, tempArr2)
-    console.log("allCompetitorsObj:", allCompetitorsObj)
-  }
+  var prototypeCompetitor = {rating: 1600, wins: 0, losses: 0}
 
   //this will output an object with
   //competitors === squared
@@ -90,15 +77,48 @@ var competitorGenerator = function(number) {
   //             c(n+1): { rating: 1600, wins: 0, losses: 0 },
   //             c(n+2): { rating: 1600, wins: 0, losses: 0 },
   //           }
+  var competitorCreator = function (squared) {
+    var tempArr = []
+    var tempArr2 = []
+
+    for (var j = 1; j <= squared; j++) {
+      var name = "c" + j.toString()
+
+      tempArr.push(name)
+      tempArr2.push(prototypeCompetitor)
+    }
+    allCompetitorsObj = _.zipObject(tempArr, tempArr2)
+  }
+
   competitorCreator(squared)
 
-  // bullPenCreator(allCompetitorsObj)
-    // for ( var k = 0; k )
+  var bullPenCreator = function(object){
 
-  // console.log("tempArr:",tempArr)
-  // console.log("tempArr2:",tempArr2)
+    var bullPen = []
 
-  console.log("outputArr:",outputArr)
+    console.log("from bullPenCreator --> object:",object)
+
+    var competitorsName = Object.keys(object)
+    var numberOfCompetitors = competitorsName.length
+
+
+    // console.log("competitorsName:",competitorsName)
+    // console.log("numberOfCompetitors:",numberOfCompetitors)
+
+    for ( var k = 1; k <= numberOfCompetitors; k++) {
+
+      //_.values(obj) might be the way
+
+      //this seems like the wrong direction
+      // console.log("object[k]:",object[competitorsName[k]])
+
+      // bullPen.push(object[k])
+
+    }
+
+  }
+
+  bullPenCreator(allCompetitorsObj)
 
 }
 
