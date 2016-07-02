@@ -5,13 +5,13 @@ var fs = require('fs');
 var _  = require('lodash');
 
 var competitorA = {
-  rating: 1200,
+  rating: 1600,
   wins: 0,
   losses: 0
 }
 
 var competitorB = {
-  rating: 1400,
+  rating: 1600,
   wins:   0,
   losses: 0
 }
@@ -23,8 +23,32 @@ var competitorC = {
 }
 
 var competitorD = {
-  rating: 1800,
+  rating: 1600,
   wins:   0,
+  losses: 0
+}
+
+var competitorE = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var competitorF = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var competitorG = {
+  rating: 1600,
+  wins: 0,
+  losses: 0
+}
+
+var competitorH = {
+  rating: 1600,
+  wins: 0,
   losses: 0
 }
 
@@ -38,7 +62,9 @@ var secondCompetitorsProbabilityOfVictory = 0
 var k = 8
 var n = 1
 
-var arrayOfCompetitors = [{competitorA},{competitorB},{competitorC},{competitorD}]
+var arrayOfCompetitors = [
+  {competitorA},{competitorB},{competitorC},{competitorD},
+  {competitorE},{competitorF},{competitorG},{competitorH}]
 
 /**
  * @name matPopulator
@@ -48,6 +74,8 @@ var arrayOfCompetitors = [{competitorA},{competitorB},{competitorC},{competitorD
  **/
 
 var tournamentCoordinator = function(array){
+
+  // console.log("tournamentCoordinator's array:",array)
 
   // console.log("arrayOfCompetitors.length:",array.length)
 
@@ -74,8 +102,11 @@ var tournamentCoordinator = function(array){
 
     var matPopulator = function(array){
 
-      theCompetitionMat.push(array.pop())
-      theCompetitionMat.push(array.pop())
+      // console.log("matPopulator's array argument:",array)
+      // console.log("array.unshift():",array.unshift())
+
+      theCompetitionMat.push(array.shift())
+      theCompetitionMat.push(array.shift())
 
     }
     var variableAssigner = function(array){
@@ -130,21 +161,21 @@ var tournamentCoordinator = function(array){
 
       if ( probability > randomNumber ) {
 
-        console.log("first person wins!")
-        console.log("second person loses!")
+        // console.log("first person wins!")
+        // console.log("second person loses!")
 
         // console.log("firstCompetitor[nameOfFirstCompetitor]['wins']:",firstCompetitor[nameOfFirstCompetitor]['wins'])
         // console.log("secondCompetitor[nameOfSecondCompetitor]['wins']:"secondCompetitor[nameOfSecondCompetitor]['wins'])
 
         if ( recordWinsForFirstCompetitor === 0 ) {
 
-          console.log("the first competitor has no wins!")
+          // console.log("the first competitor has no wins!")
           firstCompetitor[nameOfFirstCompetitor]['wins']++
           secondCompetitor[nameOfSecondCompetitor]['losses']++
 
         } else {
 
-          console.log("the first competitor has no wins!")
+          // console.log("the first competitor has no wins!")
           firstCompetitor[nameOfFirstCompetitor]['wins']++
           secondCompetitor[nameOfSecondCompetitor]['losses']++
 
@@ -164,17 +195,17 @@ var tournamentCoordinator = function(array){
 
       } else {
 
-        console.log("first person loses!")
-        console.log("second person wins!")
+        // console.log("first person loses!")
+        // console.log("second person wins!")
 
         if ( recordWinsForSecondCompetitor === 0 ) {
 
-          console.log("the second competitor has no wins!")
+          // console.log("the second competitor has no wins!")
           firstCompetitor[nameOfFirstCompetitor]['losses']++
           secondCompetitor[nameOfSecondCompetitor]['wins']++
 
         } else {
-          console.log("the second competitor has some wins!")
+          // console.log("the second competitor has some wins!")
 
           firstCompetitor[nameOfFirstCompetitor]['losses']++
           secondCompetitor[nameOfSecondCompetitor]['wins']++
@@ -274,13 +305,19 @@ var tournamentCoordinator = function(array){
 
   }
 
-  console.log("arrayOfCompetitors:",arrayOfCompetitors)
-  console.log("winnersBracket:",winnersBracket)
-  console.log("losersBracket:",losersBracket)
+  // console.log("arrayOfCompetitors:",arrayOfCompetitors)
+  // console.log("winnersBracket:",winnersBracket)
+  // console.log("losersBracket:",losersBracket)
 
-  if ( array.length === 0 ) {
+  if ( array.length === 1 ) {
+    console.log("YOU ARE THE WINNER!:",array[0])
+    console.log("Loser's Bracket:",losersBracket)
+  } else if ( array.length === 0 ) {
     console.log("you ran out of competitors!")
     tournamentCoordinator(winnersBracket)
+  } else if ( array.length ) {
+    console.log("hello sailor!  We still have fights left!")
+    tournamentCoordinator(array)
   }
 
 }
