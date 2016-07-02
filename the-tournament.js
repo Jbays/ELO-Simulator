@@ -66,29 +66,39 @@ var arrayOfCompetitors = [
 var competitorGenerator = function(number) {
 
   var outputArr = []
-  var squared = number*number
+  var outputObj = {}
+  var squared = number * number
   var tempArr = []
-  var prototypeC = { rating:1600, wins:0, losses:0 }
+  var tempArr2 = []
+  var prototypeC = {rating: 1600, wins: 0, losses: 0}
 
-  console.log("number:",number)
+  var competitorCreator = function (squared) {
+    for (var j = 1; j <= squared; j++) {
+      var name = "c" + j.toString()
 
-  for ( var j = 1; j <= squared; j++ ) {
-
-    console.log("j:",j)
-    var name = "c"+ j.toString()
-
-    tempArr.push(name)
-    tempArr.push(prototypeC)
-
-    console.log("name:",name)
-    console.log("tempArr:",tempArr)
-
-    //try a flatten here
-    //or maybe a join?
-
-
+      tempArr.push(name)
+      tempArr2.push(prototypeC)
+    }
+    outputObj = _.zipObject(tempArr, tempArr2)
+    console.log("outputObj:", outputObj)
   }
 
+  //this will output an object with
+  //competitors === squared
+  //outputObj: {
+  //             c(n): { rating: 1600, wins: 0, losses: 0 },
+  //             c(n+1): { rating: 1600, wins: 0, losses: 0 },
+  //             c(n+2): { rating: 1600, wins: 0, losses: 0 },
+  //           }
+  competitorCreator(squared)
+
+
+    // for ( var k = 0; k )
+
+  // console.log("tempArr:",tempArr)
+  // console.log("tempArr2:",tempArr2)
+
+  console.log("outputArr:",outputArr)
 
 }
 
