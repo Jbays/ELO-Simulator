@@ -22,22 +22,37 @@ var c13 = { rating:1600, wins:0, losses:0 }
 var c14 = { rating:1600, wins:0, losses:0 }
 var c15 = { rating:1600, wins:0, losses:0 }
 var c16 = { rating:1600, wins:0, losses:0 }
+var c17 = { rating:1600, wins:0, losses:0 }
+var c18 = { rating:1600, wins:0, losses:0 }
+var c19 = { rating:1600, wins:0, losses:0 }
+var c20 = { rating:1600, wins:0, losses:0 }
+var c21 = { rating:1600, wins:0, losses:0 }
+var c22 = { rating:1600, wins:0, losses:0 }
+var c23 = { rating:1600, wins:0, losses:0 }
+var c24 = { rating:1600, wins:0, losses:0 }
+var c25 = { rating:1600, wins:0, losses:0 }
+var c26 = { rating:1600, wins:0, losses:0 }
+var c27 = { rating:1600, wins:0, losses:0 }
+var c28 = { rating:1600, wins:0, losses:0 }
+var c29 = { rating:1600, wins:0, losses:0 }
+var c30 = { rating:1600, wins:0, losses:0 }
+var c31 = { rating:1600, wins:0, losses:0 }
+var c32 = { rating:1600, wins:0, losses:0 }
 
 var theCompetitionMat  = []
-var competitionMatOdds = []
 var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory = 0
 var secondCompetitorsProbabilityOfVictory = 0
 
-var k = 8
+var k = 16
 var n = 1
 
 var arrayOfCompetitors = [
-  {c01},{c02},{c03},{c04},
-  {c05},{c06},{c07},{c08},
-  {c09},{c10},{c11},{c12},
-  {c13},{c14},{c15},{c16}
+  {c01},{c02},{c03},{c04},{c05},{c06},{c07},{c08},
+  {c09},{c10},{c11},{c12},{c13},{c14},{c15},{c16},
+  {c17},{c18},{c19},{c20},{c21},{c22},{c23},{c24},
+  {c25},{c26},{c27},{c28},{c29},{c30},{c31},{c32}
 ]
 
 /**
