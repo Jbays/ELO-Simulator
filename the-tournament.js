@@ -65,61 +65,7 @@ var tournamentRegistrator = function(number) {
     // allCompetitorsObj = _.zipObject(tempArr, tempArr2)
   }
 
-
-
   competitorCreator(squared)
-
-  var bullPenCreator = function(object){
-
-    var bullPen = []
-
-    console.log("from bullPenCreator --> object:",object)
-
-    var competitorsList = JSON.stringify(object)
-
-    var arrayifiedCompetitorsList = "["+competitorsList.slice(1,competitorsList.length-2)+"]"
-    // console.log("JSON.parse on arrayifiedCompetitorsList:",JSON.parse("["+arrayifiedCompetitorsList+"]"))
-    // console.log("arrayifiedCompetitorsList:",arrayifiedCompetitorsList)
-
-    // var donut = JSON.parse('["c1":{"rating":1600,"wins":0,"losses":0},"c2":{"rating":1600;"wins":0,"losses":0}]')
-    // console.log(donut)
-
-    // '"c1":{"rating":1600;"wins":0;"losses":0},"c2":{"rating";1600,"wins";0"losses";0}'
-    // donut.split(',') ==> outputs
-    // donutSplit = [
-    //   '"c1":{"rating":1600;"wins":0;"losses":0}',
-    //   '"c2":{"rating":1600;"wins":0;"losses":0}'
-    // ]
-
-    //doesn't work either.
-
-    //BUT THIS DOES WORK!
-
-    // var what = '{"c1":{"rating":1600,"wins":0,"losses":0}}'
-
-    // JSON.parse(what)
-
-
-
-    var competitorsName = Object.keys(object)
-    var numberOfCompetitors = competitorsName.length
-
-    // console.log(_.values(object))
-    // console.log("competitorsName:",competitorsName)
-    // console.log("numberOfCompetitors:",numberOfCompetitors)
-
-    for ( var k = 1; k <= numberOfCompetitors; k++) {
-
-      //_.values(obj) might be the way
-
-
-      // bullPen.push(object[k])
-
-    }
-
-  }
-
-  bullPenCreator(allCompetitorsObj)
 
 }
 
