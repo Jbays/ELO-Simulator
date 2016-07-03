@@ -1,70 +1,21 @@
 /**
  * Created by justin.baize on 6/16/16.
  */
+
+'use strict'
 var fs = require('fs');
 var _  = require('lodash');
 
-var competitorA = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var competitorB = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var competitorC = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var competitorD = {
-  rating: 1600,
-  wins:   0,
-  losses: 0
-}
-
-var competitorE = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var competitorF = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var competitorG = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
-var competitorH = {
-  rating: 1600,
-  wins: 0,
-  losses: 0
-}
-
+var bullPen            = []
 var theCompetitionMat  = []
-var competitionMatOdds = []
 var winnersBracket     = []
 var losersBracket      = []
-var firstCompetitorsProbabilityOfVictory = 0
+var firstCompetitorsProbabilityOfVictory  = 0
 var secondCompetitorsProbabilityOfVictory = 0
+var numberOfRequiredRounds = 32
 
 var k = 8
 var n = 1
-
-var arrayOfCompetitors = [
-  {competitorA},{competitorB},{competitorC},{competitorD},
-  {competitorE},{competitorF},{competitorG},{competitorH}]
 
 /**
  * @name matPopulator
@@ -73,10 +24,25 @@ var arrayOfCompetitors = [
  * @param arrayOfCompetitors
  **/
 
+var bullPenGenerator = function(integer) {
+  var squaredNumber = integer * integer
+  var competitorAssembler = function (squaredNumber) {
+    console.log("Number of Competitors:",squaredNumber)
+    for (var j = 1; j <= squaredNumber; j++) {
+      let yourNumber = j.toString()
+      let competitorBlueprint = '{"c' + yourNumber +'":{"rating":1600,"wins":0,"losses":0}}'
+
+      bullPen.push(JSON.parse(competitorBlueprint))
+    }
+  }
+  competitorAssembler(squaredNumber)
+}
+
+bullPenGenerator(numberOfRequiredRounds)
+
 var tournamentCoordinator = function(array){
 
   // console.log("tournamentCoordinator's array:",array)
-
   // console.log("arrayOfCompetitors.length:",array.length)
 
   for ( var i = 0; i < array.length; i++ ) {
@@ -306,7 +272,7 @@ var tournamentCoordinator = function(array){
 
   if ( array.length === 1 ) {
     console.log("YOU ARE THE WINNER!:",array[0])
-    console.log("Loser's Bracket:",losersBracket)
+    console.log("Loser's Bracket reversed:",losersBracket.reverse())
   } else if ( array.length === 0 ) {
     console.log("you ran out of competitors!")
     tournamentCoordinator(winnersBracket)
@@ -317,4 +283,4 @@ var tournamentCoordinator = function(array){
 
 }
 
-tournamentCoordinator(arrayOfCompetitors)
+tournamentCoordinator(bullPen)
