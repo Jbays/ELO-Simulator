@@ -6,6 +6,7 @@
 var fs = require('fs');
 var _  = require('lodash');
 
+var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
@@ -23,49 +24,19 @@ var n = 1
  * @param arrayOfCompetitors
  **/
 
-var outputArr = []
+var tournamentRegistrator = function(integer) {
 
+  var squaredNumber = integer * integer
+  var competitorCreator = function (squaredNumber) {
+    for (var j = 1; j <= squaredNumber; j++) {
+      let yourNumber = j.toString()
+      let competitorAssembler = '{"c' + yourNumber +'":{"rating":1600,"wins":0,"losses":0}}'
 
-var tournamentRegistrator = function(number) {
-
-  var allCompetitorsObj = {}
-  var squared = number * number
-  var prototypeCompetitor = {rating: 1600, wins: 0, losses: 0}
-
-  //this will output an object with
-  //competitors === squared
-  //outputObj: {
-  //             c(n): { rating: 1600, wins: 0, losses: 0 },
-  //             c(n+1): { rating: 1600, wins: 0, losses: 0 },
-  //             c(n+2): { rating: 1600, wins: 0, losses: 0 },
-  //           }
-  var competitorCreator = function (squared) {
-    var tempArr = []
-    var tempArr2 = []
-
-    for (var j = 1; j <= squared; j++) {
-      var yourNumber = j.toString()
-      var name = "c" + yourNumber
-      var competitorAssembler = '{"c' + yourNumber +'":{"rating":1600,"wins":0,"losses":0}}'
-
-      // console.log("competitorAssembler:",competitorAssembler)
-      // console.log("typeof competitorAssembler:",typeof competitorAssembler)
-
-      // console.log("JSON.parse(competitorAssembler):",JSON.parse(competitorAssembler))
-      // console.log("typeof JSON.parse(competitorAssembler):",typeof JSON.parse(competitorAssembler))
-
-
-      // this is the goal
-      // '{"c1":{"rating":1600,"wins":0,"losses":0}}'
-
-      outputArr.push(JSON.parse(competitorAssembler))
-      // tempArr2.push(prototypeCompetitor)
+      bullPen.push(JSON.parse(competitorAssembler))
     }
-    console.log("outputArr:",outputArr)
-    // allCompetitorsObj = _.zipObject(tempArr, tempArr2)
   }
 
-  competitorCreator(squared)
+  competitorCreator(squaredNumber)
 
 }
 
@@ -314,4 +285,4 @@ var tournamentCoordinator = function(array){
 
 }
 
-tournamentCoordinator(outputArr)
+tournamentCoordinator(bullPen)
