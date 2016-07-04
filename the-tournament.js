@@ -6,6 +6,7 @@
 var fs = require('fs');
 var _  = require('lodash');
 
+//bullPen format is =[{c1},{c2},{c3}]
 var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
@@ -68,7 +69,15 @@ var tournamentCoordinator = function(array){
   // console.log("firstCompetitorRating:",firstCompetitorRating)
   // console.log("secondCompetitorRating:",secondCompetitorRating)
 
-    var matPopulator = function(array){
+    /**
+     * @name competitonMatPopulator
+     * @description - Takes as input bullPen array
+     *                Removes first and second competitors from bullPen
+     *                And places them inside theCompetitionMat
+     * @param bullPen
+     **/
+
+    var competitonMatPopulator = function(array){
       theCompetitionMat.push(array.shift())
       theCompetitionMat.push(array.shift())
     }
@@ -259,7 +268,7 @@ var tournamentCoordinator = function(array){
       }
     }
 
-    matPopulator(array)
+    competitonMatPopulator(array)
     variableAssigner(theCompetitionMat)
     probabilityCalculator(theCompetitionMat)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
