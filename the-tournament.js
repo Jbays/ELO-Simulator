@@ -56,41 +56,43 @@ var tournamentCoordinator = function(array){
     var nameOfSecondCompetitor = null
     var firstCompetitorRating  = null
     var secondCompetitorRating = null
-
     var recordWinsForFirstCompetitor    = 0
     var recordWinsForSecondCompetitor   = 0
     var recordLossesForFirstCompetitor  = 0
     var recordLossesForSecondCompetitor = 0
 
-  // console.log("firstCompetitor:",firstCompetitor)
-  // console.log("Name of First Competitor:",nameOfFirstCompetitor)
-  // console.log("secondCompetitor:",secondCompetitor)
-  // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
-  // console.log("firstCompetitorRating:",firstCompetitorRating)
-  // console.log("secondCompetitorRating:",secondCompetitorRating)
-
-    /**
-     * @name competitonMatPopulator
-     * @description - Takes as input bullPen array
-     *                Removes first and second competitors from bullPen
-     *                And places them inside theCompetitionMat
-     * @param bullPen
-     **/
-
-    var competitonMatPopulator = function(array){
+    // console.log("firstCompetitor:",firstCompetitor)
+    // console.log("Name of First Competitor:",nameOfFirstCompetitor)
+    // console.log("secondCompetitor:",secondCompetitor)
+    // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
+    // console.log("firstCompetitorRating:",firstCompetitorRating)
+    // console.log("secondCompetitorRating:",secondCompetitorRating)
+   /**
+    * @name competitionMatPopulator
+    * @description - Takes as input bullPen array
+    *                Removes first and second competitors from bullPen
+    *                And places them inside theCompetitionMat
+    * @param bullPen
+    *
+    **/
+    var competitionMatPopulator = function(array){
       theCompetitionMat.push(array.shift())
       theCompetitionMat.push(array.shift())
     }
-    var variableAssigner = function(array){
 
+   /**
+    * @name variableAssigner
+    * @description - Assigns to variables all statistics relevant to calculations for
+    *                the two competitors on theCompetitionMats.
+    * @param theCompetitionMats
+    **/
+    var variableAssigner = function(array){
       firstCompetitor  = array[0]
       secondCompetitor = array[1]
       nameOfFirstCompetitor  = Object.keys(firstCompetitor)[0]
       nameOfSecondCompetitor = Object.keys(secondCompetitor)[0]
-
       firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
       secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
-
       recordWinsForFirstCompetitor    = firstCompetitor[nameOfFirstCompetitor]['wins']
       recordLossesForFirstCompetitor  = firstCompetitor[nameOfFirstCompetitor]['losses']
       recordWinsForSecondCompetitor   = secondCompetitor[nameOfSecondCompetitor]['wins']
@@ -268,7 +270,7 @@ var tournamentCoordinator = function(array){
       }
     }
 
-    competitonMatPopulator(array)
+    competitionMatPopulator(array)
     variableAssigner(theCompetitionMat)
     probabilityCalculator(theCompetitionMat)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
