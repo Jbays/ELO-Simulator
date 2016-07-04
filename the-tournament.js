@@ -13,7 +13,7 @@ var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory  = 0
 var secondCompetitorsProbabilityOfVictory = 0
-var numberOfRequiredRounds = 64
+var numberOfRequiredRounds = 32
 
 //k is the maximal number of points a player can win/lose in a given match
 var k = 8
@@ -106,9 +106,16 @@ var tournamentCoordinator = function(array){
       // console.log("secondCompetitorRating:",secondCompetitorRating)
 
     }
-    var probabilityCalculator = function(array){
 
-      // TODO: rename these next six variables!
+   /**
+    * @name probabilityCalculator
+    * @description - Calculates the likelihood of victory for the competitors
+    *                on theCompetitionMats. Calculation based on the players's
+    *                respective rating
+    * @param firstCompetitorRating
+    * @param secondCompetitorRating
+    **/
+    var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRating){
 
       // var recordWinsForA    = firstCompetitor[nameOfFirstCompetitor]['wins']
       // var recordWinsForB    = secondCompetitor[nameOfSecondCompetitor]['wins']
@@ -129,6 +136,7 @@ var tournamentCoordinator = function(array){
       // console.log("recordLossesForB:",recordLossesForB)
       // console.log("theCompetitionFloor:",array)
     }
+
     var referee = function(array,probability){
 
       var randomNumber = Math.random()
@@ -272,7 +280,7 @@ var tournamentCoordinator = function(array){
 
     competitionMatPopulator(array)
     variableAssigner(theCompetitionMat)
-    probabilityCalculator(theCompetitionMat)
+    probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
     ratingsAdjuster()
     matEvacuator(theCompetitionMat)
