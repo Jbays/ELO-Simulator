@@ -6,6 +6,7 @@
 var fs = require('fs');
 var _  = require('lodash');
 
+//bullPen format is =[{c1},{c2},{c3}]
 var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
@@ -14,14 +15,16 @@ var firstCompetitorsProbabilityOfVictory  = 0
 var secondCompetitorsProbabilityOfVictory = 0
 var numberOfRequiredRounds = 32
 
+//k is the maximal number of points a player can win/lose in a given match
 var k = 8
 var n = 1
 
 /**
- * @name matPopulator
- * @description - Takes two competitors from arrayOfCompetitors and
- *                puts them into theCompetitionMat array.
- * @param arrayOfCompetitors
+ * @name bullPenGenerator
+ * @description - takes an integer as input
+ *                outputs number of competitors === integer^2
+ *                in form bullPen = [{c1},{c2},{c3}]
+ * @param numberOfRequiredRounds
  **/
 
 var bullPenGenerator = function(integer) {
@@ -53,33 +56,43 @@ var tournamentCoordinator = function(array){
     var nameOfSecondCompetitor = null
     var firstCompetitorRating  = null
     var secondCompetitorRating = null
-
     var recordWinsForFirstCompetitor    = 0
     var recordWinsForSecondCompetitor   = 0
     var recordLossesForFirstCompetitor  = 0
     var recordLossesForSecondCompetitor = 0
 
-  // console.log("firstCompetitor:",firstCompetitor)
-  // console.log("Name of First Competitor:",nameOfFirstCompetitor)
-  // console.log("secondCompetitor:",secondCompetitor)
-  // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
-  // console.log("firstCompetitorRating:",firstCompetitorRating)
-  // console.log("secondCompetitorRating:",secondCompetitorRating)
-
-    var matPopulator = function(array){
+    // console.log("firstCompetitor:",firstCompetitor)
+    // console.log("Name of First Competitor:",nameOfFirstCompetitor)
+    // console.log("secondCompetitor:",secondCompetitor)
+    // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
+    // console.log("firstCompetitorRating:",firstCompetitorRating)
+    // console.log("secondCompetitorRating:",secondCompetitorRating)
+   /**
+    * @name - competitionMatPopulator
+    * @description - Takes as input bullPen array
+    *                Removes first and second competitors from bullPen
+    *                And places them inside theCompetitionMat
+    * @param - bullPen
+    *
+    **/
+    var competitionMatPopulator = function(array){
       theCompetitionMat.push(array.shift())
       theCompetitionMat.push(array.shift())
     }
-    var variableAssigner = function(array){
 
+   /**
+    * @name - variableAssigner
+    * @description - Assigns to variables all statistics relevant to calculations for
+    *                the two competitors on theCompetitionMats.
+    * @param - theCompetitionMats
+    **/
+    var variableAssigner = function(array){
       firstCompetitor  = array[0]
       secondCompetitor = array[1]
       nameOfFirstCompetitor  = Object.keys(firstCompetitor)[0]
       nameOfSecondCompetitor = Object.keys(secondCompetitor)[0]
-
       firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
       secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
-
       recordWinsForFirstCompetitor    = firstCompetitor[nameOfFirstCompetitor]['wins']
       recordLossesForFirstCompetitor  = firstCompetitor[nameOfFirstCompetitor]['losses']
       recordWinsForSecondCompetitor   = secondCompetitor[nameOfSecondCompetitor]['wins']
@@ -93,9 +106,16 @@ var tournamentCoordinator = function(array){
       // console.log("secondCompetitorRating:",secondCompetitorRating)
 
     }
-    var probabilityCalculator = function(array){
 
-      // TODO: rename these next six variables!
+   /**
+    * @name - probabilityCalculator
+    * @description - Calculates the likelihood of victory for the competitors
+    *                on theCompetitionMats. Calculation based on the players's
+    *                respective rating
+    * @param - firstCompetitorRating
+    * @param - secondCompetitorRating
+    **/
+    var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRating){
 
       // var recordWinsForA    = firstCompetitor[nameOfFirstCompetitor]['wins']
       // var recordWinsForB    = secondCompetitor[nameOfSecondCompetitor]['wins']
@@ -116,6 +136,14 @@ var tournamentCoordinator = function(array){
       // console.log("recordLossesForB:",recordLossesForB)
       // console.log("theCompetitionFloor:",array)
     }
+
+   /**
+    * @name - referee
+    * @description - Pulls a random draw (between 0-1) and assigns a victory based
+    *                on firstCompetitorsProbabilityOfVictory
+    * @param - theCompetitorMats
+    * @param - firstCompetitorsProbabilityOfVictory
+    **/
     var referee = function(array,probability){
 
       var randomNumber = Math.random()
@@ -190,12 +218,17 @@ var tournamentCoordinator = function(array){
 
       }
     }
+
+   /**
+    * @name - ratingsAdjuster
+    * @description - Calculates the raw new ratings for the competitors after
+    *                the results of their match has been tabulated.
+    *                Rounds raw rating, then assigns new rating to competitor
+    **/
     var ratingsAdjuster = function() {
 
       // console.log("after referee() theCompetitionMat:",theCompetitionMat)
-
       // console.log("ratingsAdjuster's array:",array)
-
       // console.log("firstCompetitorRating:",firstCompetitorRating)
       // console.log("secondCompetitorRating:",secondCompetitorRating)
 
@@ -231,7 +264,16 @@ var tournamentCoordinator = function(array){
       //
       // }
     }
-    var matEvacuator = function(array){
+
+   /**
+    * @name - competitionMatDepopulator
+    * @description - Takes as input bullPen array
+    *                Removes both competitors from theCompetitionMat
+    *                Places winner of match into Winners Bracket
+    *                And loser of match into Losers Bracket
+    * @param - theCompetitionMat
+    **/
+    var competitionMatDepopulator = function(array){
       // console.log("this should be the competitionFloor!:",array)
 
       if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
@@ -257,12 +299,12 @@ var tournamentCoordinator = function(array){
       }
     }
 
-    matPopulator(array)
+    competitionMatPopulator(array)
     variableAssigner(theCompetitionMat)
-    probabilityCalculator(theCompetitionMat)
+    probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
     ratingsAdjuster()
-    matEvacuator(theCompetitionMat)
+    competitionMatDepopulator(theCompetitionMat)
 
   }
 
@@ -272,7 +314,7 @@ var tournamentCoordinator = function(array){
 
   if ( array.length === 1 ) {
     console.log("YOU ARE THE WINNER!:",array[0])
-    console.log("Loser's Bracket reversed:",losersBracket.reverse())
+    // console.log("Loser's Bracket reversed:",losersBracket.reverse())
   } else if ( array.length === 0 ) {
     console.log("you ran out of competitors!")
     tournamentCoordinator(winnersBracket)
