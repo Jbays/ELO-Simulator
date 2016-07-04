@@ -137,13 +137,13 @@ var tournamentCoordinator = function(array){
       // console.log("theCompetitionFloor:",array)
     }
 
-    /**
-     * @name - referee
-     * @description - Pulls a random draw (between 0-1) and assigns a victory based
-     *                on firstCompetitorsProbabilityOfVictory
-     * @param - theCompetitorMats
-     * @param - firstCompetitorsProbabilityOfVictory
-     **/
+   /**
+    * @name - referee
+    * @description - Pulls a random draw (between 0-1) and assigns a victory based
+    *                on firstCompetitorsProbabilityOfVictory
+    * @param - theCompetitorMats
+    * @param - firstCompetitorsProbabilityOfVictory
+    **/
     var referee = function(array,probability){
 
       var randomNumber = Math.random()
@@ -218,12 +218,17 @@ var tournamentCoordinator = function(array){
 
       }
     }
+
+   /**
+    * @name - ratingsAdjuster
+    * @description - Calculates the raw new ratings for the competitors after
+    *                the results of their match has been tabulated.
+    *                Rounds raw rating, then assigns new rating to competitor
+    **/
     var ratingsAdjuster = function() {
 
       // console.log("after referee() theCompetitionMat:",theCompetitionMat)
-
       // console.log("ratingsAdjuster's array:",array)
-
       // console.log("firstCompetitorRating:",firstCompetitorRating)
       // console.log("secondCompetitorRating:",secondCompetitorRating)
 
@@ -259,7 +264,16 @@ var tournamentCoordinator = function(array){
       //
       // }
     }
-    var matEvacuator = function(array){
+
+   /**
+    * @name - competitionMatDepopulator
+    * @description - Takes as input bullPen array
+    *                Removes both competitors from theCompetitionMat
+    *                Places winner of match into Winners Bracket
+    *                And loser of match into Losers Bracket
+    * @param - theCompetitionMat
+    **/
+    var competitionMatDepopulator = function(array){
       // console.log("this should be the competitionFloor!:",array)
 
       if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
@@ -290,7 +304,7 @@ var tournamentCoordinator = function(array){
     probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
     ratingsAdjuster()
-    matEvacuator(theCompetitionMat)
+    competitionMatDepopulator(theCompetitionMat)
 
   }
 
