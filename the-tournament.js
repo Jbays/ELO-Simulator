@@ -68,11 +68,11 @@ var tournamentCoordinator = function(array){
     // console.log("firstCompetitorRating:",firstCompetitorRating)
     // console.log("secondCompetitorRating:",secondCompetitorRating)
    /**
-    * @name competitionMatPopulator
+    * @name - competitionMatPopulator
     * @description - Takes as input bullPen array
     *                Removes first and second competitors from bullPen
     *                And places them inside theCompetitionMat
-    * @param bullPen
+    * @param - bullPen
     *
     **/
     var competitionMatPopulator = function(array){
@@ -81,10 +81,10 @@ var tournamentCoordinator = function(array){
     }
 
    /**
-    * @name variableAssigner
+    * @name - variableAssigner
     * @description - Assigns to variables all statistics relevant to calculations for
     *                the two competitors on theCompetitionMats.
-    * @param theCompetitionMats
+    * @param - theCompetitionMats
     **/
     var variableAssigner = function(array){
       firstCompetitor  = array[0]
@@ -108,12 +108,12 @@ var tournamentCoordinator = function(array){
     }
 
    /**
-    * @name probabilityCalculator
+    * @name - probabilityCalculator
     * @description - Calculates the likelihood of victory for the competitors
     *                on theCompetitionMats. Calculation based on the players's
     *                respective rating
-    * @param firstCompetitorRating
-    * @param secondCompetitorRating
+    * @param - firstCompetitorRating
+    * @param - secondCompetitorRating
     **/
     var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRating){
 
@@ -137,6 +137,13 @@ var tournamentCoordinator = function(array){
       // console.log("theCompetitionFloor:",array)
     }
 
+    /**
+     * @name - referee
+     * @description - Pulls a random draw (between 0-1) and assigns a victory based
+     *                on firstCompetitorsProbabilityOfVictory
+     * @param - theCompetitorMats
+     * @param - firstCompetitorsProbabilityOfVictory
+     **/
     var referee = function(array,probability){
 
       var randomNumber = Math.random()
