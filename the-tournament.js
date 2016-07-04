@@ -12,16 +12,18 @@ var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory  = 0
 var secondCompetitorsProbabilityOfVictory = 0
-var numberOfRequiredRounds = 32
+var numberOfRequiredRounds = 64
 
+//k is the maximal number of points a player can win/lose in a given match
 var k = 8
 var n = 1
 
 /**
- * @name matPopulator
- * @description - Takes two competitors from arrayOfCompetitors and
- *                puts them into theCompetitionMat array.
- * @param arrayOfCompetitors
+ * @name bullPenGenerator
+ * @description - takes an integer as input
+ *                outputs number of competitors === integer^2
+ *                in form bullPen = [{c1},{c2},{c3}]
+ * @param numberOfRequiredRounds
  **/
 
 var bullPenGenerator = function(integer) {
@@ -272,7 +274,7 @@ var tournamentCoordinator = function(array){
 
   if ( array.length === 1 ) {
     console.log("YOU ARE THE WINNER!:",array[0])
-    console.log("Loser's Bracket reversed:",losersBracket.reverse())
+    // console.log("Loser's Bracket reversed:",losersBracket.reverse())
   } else if ( array.length === 0 ) {
     console.log("you ran out of competitors!")
     tournamentCoordinator(winnersBracket)
