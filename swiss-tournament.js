@@ -283,10 +283,9 @@ var swissTournament = function(numberOfRoundsDesired){
 
   var numberOfMatches = bullPen.length/2
 
+  var makeCompetitorsFightOnce = function(integer){
 
-  var makeCompetitorsFightOnce = function(number){
-
-    for ( var k = 1; k <= number ; k++ ) {
+    for ( var k = 1; k <= integer ; k++ ) {
 
       competitionMatPopulator(bullPen)
       variableAssigner(theCompetitionMat)
@@ -301,7 +300,15 @@ var swissTournament = function(numberOfRoundsDesired){
 
   makeCompetitorsFightOnce(numberOfMatches)
 
+  var repopulateBullPen = function(arrayOfWinners,arrayOfLosers){
 
+    console.log("arrayOfWinners:",arrayOfWinners)
+    console.log("arrayOfLosers:",arrayOfLosers)
+
+
+  }
+
+  repopulateBullPen(winnersBracket,losersBracket)
 
   console.log("winnersBracket:",winnersBracket)
   console.log("losersBracket:",losersBracket)
@@ -313,13 +320,6 @@ var swissTournament = function(numberOfRoundsDesired){
 
 
   }
-
-  //
-  //   // console.log("hello sailor!")
-  //
-  //
-  // }
-
 
 }
 
