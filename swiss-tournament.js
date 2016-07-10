@@ -281,30 +281,39 @@ var swissTournament = function(numberOfRoundsDesired){
 
   bullPenGenerator(competitorsSquared)
 
-  var roundOneFight = bullPen.length/2
+  var numberOfMatches = bullPen.length/2
 
-  for ( var k = 1; k <= roundOneFight; k++ ) {
 
-    competitionMatPopulator(bullPen)
-    variableAssigner(theCompetitionMat)
-    probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
-    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-    ratingsAdjuster()
-    competitionMatDepopulator(theCompetitionMat)
+  var makeCompetitorsFightOnce = function(number){
+
+    for ( var k = 1; k <= number ; k++ ) {
+
+      competitionMatPopulator(bullPen)
+      variableAssigner(theCompetitionMat)
+      probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
+      referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
+      ratingsAdjuster()
+      competitionMatDepopulator(theCompetitionMat)
+
+    }
 
   }
+
+  makeCompetitorsFightOnce(numberOfMatches)
+
+
 
   console.log("winnersBracket:",winnersBracket)
   console.log("losersBracket:",losersBracket)
 
 
-  if ( bullPen.length !== 0 ) {
+  if ( bullPen.length === 0 ) {
+
 
 
 
   }
 
-  // for ( var k = 0; k < numberOfRoundsDesired; k++ ) {
   //
   //   // console.log("hello sailor!")
   //
