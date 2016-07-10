@@ -184,6 +184,88 @@ var referee = function(array,probability){
   }
 }
 
+/**
+ * @name - ratingsAdjuster
+ * @description - Calculates the raw new ratings for the competitors after
+ *                the results of their match has been tabulated.
+ *                Rounds raw rating, then assigns new rating to competitor
+ **/
+var ratingsAdjuster = function() {
+
+  // console.log("after referee() theCompetitionMat:",theCompetitionMat)
+  // console.log("ratingsAdjuster's array:",array)
+  // console.log("firstCompetitorRating:",firstCompetitorRating)
+  // console.log("secondCompetitorRating:",secondCompetitorRating)
+
+  var rawNewRatingForFirst = firstCompetitorRating + k*(firstCompetitor[nameOfFirstCompetitor]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
+  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[nameOfSecondCompetitor]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
+
+  // console.log("rawNewRatingForFirst:",rawNewRatingForFirst)
+  // console.log("rawNewRatingForSecond:",rawNewRatingForSecond)
+
+  var newRatingForFirst = Math.round(rawNewRatingForFirst)
+  var newRatingForSecond = Math.round(rawNewRatingForSecond)
+
+  // console.log("newRatingForFirst:",newRatingForFirst)
+  // console.log("newRatingForSecond:",newRatingForSecond)
+
+  firstCompetitor[nameOfFirstCompetitor]['rating']   = newRatingForFirst
+  secondCompetitor[nameOfSecondCompetitor]['rating'] = newRatingForSecond
+
+  // console.log("after everything --> ratingsAdjuster's array:",array)
+
+  //TODO: this needs to be refactored to handle two newRatings simultaneously
+  // if (newRating === competitorRating && competitorRating < rawNewRating ) {
+  //
+  //   competitor[competitorStats[0]] = newRating+1
+  //
+  // } else if ( newRating === competitorRating && competitorRating > rawNewRating ) {
+  //
+  //   competitor[competitorStats[0]] = newRating-1
+  //
+  // } else {
+  //
+  //   competitor[competitorStats[0]] = newRating
+  //
+  // }
+}
+
+/**
+ * @name - competitionMatDepopulator
+ * @description - Takes as input bullPen array
+ *                Removes both competitors from theCompetitionMat
+ *                Places winner of match into Winners Bracket
+ *                And loser of match into Losers Bracket
+ * @param - theCompetitionMat
+ **/
+var competitionMatDepopulator = function(array){
+  // console.log("this should be the competitionFloor!:",array)
+
+  if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
+
+    // console.log("the first competitor lost!")
+    winnersBracket.push(array.pop())
+    losersBracket.push(array.pop())
+    // console.log("winnersBracket:",winnersBracket)
+    // console.log("losersBracket:",losersBracket)
+
+  } else {
+
+    // console.log("the second person lost!")
+    losersBracket.push(array.pop())
+    winnersBracket.push(array.pop())
+
+    // console.log("losersBracket:",losersBracket)
+    // console.log("winnersBracket:",winnersBracket)
+
+    // console.log("array after populating losers and winners brackets:",array)
+    // console.log("arrayOfCompetitors:",arrayOfCompetitors)
+
+  }
+}
+
+
+
 var firstCompetitor        = null
 var secondCompetitor       = null
 var nameOfFirstCompetitor  = null
@@ -198,18 +280,36 @@ var recordLossesForSecondCompetitor = 0
 var swissTournament = function(numberOfRoundsDesired){
 
   bullPenGenerator(competitorsSquared)
-  competitionMatPopulator(bullPen)
-  variableAssigner(theCompetitionMat)
-  probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
-  referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
+
+  var roundOneFight = bullPen.length/2
+
+  for ( var k = 1; k <= roundOneFight; k++ ) {
+
+    competitionMatPopulator(bullPen)
+    variableAssigner(theCompetitionMat)
+    probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
+    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
+    ratingsAdjuster()
+    competitionMatDepopulator(theCompetitionMat)
+
+  }
+
+  console.log("winnersBracket:",winnersBracket)
+  console.log("losersBracket:",losersBracket)
 
 
-  for ( var k = 0; k < numberOfRoundsDesired; k++ ) {
+  if ( bullPen.length !== 0 ) {
 
-    // console.log("hello sailor!")
 
 
   }
+
+  // for ( var k = 0; k < numberOfRoundsDesired; k++ ) {
+  //
+  //   // console.log("hello sailor!")
+  //
+  //
+  // }
 
 
 }
