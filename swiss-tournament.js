@@ -62,38 +62,37 @@ var variableAssigner = function(array){
   recordWinsForSecondCompetitor   = secondCompetitor[nameOfSecondCompetitor]['wins']
   recordLossesForSecondCompetitor = secondCompetitor[nameOfSecondCompetitor]['losses']
 
-  console.log("firstCompetitor[name]['wins']:",firstCompetitor[nameOfFirstCompetitor]['wins'])
-  console.log("Name of First Competitor:",nameOfFirstCompetitor)
-  console.log("secondCompetitor[name]:",secondCompetitor[nameOfSecondCompetitor])
-  console.log("Name of Second Competitor:",nameOfSecondCompetitor)
-  console.log("firstCompetitorRating:",firstCompetitorRating)
-  console.log("secondCompetitorRating:",secondCompetitorRating)
+  // console.log("firstCompetitor[name]['wins']:",firstCompetitor[nameOfFirstCompetitor]['wins'])
+  // console.log("Name of First Competitor:",nameOfFirstCompetitor)
+  // console.log("secondCompetitor[name]:",secondCompetitor[nameOfSecondCompetitor])
+  // console.log("Name of Second Competitor:",nameOfSecondCompetitor)
+  // console.log("firstCompetitorRating:",firstCompetitorRating)
+  // console.log("secondCompetitorRating:",secondCompetitorRating)
 
 }
 
-var swissTournament = function(numberOfRoundsDesired){
+var firstCompetitor        = null
+var secondCompetitor       = null
+var nameOfFirstCompetitor  = null
+var nameOfSecondCompetitor = null
+var firstCompetitorRating  = null
+var secondCompetitorRating = null
+var recordWinsForFirstCompetitor    = 0
+var recordWinsForSecondCompetitor   = 0
+var recordLossesForFirstCompetitor  = 0
+var recordLossesForSecondCompetitor = 0
 
-  var firstCompetitor        = null
-  var secondCompetitor       = null
-  var nameOfFirstCompetitor  = null
-  var nameOfSecondCompetitor = null
-  var firstCompetitorRating  = null
-  var secondCompetitorRating = null
-  var recordWinsForFirstCompetitor    = 0
-  var recordWinsForSecondCompetitor   = 0
-  var recordLossesForFirstCompetitor  = 0
-  var recordLossesForSecondCompetitor = 0
+var swissTournament = function(numberOfRoundsDesired){
 
   bullPenGenerator(competitorsSquared)
   competitionMatPopulator(bullPen)
+  variableAssigner(theCompetitionMat)
 
-  console.log("theCompetitionMat:",theCompetitionMat)
-  // variableAssigner(theCompetitionMat)
 
 
   for ( var k = 0; k < numberOfRoundsDesired; k++ ) {
 
-    console.log("hello sailor!")
+    // console.log("hello sailor!")
 
 
   }
