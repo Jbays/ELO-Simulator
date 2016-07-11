@@ -9,7 +9,7 @@ var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory  = 0
 var secondCompetitorsProbabilityOfVictory = 0
-var competitorsSquared = 4
+var competitorsSquared = 16
 
 //k is the maximal number of points a player can win/lose in a given match
 var k = 8
@@ -28,8 +28,6 @@ var bullPenGenerator = function(integer) {
   }
   competitorAssembler(squaredNumber)
 }
-
-
 
 /**
  * @name - competitionMatPopulator
@@ -239,32 +237,36 @@ var ratingsAdjuster = function() {
  * @param - theCompetitionMat
  **/
 var competitionMatDepopulator = function(array){
-  // console.log("this should be the competitionFloor!:",array)
-
   if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
-
-    // console.log("the first competitor lost!")
     winnersBracket.push(array.pop())
     losersBracket.push(array.pop())
-    // console.log("winnersBracket:",winnersBracket)
-    // console.log("losersBracket:",losersBracket)
-
   } else {
-
-    // console.log("the second person lost!")
     losersBracket.push(array.pop())
     winnersBracket.push(array.pop())
-
-    // console.log("losersBracket:",losersBracket)
-    // console.log("winnersBracket:",winnersBracket)
-
-    // console.log("array after populating losers and winners brackets:",array)
-    // console.log("arrayOfCompetitors:",arrayOfCompetitors)
-
   }
 }
 
+var makeNewBullPen = function(winnersBracket, losersBracket){
+  bullPen = winnersBracket
+  var winnersLength = winnersBracket.length
+  for ( let i = 0; i < winnersLength; i++ ) {
+    bullPen.push(losersBracket[i])
+  }
+  bullPen = _.shuffle(bullPen)
 
+}
+
+var makeAllCompetitorsCompete = function(array){
+  var numberOfMatches = array.length/2
+  for ( let i = 0; i < numberOfMatches; i++ ) {
+    competitionMatPopulator(bullPen)
+    variableAssigner(theCompetitionMat)
+    probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
+    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
+    ratingsAdjuster()
+    competitionMatDepopulator(theCompetitionMat)
+  }
+}
 
 var firstCompetitor        = null
 var secondCompetitor       = null
@@ -281,46 +283,21 @@ var swissTournament = function(numberOfRoundsDesired){
 
   bullPenGenerator(competitorsSquared)
 
-  var numberOfMatches = bullPen.length/2
+  for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
 
-  var makeCompetitorsFightOnce = function(integer){
-
-    for ( var k = 1; k <= integer ; k++ ) {
-
-      competitionMatPopulator(bullPen)
-      variableAssigner(theCompetitionMat)
-      probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
-      referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-      ratingsAdjuster()
-      competitionMatDepopulator(theCompetitionMat)
-
-    }
+    makeAllCompetitorsCompete(bullPen)
+    makeNewBullPen(winnersBracket,losersBracket)
+    winnersBracket = []
+    losersBracket  = []
 
   }
 
-  makeCompetitorsFightOnce(numberOfMatches)
 
-  var repopulateBullPen = function(arrayOfWinners,arrayOfLosers){
-
-    console.log("arrayOfWinners:",arrayOfWinners)
-    console.log("arrayOfLosers:",arrayOfLosers)
-
-
-  }
-
-  repopulateBullPen(winnersBracket,losersBracket)
-
-  console.log("winnersBracket:",winnersBracket)
-  console.log("losersBracket:",losersBracket)
-
-
-  if ( bullPen.length === 0 ) {
-
-
-
-
-  }
+  console.log("from swissTournament --> bullPen:",bullPen)
+  console.log("from swissTournament --> theCompetitionMat:",theCompetitionMat)
+  console.log("from swissTournament --> winnersBracket:",winnersBracket)
+  console.log("from swissTournament --> losersBracket:",losersBracket)
 
 }
 
-swissTournament(2)
+swissTournament(8)
