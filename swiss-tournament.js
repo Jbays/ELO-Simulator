@@ -21,7 +21,8 @@ var bullPenGenerator = function(integer) {
     console.log("Number of Competitors In Your Tournament:",squaredNumber)
     for (var j = 1; j <= squaredNumber; j++) {
       let yourNumber = j.toString()
-      let competitorBlueprint = '{"c' + yourNumber +'":{"rating":1600,"wins":0,"losses":0}}'
+      let competitorBlueprint = '{"c' + yourNumber
+                                      + '":{"rating":1600,"wins":0,"losses":0,"record":"","opponents":""}}'
 
       bullPen.push(JSON.parse(competitorBlueprint))
     }
@@ -55,10 +56,10 @@ var variableAssigner = function(array){
   nameOfSecondCompetitor = Object.keys(secondCompetitor)[0]
   firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
   secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
-  recordWinsForFirstCompetitor    = firstCompetitor[nameOfFirstCompetitor]['wins']
-  recordLossesForFirstCompetitor  = firstCompetitor[nameOfFirstCompetitor]['losses']
-  recordWinsForSecondCompetitor   = secondCompetitor[nameOfSecondCompetitor]['wins']
-  recordLossesForSecondCompetitor = secondCompetitor[nameOfSecondCompetitor]['losses']
+  firstCompetitorWins    = firstCompetitor[nameOfFirstCompetitor]['wins']
+  firstCompetitorLosses  = firstCompetitor[nameOfFirstCompetitor]['losses']
+  secondCompetitorWins   = secondCompetitor[nameOfSecondCompetitor]['wins']
+  secondCompetitorLosses = secondCompetitor[nameOfSecondCompetitor]['losses']
 }
 
 /**
@@ -85,7 +86,7 @@ var referee = function(array,probability){
   var randomNumber = Math.random()
 
   if ( probability > randomNumber ) {
-    if ( recordWinsForFirstCompetitor === 0 ) {
+    if ( firstCompetitorWins === 0 ) {
       firstCompetitor[nameOfFirstCompetitor]['wins']++
       secondCompetitor[nameOfSecondCompetitor]['losses']++
     } else {
@@ -93,7 +94,7 @@ var referee = function(array,probability){
       secondCompetitor[nameOfSecondCompetitor]['losses']++
     }
   } else {
-    if ( recordWinsForSecondCompetitor === 0 ) {
+    if ( secondCompetitorWins === 0 ) {
       firstCompetitor[nameOfFirstCompetitor]['losses']++
       secondCompetitor[nameOfSecondCompetitor]['wins']++
     } else {
@@ -117,6 +118,8 @@ var ratingsAdjuster = function() {
 
   firstCompetitor[nameOfFirstCompetitor]['rating']   = newRatingForFirst
   secondCompetitor[nameOfSecondCompetitor]['rating'] = newRatingForSecond
+
+
 
   //TODO: this needs to be refactored to handle two newRatings simultaneously
   // if (newRating === competitorRating && competitorRating < rawNewRating ) {
@@ -179,10 +182,10 @@ var nameOfFirstCompetitor  = null
 var nameOfSecondCompetitor = null
 var firstCompetitorRating  = null
 var secondCompetitorRating = null
-var recordWinsForFirstCompetitor    = 0
-var recordWinsForSecondCompetitor   = 0
-var recordLossesForFirstCompetitor  = 0
-var recordLossesForSecondCompetitor = 0
+var firstCompetitorWins    = 0
+var secondCompetitorWins   = 0
+var firstCompetitorLosses  = 0
+var secondCompetitorLosses = 0
 
 var swissTournament = function(numberOfRoundsDesired){
 
