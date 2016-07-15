@@ -105,6 +105,15 @@ var referee = function(array,probability){
   if ( probability > randomNumber ) {
     firstCompetitor[firstCompetitorName]['wins']++
     firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w"
+    firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitorRating.toString()
+                                                      + "-" + secondCompetitorName
+                                                      + "-" + secondCompetitorRating.toString()
+
+    console.log("firstCompetitorRating:",firstCompetitorRating)
+    console.log("typeof firstCompetitorRating:",typeof firstCompetitorRating)
+
+    console.log("secondCompetitorName:",secondCompetitorName)
+    console.log("secondCompetitorRating:",secondCompetitorRating)
 
     secondCompetitor[secondCompetitorName]['losses']++
     secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l"
