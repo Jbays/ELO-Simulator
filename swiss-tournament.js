@@ -7,13 +7,27 @@ var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
-var firstCompetitorsProbabilityOfVictory  = 0
-var secondCompetitorsProbabilityOfVictory = 0
 var competitorsSquared = 4
 
 //k is the maximal number of points a player can win/lose in a given match
 var k = 8
 var n = 1
+
+var firstCompetitor       = null
+var firstCompetitorName   = null
+var firstCompetitorRating = null
+var firstCompetitorWins   = 0
+var firstCompetitorLosses = 0
+var firstCompetitorsProbabilityOfVictory  = 0
+var firstCompetitorRecord = null
+
+var secondCompetitor       = null
+var secondCompetitorName   = null
+var secondCompetitorRating = null
+var secondCompetitorWins   = 0
+var secondCompetitorLosses = 0
+var secondCompetitorsProbabilityOfVictory = 0
+var secondCompetitorRecord = null
 
 var bullPenGenerator = function(integer) {
   var squaredNumber = integer * integer
@@ -52,14 +66,21 @@ var competitionMatPopulator = function(array){
 var variableAssigner = function(array){
   firstCompetitor  = array[0]
   secondCompetitor = array[1]
-  nameOfFirstCompetitor  = Object.keys(firstCompetitor)[0]
-  nameOfSecondCompetitor = Object.keys(secondCompetitor)[0]
-  firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
-  secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
-  firstCompetitorWins    = firstCompetitor[nameOfFirstCompetitor]['wins']
-  firstCompetitorLosses  = firstCompetitor[nameOfFirstCompetitor]['losses']
-  secondCompetitorWins   = secondCompetitor[nameOfSecondCompetitor]['wins']
-  secondCompetitorLosses = secondCompetitor[nameOfSecondCompetitor]['losses']
+  firstCompetitorName  = Object.keys(firstCompetitor)[0]
+  secondCompetitorName = Object.keys(secondCompetitor)[0]
+  firstCompetitorRating  = firstCompetitor[firstCompetitorName]['rating']
+  secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating']
+  firstCompetitorWins    = firstCompetitor[firstCompetitorName]['wins']
+  firstCompetitorLosses  = firstCompetitor[firstCompetitorName]['losses']
+  firstCompetitorRecord  = firstCompetitor[firstCompetitorName]['record']
+
+  secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins']
+  secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses']
+  secondCompetitorRecord  = secondCompetitor[secondCompetitorName]['record']
+
+
+  console.log("firstCompetitorRecord:",firstCompetitorRecord)
+  console.log("secondCompetitorRecord:",secondCompetitorRecord)
 }
 
 /**
@@ -87,19 +108,19 @@ var referee = function(array,probability){
 
   if ( probability > randomNumber ) {
     if ( firstCompetitorWins === 0 ) {
-      firstCompetitor[nameOfFirstCompetitor]['wins']++
-      secondCompetitor[nameOfSecondCompetitor]['losses']++
+      firstCompetitor[firstCompetitorName]['wins']++
+      secondCompetitor[secondCompetitorName]['losses']++
     } else {
-      firstCompetitor[nameOfFirstCompetitor]['wins']++
-      secondCompetitor[nameOfSecondCompetitor]['losses']++
+      firstCompetitor[firstCompetitorName]['wins']++
+      secondCompetitor[secondCompetitorName]['losses']++
     }
   } else {
     if ( secondCompetitorWins === 0 ) {
-      firstCompetitor[nameOfFirstCompetitor]['losses']++
-      secondCompetitor[nameOfSecondCompetitor]['wins']++
+      firstCompetitor[firstCompetitorName]['losses']++
+      secondCompetitor[secondCompetitorName]['wins']++
     } else {
-      firstCompetitor[nameOfFirstCompetitor]['losses']++
-      secondCompetitor[nameOfSecondCompetitor]['wins']++
+      firstCompetitor[firstCompetitorName]['losses']++
+      secondCompetitor[secondCompetitorName]['wins']++
     }
   }
 }
@@ -111,15 +132,13 @@ var referee = function(array,probability){
  *                Rounds raw rating, then assigns new rating to competitor
  **/
 var ratingsAdjuster = function() {
-  var rawNewRatingForFirst = firstCompetitorRating + k*(firstCompetitor[nameOfFirstCompetitor]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
-  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[nameOfSecondCompetitor]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
+  var rawNewRatingForFirst = firstCompetitorRating + k*(firstCompetitor[firstCompetitorName]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
+  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[secondCompetitorName]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
   var newRatingForFirst = Math.round(rawNewRatingForFirst)
   var newRatingForSecond = Math.round(rawNewRatingForSecond)
 
-  firstCompetitor[nameOfFirstCompetitor]['rating']   = newRatingForFirst
-  secondCompetitor[nameOfSecondCompetitor]['rating'] = newRatingForSecond
-
-
+  firstCompetitor[firstCompetitorName]['rating']   = newRatingForFirst
+  secondCompetitor[secondCompetitorName]['rating'] = newRatingForSecond
 
   //TODO: this needs to be refactored to handle two newRatings simultaneously
   // if (newRating === competitorRating && competitorRating < rawNewRating ) {
@@ -146,7 +165,7 @@ var ratingsAdjuster = function() {
  * @param - theCompetitionMat
  **/
 var competitionMatDepopulator = function(array){
-  if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
+  if ( firstCompetitor[firstCompetitorName]['losses'] ) {
     winnersBracket.push(array.pop())
     losersBracket.push(array.pop())
   } else {
@@ -175,17 +194,6 @@ var makeAllCompetitorsCompete = function(array){
     competitionMatDepopulator(theCompetitionMat)
   }
 }
-
-var firstCompetitor        = null
-var secondCompetitor       = null
-var nameOfFirstCompetitor  = null
-var nameOfSecondCompetitor = null
-var firstCompetitorRating  = null
-var secondCompetitorRating = null
-var firstCompetitorWins    = 0
-var secondCompetitorWins   = 0
-var firstCompetitorLosses  = 0
-var secondCompetitorLosses = 0
 
 var swissTournament = function(numberOfRoundsDesired){
 
