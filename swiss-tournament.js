@@ -64,23 +64,19 @@ var competitionMatPopulator = function(array){
  * @param - theCompetitionMats
  **/
 var variableAssigner = function(array){
-  firstCompetitor  = array[0]
-  secondCompetitor = array[1]
-  firstCompetitorName  = Object.keys(firstCompetitor)[0]
-  secondCompetitorName = Object.keys(secondCompetitor)[0]
-  firstCompetitorRating  = firstCompetitor[firstCompetitorName]['rating']
-  secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating']
-  firstCompetitorWins    = firstCompetitor[firstCompetitorName]['wins']
-  firstCompetitorLosses  = firstCompetitor[firstCompetitorName]['losses']
-  firstCompetitorRecord  = firstCompetitor[firstCompetitorName]['record']
+  firstCompetitor       = array[0]
+  firstCompetitorName   = Object.keys(firstCompetitor)[0]
+  firstCompetitorRating = firstCompetitor[firstCompetitorName]['rating']
+  firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins']
+  firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses']
+  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record']
 
+  secondCompetitor       = array[1]
+  secondCompetitorName   = Object.keys(secondCompetitor)[0]
+  secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating']
   secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins']
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses']
-  secondCompetitorRecord  = secondCompetitor[secondCompetitorName]['record']
-
-
-  console.log("firstCompetitorRecord:",firstCompetitorRecord)
-  console.log("secondCompetitorRecord:",secondCompetitorRecord)
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record']
 }
 
 /**
@@ -107,21 +103,17 @@ var referee = function(array,probability){
   var randomNumber = Math.random()
 
   if ( probability > randomNumber ) {
-    if ( firstCompetitorWins === 0 ) {
-      firstCompetitor[firstCompetitorName]['wins']++
-      secondCompetitor[secondCompetitorName]['losses']++
-    } else {
-      firstCompetitor[firstCompetitorName]['wins']++
-      secondCompetitor[secondCompetitorName]['losses']++
-    }
+    firstCompetitor[firstCompetitorName]['wins']++
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w"
+
+    secondCompetitor[secondCompetitorName]['losses']++
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l"
   } else {
-    if ( secondCompetitorWins === 0 ) {
-      firstCompetitor[firstCompetitorName]['losses']++
-      secondCompetitor[secondCompetitorName]['wins']++
-    } else {
-      firstCompetitor[firstCompetitorName]['losses']++
-      secondCompetitor[secondCompetitorName]['wins']++
-    }
+    firstCompetitor[firstCompetitorName]['losses']++
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "l"
+
+    secondCompetitor[secondCompetitorName]['wins']++
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w"
   }
 }
 
@@ -132,13 +124,18 @@ var referee = function(array,probability){
  *                Rounds raw rating, then assigns new rating to competitor
  **/
 var ratingsAdjuster = function() {
-  var rawNewRatingForFirst = firstCompetitorRating + k*(firstCompetitor[firstCompetitorName]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
+  var rawNewRatingForFirst  = firstCompetitorRating + k*(firstCompetitor[firstCompetitorName]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
   var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[secondCompetitorName]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
-  var newRatingForFirst = Math.round(rawNewRatingForFirst)
+  var newRatingForFirst  = Math.round(rawNewRatingForFirst)
   var newRatingForSecond = Math.round(rawNewRatingForSecond)
 
   firstCompetitor[firstCompetitorName]['rating']   = newRatingForFirst
   secondCompetitor[secondCompetitorName]['rating'] = newRatingForSecond
+
+
+  // console.log("firstCompetitor:",firstCompetitor)
+  // console.log("secondCompetitor:",secondCompetitor)
+
 
   //TODO: this needs to be refactored to handle two newRatings simultaneously
   // if (newRating === competitorRating && competitorRating < rawNewRating ) {
@@ -209,4 +206,4 @@ var swissTournament = function(numberOfRoundsDesired){
   console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(2)
+swissTournament(4)
