@@ -102,14 +102,18 @@ var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRatin
 var referee = function(array,probability){
   var randomNumber = Math.random()
 
-  firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitor[firstCompetitorName]['opponents']
-                                                    + firstCompetitorRating.toString()
-                                                    + "-" + secondCompetitorName
-                                                    + "-" + secondCompetitorRating.toString() + "***"
-  secondCompetitor[secondCompetitorName]['opponents'] = secondCompetitor[secondCompetitorName]['opponents']
-                                                      + secondCompetitorRating.toString()
-                                                      + "-" + firstCompetitorName
-                                                      + "-" + firstCompetitorRating.toString() + "***"
+  var recordKeeper = function(){
+    firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitor[firstCompetitorName]['opponents']
+      + firstCompetitorRating.toString()
+      + "-" + secondCompetitorName
+      + "-" + secondCompetitorRating.toString() + "***"
+    secondCompetitor[secondCompetitorName]['opponents'] = secondCompetitor[secondCompetitorName]['opponents']
+      + secondCompetitorRating.toString()
+      + "-" + firstCompetitorName
+      + "-" + firstCompetitorRating.toString() + "***"
+  }
+
+  recordKeeper()
 
   if ( probability > randomNumber ) {
     firstCompetitor[firstCompetitorName]['wins']++
@@ -132,7 +136,28 @@ var referee = function(array,probability){
  *                the results of their match has been tabulated.
  *                Rounds raw rating, then assigns new rating to competitor
  **/
-var ratingsAdjuster = function() {
+var ratingsAdjuster = function(array) {
+
+  var ifFirstCompetitorWins = null
+  var ifFirstCompetitorLoses = null
+  var ifSecondCompetitorWins = null
+  var ifSecondCompetitorLoses = null
+
+  var calculateTheRatingsAtStake = function(){
+
+    console.log("calculateTheRatingsAtStake invoked!")
+
+  }
+
+  calculateTheRatingsAtStake()
+
+  console.log("TheCompetitionMats:",array)
+  // console.log("TheCompetitionMats[0]:",array[0])
+  //console.log("TheCompetitionMats[1]:",array[1])
+
+
+
+
   var rawNewRatingForFirst  = firstCompetitorRating + k*(firstCompetitor[firstCompetitorName]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
   var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[secondCompetitorName]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
   var newRatingForFirst  = Math.round(rawNewRatingForFirst)
@@ -141,9 +166,14 @@ var ratingsAdjuster = function() {
   firstCompetitor[firstCompetitorName]['rating']   = newRatingForFirst
   secondCompetitor[secondCompetitorName]['rating'] = newRatingForSecond
 
-
   // console.log("firstCompetitor:",firstCompetitor)
   // console.log("secondCompetitor:",secondCompetitor)
+  // console.log("rawNewRatingForFirst:",rawNewRatingForFirst)
+  // console.log("rawNewRatingForSecond:",rawNewRatingForSecond)
+  // console.log("newRatingForFirst:",newRatingForFirst)
+  // console.log("newRatingForSecond:",newRatingForSecond)
+
+  debugger;
 
 
   //TODO: this needs to be refactored to handle two newRatings simultaneously
@@ -196,7 +226,7 @@ var makeAllCompetitorsCompete = function(array){
     variableAssigner(theCompetitionMat)
     probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-    ratingsAdjuster()
+    ratingsAdjuster(theCompetitionMat)
     competitionMatDepopulator(theCompetitionMat)
   }
 }
@@ -212,7 +242,7 @@ var swissTournament = function(numberOfRoundsDesired){
     losersBracket  = []
   }
 
-  console.log("from swissTournament --> bullPen:",bullPen)
+  // console.log("from swissTournament --> bullPen:",bullPen)
 }
 
 swissTournament(2)
