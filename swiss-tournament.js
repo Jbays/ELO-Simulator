@@ -143,24 +143,37 @@ var ratingsAdjuster = function(array) {
   var ifSecondCompetitorWins = null
   var ifSecondCompetitorLoses = null
 
-  var calculateTheRatingsAtStake = function(){
+  var calculateTheRatingsAtStake = function(array){
+
+    //first, figure out the ratings at stake for each competitor
+    //then, check who won or lost the match
+    // --> Will 'check who won or lost' by looking at the very last character in competitor's record
+    //then, adjust ratings accordingly
+
+    console.log("firstCompetitorsRecord:",firstCompetitorRecord)
+    console.log("secondCompetitorsRecord:",secondCompetitorRecord)
 
     console.log("calculateTheRatingsAtStake invoked!")
 
+    console.log("array[0][firstCompetitorName]['record']:",array[0][firstCompetitorName]['record'])
+    console.log("array[0][firstCompetitorName]['record'].length:",array[0][firstCompetitorName]['record'].length)
+
+
+    //here I'm checking the last very last character in competitor's record (either w or l)
+    console.log(array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1))
+
   }
 
-  calculateTheRatingsAtStake()
+  calculateTheRatingsAtStake(theCompetitionMat)
 
-  console.log("TheCompetitionMats:",array)
+  // console.log("TheCompetitionMats:",array)
   // console.log("TheCompetitionMats[0]:",array[0])
   //console.log("TheCompetitionMats[1]:",array[1])
 
-
-
-
   var rawNewRatingForFirst  = firstCompetitorRating + k*(firstCompetitor[firstCompetitorName]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
-  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[secondCompetitorName]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
   var newRatingForFirst  = Math.round(rawNewRatingForFirst)
+
+  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[secondCompetitorName]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
   var newRatingForSecond = Math.round(rawNewRatingForSecond)
 
   firstCompetitor[firstCompetitorName]['rating']   = newRatingForFirst
@@ -172,9 +185,6 @@ var ratingsAdjuster = function(array) {
   // console.log("rawNewRatingForSecond:",rawNewRatingForSecond)
   // console.log("newRatingForFirst:",newRatingForFirst)
   // console.log("newRatingForSecond:",newRatingForSecond)
-
-  debugger;
-
 
   //TODO: this needs to be refactored to handle two newRatings simultaneously
   // if (newRating === competitorRating && competitorRating < rawNewRating ) {
@@ -242,7 +252,7 @@ var swissTournament = function(numberOfRoundsDesired){
     losersBracket  = []
   }
 
-  // console.log("from swissTournament --> bullPen:",bullPen)
+  console.log("from swissTournament --> bullPen:",bullPen)
 }
 
 swissTournament(2)
