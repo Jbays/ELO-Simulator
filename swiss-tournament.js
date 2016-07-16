@@ -7,10 +7,10 @@ var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
-var competitorsSquared = 4
+var competitorsSquared = 2
 
 //k is the maximal number of points a player can win/lose in a given match
-var k = 8
+var k = 10
 var n = 1
 
 var firstCompetitor       = null
@@ -102,18 +102,18 @@ var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRatin
 var referee = function(array,probability){
   var randomNumber = Math.random()
 
+  firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitor[firstCompetitorName]['opponents']
+                                                    + firstCompetitorRating.toString()
+                                                    + "-" + secondCompetitorName
+                                                    + "-" + secondCompetitorRating.toString() + "***"
+  secondCompetitor[secondCompetitorName]['opponents'] = secondCompetitor[secondCompetitorName]['opponents']
+                                                      + secondCompetitorRating.toString()
+                                                      + "-" + firstCompetitorName
+                                                      + "-" + firstCompetitorRating.toString() + "***"
+
   if ( probability > randomNumber ) {
     firstCompetitor[firstCompetitorName]['wins']++
     firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w"
-    firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitorRating.toString()
-                                                      + "-" + secondCompetitorName
-                                                      + "-" + secondCompetitorRating.toString()
-
-    console.log("firstCompetitorRating:",firstCompetitorRating)
-    console.log("typeof firstCompetitorRating:",typeof firstCompetitorRating)
-
-    console.log("secondCompetitorName:",secondCompetitorName)
-    console.log("secondCompetitorRating:",secondCompetitorRating)
 
     secondCompetitor[secondCompetitorName]['losses']++
     secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l"
@@ -215,4 +215,4 @@ var swissTournament = function(numberOfRoundsDesired){
   console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(4)
+swissTournament(2)
