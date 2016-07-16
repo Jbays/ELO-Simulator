@@ -138,30 +138,54 @@ var referee = function(array,probability){
  **/
 var ratingsAdjuster = function(array) {
 
-  var ifFirstCompetitorWins = null
+  var ifFirstCompetitorWins  = null
   var ifFirstCompetitorLoses = null
-  var ifSecondCompetitorWins = null
+  var firstCompetitorOutcome = null
+
+  var ifSecondCompetitorWins  = null
   var ifSecondCompetitorLoses = null
+  var secondCompetitorOutcome = null
 
   var calculateTheRatingsAtStake = function(array){
+
+    var firstCompetitorLastMatchResult  = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
+    // var secondCompetitorLastMatchResult = array[1][secondCompetitorName]['record'].slice(array[1][secondCompetitorName]['record'].length-1)
+
+    if ( firstCompetitorLastMatchResult === 'w' ) {
+      firstCompetitorOutcome  = 1
+      secondCompetitorOutcome = 0
+    } else {
+      firstCompetitorOutcome  = 0
+      secondCompetitorOutcome = 1
+    }
+
+    console.log("firstCompetitorOutcome:",firstCompetitorOutcome)
+    console.log("secondCompetitorOutcome:",secondCompetitorOutcome)
+
+    ifFirstCompetitorWins  = k*(1 - firstCompetitorsProbabilityOfVictory)
+    ifFirstCompetitorLoses = k*(-firstCompetitorsProbabilityOfVictory)
+
+    ifSecondCompetitorWins = k*(1 - secondCompetitorsProbabilityOfVictory)
+    ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
+
+    console.log("first Competitor's Rating:",array[0][firstCompetitorName]['rating'])
+    console.log("second Competitor's Rating:",array[1][secondCompetitorName]['rating'])
+
+    console.log("ifFirstCompetitorWins:",ifFirstCompetitorWins)
+    console.log("ifFirstCompetitorLoses:",ifFirstCompetitorLoses)
+
+    console.log("ifSecondCompetitorWins:",ifSecondCompetitorWins)
+    console.log("ifSecondCompetitorLoses:",ifSecondCompetitorLoses)
+
+    // console.log("firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
+    // console.log("secondCompetitorsProbabilityOfVictory:",secondCompetitorsProbabilityOfVictory)
 
     //first, figure out the ratings at stake for each competitor
     //then, check who won or lost the match
     // --> Will 'check who won or lost' by looking at the very last character in competitor's record
     //then, adjust ratings accordingly
 
-    console.log("firstCompetitorsRecord:",firstCompetitorRecord)
-    console.log("secondCompetitorsRecord:",secondCompetitorRecord)
-
-    console.log("calculateTheRatingsAtStake invoked!")
-
-    console.log("array[0][firstCompetitorName]['record']:",array[0][firstCompetitorName]['record'])
-    console.log("array[0][firstCompetitorName]['record'].length:",array[0][firstCompetitorName]['record'].length)
-
-
     //here I'm checking the last very last character in competitor's record (either w or l)
-    console.log(array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1))
-
   }
 
   calculateTheRatingsAtStake(theCompetitionMat)
