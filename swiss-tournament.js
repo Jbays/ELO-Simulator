@@ -215,9 +215,17 @@ var competitionMatDepopulator = function(array){
   }
 }
 
-var makeNewBullPen = function(winnersBracket, losersBracket){
+/**
+ * @name - newBullPenConstructor
+ * @description - Sets empty bullPen equal to winnersBracket
+ *                Then adds losersBracket to new bullPen
+ *                Then shuffles bullPen
+ * @param - winnersBracket
+ * @param - losersBracket
+ **/
+var newBullPenConstructor = function(winnersBracket, losersBracket){
   bullPen = winnersBracket
-  var winnersLength = winnersBracket.length
+  let winnersLength = winnersBracket.length
   for ( let i = 0; i < winnersLength; i++ ) {
     bullPen.push(losersBracket[i])
   }
@@ -240,7 +248,7 @@ var swissTournament = function(numberOfRoundsDesired){
   bullPenGenerator(competitorsSquared)
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
     makeAllCompetitorsCompete(bullPen)
-    makeNewBullPen(winnersBracket,losersBracket)
+    newBullPenConstructor(winnersBracket,losersBracket)
     winnersBracket = []
     losersBracket  = []
   }
