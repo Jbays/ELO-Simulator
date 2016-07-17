@@ -11,7 +11,6 @@ var competitorsSquared = 32
 
 //k is the maximal number of points a player can win/lose in a given match
 var k = 10
-var n = 1
 
 var firstCompetitor       = null
 var firstCompetitorName   = null
@@ -20,6 +19,8 @@ var firstCompetitorWins   = 0
 var firstCompetitorLosses = 0
 var firstCompetitorsProbabilityOfVictory  = 0
 var firstCompetitorRecord = null
+var ifFirstCompetitorWins  = null
+var ifFirstCompetitorLoses = null
 
 var secondCompetitor       = null
 var secondCompetitorName   = null
@@ -28,15 +29,18 @@ var secondCompetitorWins   = 0
 var secondCompetitorLosses = 0
 var secondCompetitorsProbabilityOfVictory = 0
 var secondCompetitorRecord = null
+var ifSecondCompetitorWins  = null
+var ifSecondCompetitorLoses = null
+
 
 var bullPenGenerator = function(integer) {
-  var squaredNumber = integer * integer
+  let squaredNumber = integer * integer
   var competitorAssembler = function (squaredNumber) {
     console.log("Number of Competitors In Your Tournament:",squaredNumber)
     for (var j = 1; j <= squaredNumber; j++) {
       let yourNumber = j.toString()
       let competitorBlueprint = '{"c' + yourNumber
-                                      + '":{"rating":1600,"wins":0,"losses":0,"record":"","opponents":""}}'
+                              + '":{"rating":1600,"wins":0,"losses":0,"record":"","opponents":""}}'
 
       bullPen.push(JSON.parse(competitorBlueprint))
     }
@@ -92,6 +96,18 @@ var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRatin
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
 }
 
+var recordKeeper = function(){
+  firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitor[firstCompetitorName]['opponents']
+    + firstCompetitorRating.toString()
+    + "-" + secondCompetitorName
+    + "-" + secondCompetitorRating.toString() + "***"
+  secondCompetitor[secondCompetitorName]['opponents'] = secondCompetitor[secondCompetitorName]['opponents']
+    + secondCompetitorRating.toString()
+    + "-" + firstCompetitorName
+    + "-" + firstCompetitorRating.toString() + "***"
+}
+
+
 /**
  * @name - referee
  * @description - Pulls a random draw (between 0-1) and assigns a victory based
@@ -100,19 +116,7 @@ var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRatin
  * @param - firstCompetitorsProbabilityOfVictory
  **/
 var referee = function(array,probability){
-  var randomNumber = Math.random()
-
-  var recordKeeper = function(){
-    firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitor[firstCompetitorName]['opponents']
-      + firstCompetitorRating.toString()
-      + "-" + secondCompetitorName
-      + "-" + secondCompetitorRating.toString() + "***"
-    secondCompetitor[secondCompetitorName]['opponents'] = secondCompetitor[secondCompetitorName]['opponents']
-      + secondCompetitorRating.toString()
-      + "-" + firstCompetitorName
-      + "-" + firstCompetitorRating.toString() + "***"
-  }
-
+  let randomNumber = Math.random()
   recordKeeper()
 
   if ( probability > randomNumber ) {
@@ -130,6 +134,13 @@ var referee = function(array,probability){
   }
 }
 
+var calculateTheRatingsAtStake = function(){
+  ifFirstCompetitorWins  = k*(1 - firstCompetitorsProbabilityOfVictory)
+  ifFirstCompetitorLoses = k*(-firstCompetitorsProbabilityOfVictory)
+  ifSecondCompetitorWins = k*(1 - secondCompetitorsProbabilityOfVictory)
+  ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
+}
+
 /**
  * @name - ratingsAdjuster
  * @description - Calculates the raw new ratings for the competitors after
@@ -137,26 +148,7 @@ var referee = function(array,probability){
  *                Rounds raw rating, then assigns new rating to competitor
  **/
 var ratingsAdjuster = function(array) {
-
-  var ifFirstCompetitorWins  = null
-  var ifFirstCompetitorLoses = null
-  var firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
-
-  var ifSecondCompetitorWins  = null
-  var ifSecondCompetitorLoses = null
-  var secondCompetitorLastMatchResult = array[1][secondCompetitorName]['record'].slice(array[1][secondCompetitorName]['record'].length-1)
-
-
-  var calculateTheRatingsAtStake = function(array){
-
-    ifFirstCompetitorWins  = k*(1 - firstCompetitorsProbabilityOfVictory)
-    ifFirstCompetitorLoses = k*(-firstCompetitorsProbabilityOfVictory)
-
-    ifSecondCompetitorWins = k*(1 - secondCompetitorsProbabilityOfVictory)
-    ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
-
-  }
-
+  let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
   calculateTheRatingsAtStake(theCompetitionMat)
 
   if ( firstCompetitorLastMatchResult === 'w' ) {
@@ -208,16 +200,13 @@ var makeAllCompetitorsCompete = function(array){
 }
 
 var swissTournament = function(numberOfRoundsDesired){
-
   bullPenGenerator(competitorsSquared)
-
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
     makeAllCompetitorsCompete(bullPen)
     makeNewBullPen(winnersBracket,losersBracket)
     winnersBracket = []
     losersBracket  = []
   }
-
   console.log("from swissTournament --> bullPen:",bullPen)
 }
 
