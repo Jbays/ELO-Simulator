@@ -32,13 +32,22 @@ var secondCompetitorRecord = null
 var ifSecondCompetitorWins  = null
 var ifSecondCompetitorLoses = null
 
-
+/**
+ * @name - bullPenGenerator
+ * @description - Takes an integer as input
+ *                Generates (integer^2) competitors from competitorBlueprint
+ *                Where competitorBlueprint === "{cXXX:{
+ *                                                      'rating':1600,'wins':0,'losses':0,'record':'','opponents':''}
+ *                                                     }
+ *                And puts all generated competitors into bullPen array
+ * @param - integer
+ **/
 var bullPenGenerator = function(integer) {
   let squaredNumber = integer * integer
   var competitorAssembler = function (squaredNumber) {
     console.log("Number of Competitors In Your Tournament:",squaredNumber)
-    for (var j = 1; j <= squaredNumber; j++) {
-      let yourNumber = j.toString()
+    for (let i = 1; i <= squaredNumber; i++) {
+      let yourNumber = i.toString()
       let competitorBlueprint = '{"c' + yourNumber
                               + '":{"rating":1600,"wins":0,"losses":0,"record":"","opponents":""}}'
 
@@ -54,7 +63,6 @@ var bullPenGenerator = function(integer) {
  *                Removes first and second competitors from bullPen
  *                And places them inside theCompetitionMat
  * @param - bullPen
- *
  **/
 var competitionMatPopulator = function(array){
   theCompetitionMat.push(array.shift())
