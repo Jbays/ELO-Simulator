@@ -140,27 +140,16 @@ var ratingsAdjuster = function(array) {
 
   var ifFirstCompetitorWins  = null
   var ifFirstCompetitorLoses = null
-  var firstCompetitorOutcome = null
+  var firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
 
   var ifSecondCompetitorWins  = null
   var ifSecondCompetitorLoses = null
-  var secondCompetitorOutcome = null
+  var secondCompetitorLastMatchResult = array[1][secondCompetitorName]['record'].slice(array[1][secondCompetitorName]['record'].length-1)
+
+  // console.log("firstCompetitorLastMatchResults:",firstCompetitorLastMatchResult)
+  // console.log("secondCompetitorLastMatchResult:",secondCompetitorLastMatchResult)
 
   var calculateTheRatingsAtStake = function(array){
-
-    var firstCompetitorLastMatchResult  = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
-    // var secondCompetitorLastMatchResult = array[1][secondCompetitorName]['record'].slice(array[1][secondCompetitorName]['record'].length-1)
-
-    if ( firstCompetitorLastMatchResult === 'w' ) {
-      firstCompetitorOutcome  = 1
-      secondCompetitorOutcome = 0
-    } else {
-      firstCompetitorOutcome  = 0
-      secondCompetitorOutcome = 1
-    }
-
-    console.log("firstCompetitorOutcome:",firstCompetitorOutcome)
-    console.log("secondCompetitorOutcome:",secondCompetitorOutcome)
 
     ifFirstCompetitorWins  = k*(1 - firstCompetitorsProbabilityOfVictory)
     ifFirstCompetitorLoses = k*(-firstCompetitorsProbabilityOfVictory)
@@ -168,14 +157,14 @@ var ratingsAdjuster = function(array) {
     ifSecondCompetitorWins = k*(1 - secondCompetitorsProbabilityOfVictory)
     ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
 
-    console.log("first Competitor's Rating:",array[0][firstCompetitorName]['rating'])
-    console.log("second Competitor's Rating:",array[1][secondCompetitorName]['rating'])
+    // console.log("first Competitor's Rating:",array[0][firstCompetitorName]['rating'])
+    // console.log("second Competitor's Rating:",array[1][secondCompetitorName]['rating'])
 
-    console.log("ifFirstCompetitorWins:",ifFirstCompetitorWins)
-    console.log("ifFirstCompetitorLoses:",ifFirstCompetitorLoses)
+    // console.log("ifFirstCompetitorWins:",ifFirstCompetitorWins)
+    // console.log("ifFirstCompetitorLoses:",ifFirstCompetitorLoses)
 
-    console.log("ifSecondCompetitorWins:",ifSecondCompetitorWins)
-    console.log("ifSecondCompetitorLoses:",ifSecondCompetitorLoses)
+    // console.log("ifSecondCompetitorWins:",ifSecondCompetitorWins)
+    // console.log("ifSecondCompetitorLoses:",ifSecondCompetitorLoses)
 
     // console.log("firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
     // console.log("secondCompetitorsProbabilityOfVictory:",secondCompetitorsProbabilityOfVictory)
@@ -194,14 +183,33 @@ var ratingsAdjuster = function(array) {
   // console.log("TheCompetitionMats[0]:",array[0])
   //console.log("TheCompetitionMats[1]:",array[1])
 
-  var rawNewRatingForFirst  = firstCompetitorRating + k*(firstCompetitor[firstCompetitorName]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
+  var firstCompetitorsNewRating  = null
+  var secondCompetitorsNewRating = null
+
+  if ( firstCompetitorLastMatchResult === 'w' ) {
+
+    console.log("firstCompetitor won!")
+
+    firstCompetitor[firstCompetitorName]['rating']   = firstCompetitorRating + ifFirstCompetitorWins
+    secondCompetitor[secondCompetitorName]['rating'] = secondCompetitorRating + ifSecondCompetitorLoses
+
+  } else {
+
+    console.log("secondCompetitor won!")
+
+    firstCompetitor[firstCompetitorName]['rating'] = firstCompetitorRating + ifFirstCompetitorLoses
+    secondCompetitor[secondCompetitorName]['rating'] = secondCompetitorRating + ifSecondCompetitorWins
+
+  }
+
+  var rawNewRatingForFirst  = firstCompetitorRating
   var newRatingForFirst  = Math.round(rawNewRatingForFirst)
 
   var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[secondCompetitorName]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
   var newRatingForSecond = Math.round(rawNewRatingForSecond)
 
-  firstCompetitor[firstCompetitorName]['rating']   = newRatingForFirst
-  secondCompetitor[secondCompetitorName]['rating'] = newRatingForSecond
+  // firstCompetitor[firstCompetitorName]['rating']   = newRatingForFirst
+  // secondCompetitor[secondCompetitorName]['rating'] = newRatingForSecond
 
   // console.log("firstCompetitor:",firstCompetitor)
   // console.log("secondCompetitor:",secondCompetitor)
