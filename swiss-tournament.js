@@ -37,7 +37,7 @@ var ifSecondCompetitorLoses = null
  * @description - Takes an integer as input
  *                Generates (integer^2) competitors from competitorBlueprint
  *                Where competitorBlueprint === "{cXXX:{
- *                                                      'rating':1600,'wins':0,'losses':0,'record':'','opponents':''}
+ *                                                      'rating':1600,'wins':0,'losses':0,'record':'','matches':''}
  *                                                     }
  *                And puts all generated competitors into bullPen array
  * @param - integer
@@ -49,7 +49,7 @@ var bullPenGenerator = function(integer) {
     for (let i = 1; i <= squaredNumber; i++) {
       let yourNumber = i.toString()
       let competitorBlueprint = '{"c' + yourNumber
-                              + '":{"rating":1600,"wins":0,"losses":0,"record":"","opponents":""}}'
+                              + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":""}}'
 
       bullPen.push(JSON.parse(competitorBlueprint))
     }
@@ -104,15 +104,32 @@ var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRatin
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
 }
 
-var recordKeeper = function(){
-  firstCompetitor[firstCompetitorName]['opponents'] = firstCompetitor[firstCompetitorName]['opponents']
-    + firstCompetitorRating.toString()
-    + "-" + secondCompetitorName
-    + "-" + secondCompetitorRating.toString() + "***"
-  secondCompetitor[secondCompetitorName]['opponents'] = secondCompetitor[secondCompetitorName]['opponents']
-    + secondCompetitorRating.toString()
-    + "-" + firstCompetitorName
-    + "-" + firstCompetitorRating.toString() + "***"
+/**
+ * @name - matchRecorder
+ * @description - To 'matches' key in competitorObject, assigns value -->
+ *                stringified record of match just finished in theCompetitionMats.
+ *                Each match is delimited by '***'
+ *                EX: 'matches': {'1600-c733-1600***1588-c503-1613'}
+ *                  where at time of match: '1600' is competitorObject's rating
+ *                                          'c733' is competitorObject's opponent
+ *                                          '1600' is competitorObject's opponent's rating
+ *                  '***' delimiter
+ *                  Second match:           '1588' is competitorObject's rating
+ *                                          'c503' is competitorObject's opponent
+ *                                          '1613' is competitorObject's opponent's rating
+ * @param - none
+ **/
+
+var matchRecorder = function(){
+  firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
+                                                  + firstCompetitorRating.toString()
+                                                  + "-" + secondCompetitorName
+                                                  + "-" + secondCompetitorRating.toString() + "***"
+
+  secondCompetitor[secondCompetitorName]['matches'] = secondCompetitor[secondCompetitorName]['matches']
+                                                    + secondCompetitorRating.toString()
+                                                    + "-" + firstCompetitorName
+                                                    + "-" + firstCompetitorRating.toString() + "***"
 }
 
 
@@ -125,7 +142,7 @@ var recordKeeper = function(){
  **/
 var referee = function(array,probability){
   let randomNumber = Math.random()
-  recordKeeper()
+  matchRecorder()
 
   if ( probability > randomNumber ) {
     firstCompetitor[firstCompetitorName]['wins']++
