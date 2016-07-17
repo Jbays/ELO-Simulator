@@ -242,6 +242,16 @@ var makeAllCompetitorsCompete = function(array){
   }
 }
 
+/**
+ * @name - swissTournament
+ * @description - Takes as input number of rounds competitors are obliged to compete
+ *                **bullPenGenerator -- Creates competitors; Adds them to bullPen array
+ *                For desired number of rounds, competitors will compete
+ *                  **makeAllCompetitorsCompete -- Forces all competitors to compete once; Empties bullPen array
+ *                  **newBullPenConstructor     -- Repopulates bullPen with winnersBracket and losersBracket
+ *                  Then empties both winnersBracket and losersBracket
+ * @param - Number of Rounds competitors will compete
+ **/
 var swissTournament = function(numberOfRoundsDesired){
   bullPenGenerator(competitorsSquared)
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
