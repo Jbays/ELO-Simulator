@@ -89,6 +89,7 @@ var variableAssigner = function(array){
   firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins']
   firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses']
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record']
+  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
 
   secondCompetitor       = array[1]
   secondCompetitorName   = Object.keys(secondCompetitor)[0]
@@ -96,18 +97,6 @@ var variableAssigner = function(array){
   secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins']
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses']
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record']
-}
-
-/**
- * @name - probabilityCalculator
- * @description - Calculates the likelihood of victory for the competitors
- *                on theCompetitionMats. Calculation based on the players's
- *                respective rating
- * @param - firstCompetitorRating
- * @param - secondCompetitorRating
- **/
-var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRating){
-  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
 }
 
@@ -126,7 +115,6 @@ var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRatin
  *                                          '1613' is competitorObject's opponent's rating
  * @param - none
  **/
-
 var matchRecorder = function(){
   firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
                                                   + firstCompetitorRating.toString()
@@ -232,12 +220,22 @@ var newBullPenConstructor = function(winnersBracket, losersBracket){
   bullPen = _.shuffle(bullPen)
 }
 
+/**
+ * @name - makeAllCompetitorsCompete
+ * @description - Takes as input bullPen array
+ *                Makes all competitorObjects in bullPen compete once
+ *                **competitorMatPopulator     -- Puts two competitorObjects into theCompetitionMats
+ *                **variableAssigner           -- Gives values to all variables required for ELO-calculation
+ *                **referee                    -- Declares winner and loser in theCompetitionMats
+ *                **ratingsAdjuster            -- Adjusts both winner's and loser's rating
+ *                **competitionMatsDepopulator -- Empties theCompetitionMats
+ * @param - bullPen
+ **/
 var makeAllCompetitorsCompete = function(array){
   var numberOfMatches = array.length/2
   for ( let i = 0; i < numberOfMatches; i++ ) {
     competitionMatPopulator(bullPen)
     variableAssigner(theCompetitionMat)
-    probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
     ratingsAdjuster(theCompetitionMat)
     competitionMatDepopulator(theCompetitionMat)
