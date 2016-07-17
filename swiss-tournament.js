@@ -10,7 +10,7 @@ var losersBracket      = []
 var competitorsSquared = 32
 
 //k is the maximal number of points a player can win/lose in a given match
-var k = 10
+var k = 25
 
 var firstCompetitor       = null
 var firstCompetitorName   = null
@@ -210,4 +210,4 @@ var swissTournament = function(numberOfRoundsDesired){
   console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(8)
+swissTournament(30)
