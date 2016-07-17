@@ -7,7 +7,7 @@ var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
-var competitorsSquared = 2
+var competitorsSquared = 32
 
 //k is the maximal number of points a player can win/lose in a given match
 var k = 10
@@ -146,8 +146,6 @@ var ratingsAdjuster = function(array) {
   var ifSecondCompetitorLoses = null
   var secondCompetitorLastMatchResult = array[1][secondCompetitorName]['record'].slice(array[1][secondCompetitorName]['record'].length-1)
 
-  // console.log("firstCompetitorLastMatchResults:",firstCompetitorLastMatchResult)
-  // console.log("secondCompetitorLastMatchResult:",secondCompetitorLastMatchResult)
 
   var calculateTheRatingsAtStake = function(array){
 
@@ -157,81 +155,17 @@ var ratingsAdjuster = function(array) {
     ifSecondCompetitorWins = k*(1 - secondCompetitorsProbabilityOfVictory)
     ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
 
-    // console.log("first Competitor's Rating:",array[0][firstCompetitorName]['rating'])
-    // console.log("second Competitor's Rating:",array[1][secondCompetitorName]['rating'])
-
-    // console.log("ifFirstCompetitorWins:",ifFirstCompetitorWins)
-    // console.log("ifFirstCompetitorLoses:",ifFirstCompetitorLoses)
-
-    // console.log("ifSecondCompetitorWins:",ifSecondCompetitorWins)
-    // console.log("ifSecondCompetitorLoses:",ifSecondCompetitorLoses)
-
-    // console.log("firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
-    // console.log("secondCompetitorsProbabilityOfVictory:",secondCompetitorsProbabilityOfVictory)
-
-    //first, figure out the ratings at stake for each competitor
-    //then, check who won or lost the match
-    // --> Will 'check who won or lost' by looking at the very last character in competitor's record
-    //then, adjust ratings accordingly
-
-    //here I'm checking the last very last character in competitor's record (either w or l)
   }
 
   calculateTheRatingsAtStake(theCompetitionMat)
 
-  // console.log("TheCompetitionMats:",array)
-  // console.log("TheCompetitionMats[0]:",array[0])
-  //console.log("TheCompetitionMats[1]:",array[1])
-
-  var firstCompetitorsNewRating  = null
-  var secondCompetitorsNewRating = null
-
   if ( firstCompetitorLastMatchResult === 'w' ) {
-
-    console.log("firstCompetitor won!")
-
-    firstCompetitor[firstCompetitorName]['rating']   = firstCompetitorRating + ifFirstCompetitorWins
-    secondCompetitor[secondCompetitorName]['rating'] = secondCompetitorRating + ifSecondCompetitorLoses
-
+    firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins)
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses)
   } else {
-
-    console.log("secondCompetitor won!")
-
-    firstCompetitor[firstCompetitorName]['rating'] = firstCompetitorRating + ifFirstCompetitorLoses
-    secondCompetitor[secondCompetitorName]['rating'] = secondCompetitorRating + ifSecondCompetitorWins
-
+    firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses)
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins)
   }
-
-  var rawNewRatingForFirst  = firstCompetitorRating
-  var newRatingForFirst  = Math.round(rawNewRatingForFirst)
-
-  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[secondCompetitorName]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
-  var newRatingForSecond = Math.round(rawNewRatingForSecond)
-
-  // firstCompetitor[firstCompetitorName]['rating']   = newRatingForFirst
-  // secondCompetitor[secondCompetitorName]['rating'] = newRatingForSecond
-
-  // console.log("firstCompetitor:",firstCompetitor)
-  // console.log("secondCompetitor:",secondCompetitor)
-  // console.log("rawNewRatingForFirst:",rawNewRatingForFirst)
-  // console.log("rawNewRatingForSecond:",rawNewRatingForSecond)
-  // console.log("newRatingForFirst:",newRatingForFirst)
-  // console.log("newRatingForSecond:",newRatingForSecond)
-
-  //TODO: this needs to be refactored to handle two newRatings simultaneously
-  // if (newRating === competitorRating && competitorRating < rawNewRating ) {
-  //
-  //   competitor[competitorStats[0]] = newRating+1
-  //
-  // } else if ( newRating === competitorRating && competitorRating > rawNewRating ) {
-  //
-  //   competitor[competitorStats[0]] = newRating-1
-  //
-  // } else {
-  //
-  //   competitor[competitorStats[0]] = newRating
-  //
-  // }
 }
 
 /**
@@ -287,4 +221,4 @@ var swissTournament = function(numberOfRoundsDesired){
   console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(2)
+swissTournament(8)
