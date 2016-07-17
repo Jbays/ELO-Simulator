@@ -10,6 +10,13 @@ var losersBracket      = []
 var competitorsSquared = 32
 
 //k is the maximal number of points a player can win/lose in a given match
+//---------------------------------------------------------------------
+//k-factors according to FIDE (Fédération Internationale des Échecs aka World Chess Federation):
+//---------------------------------------------------------------------
+//k=10 once a player has reached 2400 rating and has more than 30 games
+//k=15 if a player is rated less than 2400
+//k=25 until a player has at least 30 games
+//---------------------------------------------------------------------
 var k = 25
 
 var firstCompetitor       = null
@@ -132,7 +139,6 @@ var matchRecorder = function(){
                                                     + "-" + firstCompetitorRating.toString() + "***"
 }
 
-
 /**
  * @name - referee
  * @description - Pulls a random draw (between 0-1) and assigns a victory based
@@ -159,10 +165,16 @@ var referee = function(array,probability){
   }
 }
 
-var calculateTheRatingsAtStake = function(){
-  ifFirstCompetitorWins  = k*(1 - firstCompetitorsProbabilityOfVictory)
-  ifFirstCompetitorLoses = k*(-firstCompetitorsProbabilityOfVictory)
-  ifSecondCompetitorWins = k*(1 - secondCompetitorsProbabilityOfVictory)
+/**
+ * @name - ratingsAtStakeCalculator
+ * @description - Calculates how much each competitorObject in theCompetitionMats
+ *                stands to win or lose in their match.
+ * @param - k-factor
+ **/
+var ratingsAtStakeCalculator = function(k){
+  ifFirstCompetitorWins   = k*(1-firstCompetitorsProbabilityOfVictory)
+  ifFirstCompetitorLoses  = k*(-firstCompetitorsProbabilityOfVictory)
+  ifSecondCompetitorWins  = k*(1-secondCompetitorsProbabilityOfVictory)
   ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
 }
 
@@ -174,7 +186,7 @@ var calculateTheRatingsAtStake = function(){
  **/
 var ratingsAdjuster = function(array) {
   let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
-  calculateTheRatingsAtStake(theCompetitionMat)
+  ratingsAtStakeCalculator(k)
 
   if ( firstCompetitorLastMatchResult === 'w' ) {
     firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins)
