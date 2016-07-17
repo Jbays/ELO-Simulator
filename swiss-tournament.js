@@ -7,21 +7,56 @@ var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
-var firstCompetitorsProbabilityOfVictory  = 0
-var secondCompetitorsProbabilityOfVictory = 0
-var competitorsSquared = 16
+var competitorsSquared = 32
 
 //k is the maximal number of points a player can win/lose in a given match
-var k = 8
-var n = 1
+//---------------------------------------------------------------------
+//k-factors according to FIDE (Fédération Internationale des Échecs aka World Chess Federation):
+//---------------------------------------------------------------------
+//k=10 once a player has reached 2400 rating and has more than 30 games
+//k=15 if a player is rated less than 2400
+//k=25 until a player has at least 30 games
+//---------------------------------------------------------------------
+var k = 25
 
+var firstCompetitor       = null
+var firstCompetitorName   = null
+var firstCompetitorRating = null
+var firstCompetitorWins   = 0
+var firstCompetitorLosses = 0
+var firstCompetitorsProbabilityOfVictory  = 0
+var firstCompetitorRecord = null
+var ifFirstCompetitorWins  = null
+var ifFirstCompetitorLoses = null
+
+var secondCompetitor       = null
+var secondCompetitorName   = null
+var secondCompetitorRating = null
+var secondCompetitorWins   = 0
+var secondCompetitorLosses = 0
+var secondCompetitorsProbabilityOfVictory = 0
+var secondCompetitorRecord = null
+var ifSecondCompetitorWins  = null
+var ifSecondCompetitorLoses = null
+
+/**
+ * @name - bullPenGenerator
+ * @description - Takes an integer as input
+ *                Generates (integer^2) competitors from competitorBlueprint
+ *                Where competitorBlueprint === "{cXXX:{
+ *                                                      'rating':1600,'wins':0,'losses':0,'record':'','matches':''}
+ *                                                     }
+ *                And puts all generated competitors into bullPen array
+ * @param - integer
+ **/
 var bullPenGenerator = function(integer) {
-  var squaredNumber = integer * integer
+  let squaredNumber = integer * integer
   var competitorAssembler = function (squaredNumber) {
     console.log("Number of Competitors In Your Tournament:",squaredNumber)
-    for (var j = 1; j <= squaredNumber; j++) {
-      let yourNumber = j.toString()
-      let competitorBlueprint = '{"c' + yourNumber +'":{"rating":1600,"wins":0,"losses":0}}'
+    for (let i = 1; i <= squaredNumber; i++) {
+      let yourNumber = i.toString()
+      let competitorBlueprint = '{"c' + yourNumber
+                              + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":""}}'
 
       bullPen.push(JSON.parse(competitorBlueprint))
     }
@@ -35,7 +70,6 @@ var bullPenGenerator = function(integer) {
  *                Removes first and second competitors from bullPen
  *                And places them inside theCompetitionMat
  * @param - bullPen
- *
  **/
 var competitionMatPopulator = function(array){
   theCompetitionMat.push(array.shift())
@@ -49,29 +83,48 @@ var competitionMatPopulator = function(array){
  * @param - theCompetitionMats
  **/
 var variableAssigner = function(array){
-  firstCompetitor  = array[0]
-  secondCompetitor = array[1]
-  nameOfFirstCompetitor  = Object.keys(firstCompetitor)[0]
-  nameOfSecondCompetitor = Object.keys(secondCompetitor)[0]
-  firstCompetitorRating  = firstCompetitor[nameOfFirstCompetitor]['rating']
-  secondCompetitorRating = secondCompetitor[nameOfSecondCompetitor]['rating']
-  recordWinsForFirstCompetitor    = firstCompetitor[nameOfFirstCompetitor]['wins']
-  recordLossesForFirstCompetitor  = firstCompetitor[nameOfFirstCompetitor]['losses']
-  recordWinsForSecondCompetitor   = secondCompetitor[nameOfSecondCompetitor]['wins']
-  recordLossesForSecondCompetitor = secondCompetitor[nameOfSecondCompetitor]['losses']
+  firstCompetitor       = array[0]
+  firstCompetitorName   = Object.keys(firstCompetitor)[0]
+  firstCompetitorRating = firstCompetitor[firstCompetitorName]['rating']
+  firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins']
+  firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses']
+  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record']
+  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
+
+  secondCompetitor       = array[1]
+  secondCompetitorName   = Object.keys(secondCompetitor)[0]
+  secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating']
+  secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins']
+  secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses']
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record']
+  secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
 }
 
 /**
- * @name - probabilityCalculator
- * @description - Calculates the likelihood of victory for the competitors
- *                on theCompetitionMats. Calculation based on the players's
- *                respective rating
- * @param - firstCompetitorRating
- * @param - secondCompetitorRating
+ * @name - matchRecorder
+ * @description - To 'matches' key in competitorObject, assigns value -->
+ *                stringified record of match just finished in theCompetitionMats.
+ *                Each match is delimited by '***'
+ *                EX: 'matches': {'1600-c733-1600***1588-c503-1613'}
+ *                  where at time of match: '1600' is competitorObject's rating
+ *                                          'c733' is competitorObject's opponent
+ *                                          '1600' is competitorObject's opponent's rating
+ *                  '***' delimiter
+ *                  Second match:           '1588' is competitorObject's rating
+ *                                          'c503' is competitorObject's opponent
+ *                                          '1613' is competitorObject's opponent's rating
+ * @param - none
  **/
-var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRating){
-  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
-  secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
+var matchRecorder = function(){
+  firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
+                                                  + firstCompetitorRating.toString()
+                                                  + "-" + secondCompetitorName
+                                                  + "-" + secondCompetitorRating.toString() + "***"
+
+  secondCompetitor[secondCompetitorName]['matches'] = secondCompetitor[secondCompetitorName]['matches']
+                                                    + secondCompetitorRating.toString()
+                                                    + "-" + firstCompetitorName
+                                                    + "-" + firstCompetitorRating.toString() + "***"
 }
 
 /**
@@ -82,25 +135,35 @@ var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRatin
  * @param - firstCompetitorsProbabilityOfVictory
  **/
 var referee = function(array,probability){
-  var randomNumber = Math.random()
+  let randomNumber = Math.random()
+  matchRecorder()
 
   if ( probability > randomNumber ) {
-    if ( recordWinsForFirstCompetitor === 0 ) {
-      firstCompetitor[nameOfFirstCompetitor]['wins']++
-      secondCompetitor[nameOfSecondCompetitor]['losses']++
-    } else {
-      firstCompetitor[nameOfFirstCompetitor]['wins']++
-      secondCompetitor[nameOfSecondCompetitor]['losses']++
-    }
+    firstCompetitor[firstCompetitorName]['wins']++
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w"
+
+    secondCompetitor[secondCompetitorName]['losses']++
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l"
   } else {
-    if ( recordWinsForSecondCompetitor === 0 ) {
-      firstCompetitor[nameOfFirstCompetitor]['losses']++
-      secondCompetitor[nameOfSecondCompetitor]['wins']++
-    } else {
-      firstCompetitor[nameOfFirstCompetitor]['losses']++
-      secondCompetitor[nameOfSecondCompetitor]['wins']++
-    }
+    firstCompetitor[firstCompetitorName]['losses']++
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "l"
+
+    secondCompetitor[secondCompetitorName]['wins']++
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w"
   }
+}
+
+/**
+ * @name - ratingsAtStakeCalculator
+ * @description - Calculates how much each competitorObject in theCompetitionMats
+ *                stands to win or lose in their match.
+ * @param - k-factor
+ **/
+var ratingsAtStakeCalculator = function(k){
+  ifFirstCompetitorWins   = k*(1-firstCompetitorsProbabilityOfVictory)
+  ifFirstCompetitorLoses  = k*(-firstCompetitorsProbabilityOfVictory)
+  ifSecondCompetitorWins  = k*(1-secondCompetitorsProbabilityOfVictory)
+  ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
 }
 
 /**
@@ -109,29 +172,17 @@ var referee = function(array,probability){
  *                the results of their match has been tabulated.
  *                Rounds raw rating, then assigns new rating to competitor
  **/
-var ratingsAdjuster = function() {
-  var rawNewRatingForFirst = firstCompetitorRating + k*(firstCompetitor[nameOfFirstCompetitor]['wins'] - (firstCompetitorsProbabilityOfVictory*n))
-  var rawNewRatingForSecond = secondCompetitorRating + k*(secondCompetitor[nameOfSecondCompetitor]['wins'] - (secondCompetitorsProbabilityOfVictory*n))
-  var newRatingForFirst = Math.round(rawNewRatingForFirst)
-  var newRatingForSecond = Math.round(rawNewRatingForSecond)
+var ratingsAdjuster = function(array) {
+  let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
+  ratingsAtStakeCalculator(k)
 
-  firstCompetitor[nameOfFirstCompetitor]['rating']   = newRatingForFirst
-  secondCompetitor[nameOfSecondCompetitor]['rating'] = newRatingForSecond
-
-  //TODO: this needs to be refactored to handle two newRatings simultaneously
-  // if (newRating === competitorRating && competitorRating < rawNewRating ) {
-  //
-  //   competitor[competitorStats[0]] = newRating+1
-  //
-  // } else if ( newRating === competitorRating && competitorRating > rawNewRating ) {
-  //
-  //   competitor[competitorStats[0]] = newRating-1
-  //
-  // } else {
-  //
-  //   competitor[competitorStats[0]] = newRating
-  //
-  // }
+  if ( firstCompetitorLastMatchResult === 'w' ) {
+    firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins)
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses)
+  } else {
+    firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses)
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins)
+  }
 }
 
 /**
@@ -143,7 +194,7 @@ var ratingsAdjuster = function() {
  * @param - theCompetitionMat
  **/
 var competitionMatDepopulator = function(array){
-  if ( firstCompetitor[nameOfFirstCompetitor]['losses'] ) {
+  if ( firstCompetitor[firstCompetitorName]['losses'] ) {
     winnersBracket.push(array.pop())
     losersBracket.push(array.pop())
   } else {
@@ -152,53 +203,64 @@ var competitionMatDepopulator = function(array){
   }
 }
 
-var makeNewBullPen = function(winnersBracket, losersBracket){
+/**
+ * @name - newBullPenConstructor
+ * @description - Sets empty bullPen equal to winnersBracket
+ *                Then adds losersBracket to new bullPen
+ *                Then shuffles bullPen
+ * @param - winnersBracket
+ * @param - losersBracket
+ **/
+var newBullPenConstructor = function(winnersBracket, losersBracket){
   bullPen = winnersBracket
-  var winnersLength = winnersBracket.length
+  let winnersLength = winnersBracket.length
   for ( let i = 0; i < winnersLength; i++ ) {
     bullPen.push(losersBracket[i])
   }
   bullPen = _.shuffle(bullPen)
 }
 
+/**
+ * @name - makeAllCompetitorsCompete
+ * @description - Takes as input bullPen array
+ *                Makes all competitorObjects in bullPen compete once
+ *                **competitorMatPopulator     -- Puts two competitorObjects into theCompetitionMats
+ *                **variableAssigner           -- Gives values to all variables required for ELO-calculation
+ *                **referee                    -- Declares winner and loser in theCompetitionMats
+ *                **ratingsAdjuster            -- Adjusts both winner's and loser's rating
+ *                **competitionMatsDepopulator -- Empties theCompetitionMats
+ * @param - bullPen
+ **/
 var makeAllCompetitorsCompete = function(array){
   var numberOfMatches = array.length/2
   for ( let i = 0; i < numberOfMatches; i++ ) {
     competitionMatPopulator(bullPen)
     variableAssigner(theCompetitionMat)
-    probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-    ratingsAdjuster()
+    ratingsAdjuster(theCompetitionMat)
     competitionMatDepopulator(theCompetitionMat)
   }
 }
 
-var firstCompetitor        = null
-var secondCompetitor       = null
-var nameOfFirstCompetitor  = null
-var nameOfSecondCompetitor = null
-var firstCompetitorRating  = null
-var secondCompetitorRating = null
-var recordWinsForFirstCompetitor    = 0
-var recordWinsForSecondCompetitor   = 0
-var recordLossesForFirstCompetitor  = 0
-var recordLossesForSecondCompetitor = 0
-
+/**
+ * @name - swissTournament
+ * @description - Takes as input number of rounds competitors are obliged to compete
+ *                **bullPenGenerator -- Creates competitors; Adds them to bullPen array
+ *                For desired number of rounds, competitors will compete
+ *                  **makeAllCompetitorsCompete -- Forces all competitors to compete once; Empties bullPen array
+ *                  **newBullPenConstructor     -- Repopulates bullPen with winnersBracket and losersBracket
+ *                  Then empties both winnersBracket and losersBracket
+ * @param - Number of Rounds competitors will compete
+ **/
 var swissTournament = function(numberOfRoundsDesired){
-
   bullPenGenerator(competitorsSquared)
-
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
     makeAllCompetitorsCompete(bullPen)
-    makeNewBullPen(winnersBracket,losersBracket)
+    newBullPenConstructor(winnersBracket,losersBracket)
     winnersBracket = []
     losersBracket  = []
   }
-
   console.log("from swissTournament --> bullPen:",bullPen)
-  console.log("from swissTournament --> theCompetitionMat:",theCompetitionMat)
-  console.log("from swissTournament --> winnersBracket:",winnersBracket)
-  console.log("from swissTournament --> losersBracket:",losersBracket)
 }
 
-swissTournament(8)
+swissTournament(30)
