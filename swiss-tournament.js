@@ -193,13 +193,15 @@ var ratingsAdjuster = function(array) {
  *                And loser of match into Losers Bracket
  * @param - theCompetitionMat
  **/
-var competitionMatDepopulator = function(array){
+var competitionMatDepopulator = function(string,array){
 
+  console.log("array:",array)
+
+  // console.log("string:",string)
   // console.log("competitionmatDepopulator invoked!")
-  // console.log("firstCompetitorRecord:",firstCompetitorRecord)
-  // console.log("firstCompetitorRecord.slice(-1):",firstCompetitorRecord.slice(-1))
+  // console.log("string.charAt(string.length-1):",string.charAt(string.length-1))
 
-  if ( firstCompetitorRecord.slice(-1) === 'l' ) {
+  if ( string.charAt(string.length-1) === 'l' ) {
     winnersBracket.push(array.pop())
     losersBracket.push(array.pop())
   } else {
@@ -247,7 +249,7 @@ var makeAllCompetitorsCompete = function(array){
     variableAssigner(theCompetitionMat)
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
     ratingsAdjuster(theCompetitionMat)
-    competitionMatDepopulator(theCompetitionMat)
+    competitionMatDepopulator(firstCompetitorRecord,theCompetitionMat)
   }
 }
 
