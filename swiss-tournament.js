@@ -195,9 +195,11 @@ var ratingsAdjuster = function(array) {
  **/
 var competitionMatDepopulator = function(array){
 
-  console.log("competitionmatDepopulator invoked!")
+  // console.log("competitionmatDepopulator invoked!")
+  // console.log("firstCompetitorRecord:",firstCompetitorRecord)
+  // console.log("firstCompetitorRecord.slice(-1):",firstCompetitorRecord.slice(-1))
 
-  if ( firstCompetitor[firstCompetitorName]['losses'] ) {
+  if ( firstCompetitorRecord.slice(-1) === 'l' ) {
     winnersBracket.push(array.pop())
     losersBracket.push(array.pop())
   } else {
@@ -215,6 +217,10 @@ var competitionMatDepopulator = function(array){
  * @param - losersBracket
  **/
 var newBullPenConstructor = function(winnersBracket, losersBracket){
+
+  console.log("winnersBracket:",winnersBracket)
+  console.log("losersBracket:",losersBracket)
+
   bullPen = winnersBracket
   let winnersLength = winnersBracket.length
   for ( let i = 0; i < winnersLength; i++ ) {
@@ -263,7 +269,7 @@ var swissTournament = function(numberOfRoundsDesired){
     winnersBracket = []
     losersBracket  = []
   }
-  console.log("from swissTournament --> bullPen:",bullPen)
+  // console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(10)
+swissTournament(4)
