@@ -7,7 +7,7 @@ var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
-var competitorsSquared = 32
+var competitorsSquared = 4
 
 //k is the maximal number of points a player can win/lose in a given match
 //---------------------------------------------------------------------
@@ -134,7 +134,7 @@ var matchRecorder = function(){
  * @param - theCompetitorMats
  * @param - firstCompetitorsProbabilityOfVictory
  **/
-var referee = function(array,probability){
+var referee = function(probability){
   let randomNumber = Math.random()
   matchRecorder()
 
@@ -194,6 +194,9 @@ var ratingsAdjuster = function(array) {
  * @param - theCompetitionMat
  **/
 var competitionMatDepopulator = function(array){
+
+  console.log("competitionmatDepopulator invoked!")
+
   if ( firstCompetitor[firstCompetitorName]['losses'] ) {
     winnersBracket.push(array.pop())
     losersBracket.push(array.pop())
@@ -263,4 +266,4 @@ var swissTournament = function(numberOfRoundsDesired){
   console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(30)
+swissTournament(10)
