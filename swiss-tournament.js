@@ -7,7 +7,7 @@ var bullPen            = []
 var theCompetitionMat  = []
 var winnersBracket     = []
 var losersBracket      = []
-var competitorsSquared = 4
+var competitorsSquared = 2
 
 //k is the maximal number of points a player can win/lose in a given match
 //---------------------------------------------------------------------
@@ -179,6 +179,7 @@ var ratingsAdjuster = function(array) {
   if ( firstCompetitorLastMatchResult === 'w' ) {
     firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins)
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses)
+
   } else {
     firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses)
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins)
@@ -195,18 +196,25 @@ var ratingsAdjuster = function(array) {
  **/
 var competitionMatDepopulator = function(string,array){
 
-  console.log("array:",array)
+  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record']
 
-  // console.log("string:",string)
-  // console.log("competitionmatDepopulator invoked!")
-  // console.log("string.charAt(string.length-1):",string.charAt(string.length-1))
+  console.log("after assignment --> competitionMatDepopulator firstCompetitorRecord:",firstCompetitorRecord)
+  console.log("after assignment --> competitionMatDepopulator secondCompetitorRecord:",secondCompetitorRecord)
+
+  console.log("theCompetitionMats about to be depopulated:",array);
+  console.log("string:",string)
+  console.log("string.length-1:",string.length-1)
+  console.log("string.charAt(string.length-1):",string.charAt(string.length-1));
 
   if ( string.charAt(string.length-1) === 'l' ) {
-    winnersBracket.push(array.pop())
-    losersBracket.push(array.pop())
+
+    winnersBracket.push(array.pop());
+    losersBracket.push(array.pop());
   } else {
-    losersBracket.push(array.pop())
-    winnersBracket.push(array.pop())
+
+    losersBracket.push(array.pop());
+    winnersBracket.push(array.pop());
   }
 }
 
@@ -220,8 +228,8 @@ var competitionMatDepopulator = function(string,array){
  **/
 var newBullPenConstructor = function(winnersBracket, losersBracket){
 
-  console.log("winnersBracket:",winnersBracket)
-  console.log("losersBracket:",losersBracket)
+  // console.log("winnersBracket:",winnersBracket)
+  // console.log("losersBracket:",losersBracket)
 
   bullPen = winnersBracket
   let winnersLength = winnersBracket.length
@@ -245,11 +253,11 @@ var newBullPenConstructor = function(winnersBracket, losersBracket){
 var makeAllCompetitorsCompete = function(array){
   var numberOfMatches = array.length/2
   for ( let i = 0; i < numberOfMatches; i++ ) {
-    competitionMatPopulator(bullPen)
-    variableAssigner(theCompetitionMat)
-    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-    ratingsAdjuster(theCompetitionMat)
-    competitionMatDepopulator(firstCompetitorRecord,theCompetitionMat)
+    competitionMatPopulator(bullPen);
+    variableAssigner(theCompetitionMat);
+    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory);
+    ratingsAdjuster(theCompetitionMat);
+    competitionMatDepopulator(firstCompetitorRecord,theCompetitionMat);
   }
 }
 
@@ -264,14 +272,17 @@ var makeAllCompetitorsCompete = function(array){
  * @param - Number of Rounds competitors will compete
  **/
 var swissTournament = function(numberOfRoundsDesired){
-  bullPenGenerator(competitorsSquared)
+  bullPenGenerator(competitorsSquared);
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
-    makeAllCompetitorsCompete(bullPen)
-    newBullPenConstructor(winnersBracket,losersBracket)
-    winnersBracket = []
-    losersBracket  = []
+    makeAllCompetitorsCompete(bullPen);
+    console.log("swissTournament --> winnersBracket",winnersBracket);
+    console.log("swissTournament --> losersBracket",losersBracket);
+
+    newBullPenConstructor(winnersBracket,losersBracket);
+    winnersBracket = [];
+    losersBracket  = [];
   }
   // console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(4)
+swissTournament(2)
