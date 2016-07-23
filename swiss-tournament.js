@@ -1,13 +1,13 @@
-'use strict'
+'use strict';
 var fs = require('fs');
 var _  = require('lodash');
 
 //bullPen format is =[{c1},{c2},{c3}]
-var bullPen            = []
-var theCompetitionMat  = []
-var winnersBracket     = []
-var losersBracket      = []
-var competitorsSquared = 2
+var bullPen            = [];
+var theCompetitionMat  = [];
+var winnersBracket     = [];
+var losersBracket      = [];
+var competitorsSquared = 2;
 
 //k is the maximal number of points a player can win/lose in a given match
 //---------------------------------------------------------------------
@@ -17,27 +17,27 @@ var competitorsSquared = 2
 //k=15 if a player is rated less than 2400
 //k=25 until a player has at least 30 games
 //---------------------------------------------------------------------
-var k = 25
+var k = 25;
 
-var firstCompetitor       = null
-var firstCompetitorName   = null
-var firstCompetitorRating = null
-var firstCompetitorWins   = 0
-var firstCompetitorLosses = 0
-var firstCompetitorsProbabilityOfVictory  = 0
-var firstCompetitorRecord = null
-var ifFirstCompetitorWins  = null
-var ifFirstCompetitorLoses = null
+var firstCompetitor       = null;
+var firstCompetitorName   = null;
+var firstCompetitorRating = null;
+var firstCompetitorWins   = 0;
+var firstCompetitorLosses = 0;
+var firstCompetitorsProbabilityOfVictory  = 0;
+var firstCompetitorRecord = null;
+var ifFirstCompetitorWins  = null;
+var ifFirstCompetitorLoses = null;
 
-var secondCompetitor       = null
-var secondCompetitorName   = null
-var secondCompetitorRating = null
-var secondCompetitorWins   = 0
-var secondCompetitorLosses = 0
-var secondCompetitorsProbabilityOfVictory = 0
-var secondCompetitorRecord = null
-var ifSecondCompetitorWins  = null
-var ifSecondCompetitorLoses = null
+var secondCompetitor       = null;
+var secondCompetitorName   = null;
+var secondCompetitorRating = null;
+var secondCompetitorWins   = 0;
+var secondCompetitorLosses = 0;
+var secondCompetitorsProbabilityOfVictory = 0;
+var secondCompetitorRecord = null;
+var ifSecondCompetitorWins  = null;
+var ifSecondCompetitorLoses = null;
 
 /**
  * @name - bullPenGenerator
@@ -50,18 +50,18 @@ var ifSecondCompetitorLoses = null
  * @param - integer
  **/
 var bullPenGenerator = function(integer) {
-  let squaredNumber = integer * integer
+  let squaredNumber = integer * integer;
   var competitorAssembler = function (squaredNumber) {
-    console.log("Number of Competitors In Your Tournament:",squaredNumber)
+    console.log("Number of Competitors In Your Tournament:",squaredNumber);
     for (let i = 1; i <= squaredNumber; i++) {
-      let yourNumber = i.toString()
+      let yourNumber = i.toString();
       let competitorBlueprint = '{"c' + yourNumber
-                              + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":""}}'
+                              + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":""}}';
 
-      bullPen.push(JSON.parse(competitorBlueprint))
+      bullPen.push(JSON.parse(competitorBlueprint));
     }
   }
-  competitorAssembler(squaredNumber)
+  competitorAssembler(squaredNumber);
 }
 
 /**
@@ -72,8 +72,8 @@ var bullPenGenerator = function(integer) {
  * @param - bullPen
  **/
 var competitionMatPopulator = function(array){
-  theCompetitionMat.push(array.shift())
-  theCompetitionMat.push(array.shift())
+  theCompetitionMat.push(array.shift());
+  theCompetitionMat.push(array.shift());
 }
 
 /**
@@ -83,21 +83,21 @@ var competitionMatPopulator = function(array){
  * @param - theCompetitionMats
  **/
 var variableAssigner = function(array){
-  firstCompetitor       = array[0]
-  firstCompetitorName   = Object.keys(firstCompetitor)[0]
-  firstCompetitorRating = firstCompetitor[firstCompetitorName]['rating']
-  firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins']
-  firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses']
-  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record']
-  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
+  firstCompetitor       = array[0];
+  firstCompetitorName   = Object.keys(firstCompetitor)[0];
+  firstCompetitorRating = firstCompetitor[firstCompetitorName]['rating'];
+  firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins'];
+  firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses'];
+  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
+  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
 
-  secondCompetitor       = array[1]
-  secondCompetitorName   = Object.keys(secondCompetitor)[0]
-  secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating']
-  secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins']
-  secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses']
-  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record']
-  secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
+  secondCompetitor       = array[1];
+  secondCompetitorName   = Object.keys(secondCompetitor)[0];
+  secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating'];
+  secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins'];
+  secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
+  secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
 }
 
 /**
@@ -119,12 +119,12 @@ var matchRecorder = function(){
   firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
                                                   + firstCompetitorRating.toString()
                                                   + "-" + secondCompetitorName
-                                                  + "-" + secondCompetitorRating.toString() + "***"
+                                                  + "-" + secondCompetitorRating.toString() + "***";
 
   secondCompetitor[secondCompetitorName]['matches'] = secondCompetitor[secondCompetitorName]['matches']
                                                     + secondCompetitorRating.toString()
                                                     + "-" + firstCompetitorName
-                                                    + "-" + firstCompetitorRating.toString() + "***"
+                                                    + "-" + firstCompetitorRating.toString() + "***";
 }
 
 /**
@@ -135,21 +135,21 @@ var matchRecorder = function(){
  * @param - firstCompetitorsProbabilityOfVictory
  **/
 var referee = function(probability){
-  let randomNumber = Math.random()
-  matchRecorder()
+  let randomNumber = Math.random();
+  matchRecorder();
 
   if ( probability > randomNumber ) {
-    firstCompetitor[firstCompetitorName]['wins']++
-    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w"
+    firstCompetitor[firstCompetitorName]['wins']++;
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w";
 
-    secondCompetitor[secondCompetitorName]['losses']++
-    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l"
+    secondCompetitor[secondCompetitorName]['losses']++;
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l";
   } else {
-    firstCompetitor[firstCompetitorName]['losses']++
-    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "l"
+    firstCompetitor[firstCompetitorName]['losses']++;
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "l";
 
-    secondCompetitor[secondCompetitorName]['wins']++
-    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w"
+    secondCompetitor[secondCompetitorName]['wins']++;
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w";
   }
 }
 
@@ -160,10 +160,10 @@ var referee = function(probability){
  * @param - k-factor
  **/
 var ratingsAtStakeCalculator = function(k){
-  ifFirstCompetitorWins   = k*(1-firstCompetitorsProbabilityOfVictory)
-  ifFirstCompetitorLoses  = k*(-firstCompetitorsProbabilityOfVictory)
-  ifSecondCompetitorWins  = k*(1-secondCompetitorsProbabilityOfVictory)
-  ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory)
+  ifFirstCompetitorWins   = k*(1-firstCompetitorsProbabilityOfVictory);
+  ifFirstCompetitorLoses  = k*(-firstCompetitorsProbabilityOfVictory);
+  ifSecondCompetitorWins  = k*(1-secondCompetitorsProbabilityOfVictory);
+  ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory);
 }
 
 /**
@@ -173,16 +173,16 @@ var ratingsAtStakeCalculator = function(k){
  *                Rounds raw rating, then assigns new rating to competitor
  **/
 var ratingsAdjuster = function(array) {
-  let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1)
-  ratingsAtStakeCalculator(k)
+  let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1);
+  ratingsAtStakeCalculator(k);
 
   if ( firstCompetitorLastMatchResult === 'w' ) {
-    firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins)
-    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses)
+    firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins);
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses);
 
   } else {
-    firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses)
-    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins)
+    firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins);
   }
 }
 
@@ -197,14 +197,14 @@ var ratingsAdjuster = function(array) {
 var competitionMatDepopulator = function(string,array){
 
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
-  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record']
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
 
-  console.log("after assignment --> competitionMatDepopulator firstCompetitorRecord:",firstCompetitorRecord)
-  console.log("after assignment --> competitionMatDepopulator secondCompetitorRecord:",secondCompetitorRecord)
+  console.log("after assignment --> competitionMatDepopulator firstCompetitorRecord:",firstCompetitorRecord);
+  console.log("after assignment --> competitionMatDepopulator secondCompetitorRecord:",secondCompetitorRecord);
 
   console.log("theCompetitionMats about to be depopulated:",array);
-  console.log("string:",string)
-  console.log("string.length-1:",string.length-1)
+  console.log("string:",string);
+  console.log("string.length-1:",string.length-1);
   console.log("string.charAt(string.length-1):",string.charAt(string.length-1));
 
   if ( string.charAt(string.length-1) === 'l' ) {
@@ -231,12 +231,12 @@ var newBullPenConstructor = function(winnersBracket, losersBracket){
   // console.log("winnersBracket:",winnersBracket)
   // console.log("losersBracket:",losersBracket)
 
-  bullPen = winnersBracket
-  let winnersLength = winnersBracket.length
+  bullPen = winnersBracket;
+  let winnersLength = winnersBracket.length;
   for ( let i = 0; i < winnersLength; i++ ) {
-    bullPen.push(losersBracket[i])
+    bullPen.push(losersBracket[i]);
   }
-  bullPen = _.shuffle(bullPen)
+  bullPen = _.shuffle(bullPen);
 }
 
 /**
@@ -285,4 +285,4 @@ var swissTournament = function(numberOfRoundsDesired){
   // console.log("from swissTournament --> bullPen:",bullPen)
 }
 
-swissTournament(2)
+swissTournament(2);
