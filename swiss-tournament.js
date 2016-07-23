@@ -7,7 +7,7 @@ var bullPen            = [];
 var theCompetitionMat  = [];
 var winnersBracket     = [];
 var losersBracket      = [];
-var competitorsSquared = 2;
+var competitorsSquared = 4;
 
 //k is the maximal number of points a player can win/lose in a given match
 //---------------------------------------------------------------------
@@ -19,25 +19,25 @@ var competitorsSquared = 2;
 //---------------------------------------------------------------------
 var k = 25;
 
-var firstCompetitor       = null;
-var firstCompetitorName   = null;
-var firstCompetitorRating = null;
-var firstCompetitorWins   = 0;
-var firstCompetitorLosses = 0;
-var firstCompetitorsProbabilityOfVictory  = 0;
-var firstCompetitorRecord = null;
+var firstCompetitor        = null;
+var firstCompetitorName    = null;
+var firstCompetitorRating  = null;
+var firstCompetitorWins    = 0;
+var firstCompetitorLosses  = 0;
+var firstCompetitorRecord  = null;
 var ifFirstCompetitorWins  = null;
 var ifFirstCompetitorLoses = null;
+var firstCompetitorsProbabilityOfVictory  = 0;
 
-var secondCompetitor       = null;
-var secondCompetitorName   = null;
-var secondCompetitorRating = null;
-var secondCompetitorWins   = 0;
-var secondCompetitorLosses = 0;
-var secondCompetitorsProbabilityOfVictory = 0;
-var secondCompetitorRecord = null;
+var secondCompetitor        = null;
+var secondCompetitorName    = null;
+var secondCompetitorRating  = null;
+var secondCompetitorWins    = 0;
+var secondCompetitorLosses  = 0;
+var secondCompetitorRecord  = null;
 var ifSecondCompetitorWins  = null;
 var ifSecondCompetitorLoses = null;
+var secondCompetitorsProbabilityOfVictory = 0;
 
 /**
  * @name - bullPenGenerator
@@ -173,9 +173,6 @@ var ratingsAtStakeCalculator = function(k){
  *                Rounds raw rating, then assigns new rating to competitor
  **/
 var ratingsAdjuster = function(array) {
-
-  console.log("ratingsAdjuster invoked!")
-
   let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1);
   ratingsAtStakeCalculator(k);
 
@@ -187,17 +184,8 @@ var ratingsAdjuster = function(array) {
     firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins);
   }
-
-  console.log("before variable reassignment --> firstCompetitorRecord:",firstCompetitorRecord);
-  console.log("before variable reassignment --> secondCompetitorRecord:",secondCompetitorRecord);
-
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
-
-  console.log("after variable reassignment --> firstCompetitorRecord:",firstCompetitorRecord);
-  console.log("after variable reassignment --> secondCompetitorRecord:",secondCompetitorRecord);
-
-
 };
 
 /**
@@ -209,27 +197,13 @@ var ratingsAdjuster = function(array) {
  * @param - theCompetitionMat
  **/
 var competitionMatDepopulator = function(string,array){
-
-  // firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
-  // secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
-
-  // console.log("after assignment --> competitionMatDepopulator firstCompetitorRecord:",firstCompetitorRecord);
-  // console.log("after assignment --> competitionMatDepopulator secondCompetitorRecord:",secondCompetitorRecord);
-
-  // console.log("theCompetitionMats about to be depopulated:",array);
-  // console.log("string:",string);
-  // console.log("string.length-1:",string.length-1);
-  // console.log("string.charAt(string.length-1):",string.charAt(string.length-1));
-
   if ( string.charAt(string.length-1) === 'l' ) {
-
     winnersBracket.push(array.pop());
     losersBracket.push(array.pop());
   } else {
-
     losersBracket.push(array.pop());
     winnersBracket.push(array.pop());
-  };
+  }
 };
 
 /**
@@ -241,15 +215,11 @@ var competitionMatDepopulator = function(string,array){
  * @param - losersBracket
  **/
 var newBullPenConstructor = function(winnersBracket, losersBracket){
-
-  // console.log("winnersBracket:",winnersBracket)
-  // console.log("losersBracket:",losersBracket)
-
   bullPen = winnersBracket;
   let winnersLength = winnersBracket.length;
   for ( let i = 0; i < winnersLength; i++ ) {
     bullPen.push(losersBracket[i]);
-  };
+  }
   bullPen = _.shuffle(bullPen);
 };
 
@@ -265,14 +235,14 @@ var newBullPenConstructor = function(winnersBracket, losersBracket){
  * @param - bullPen
  **/
 var runOneTournamentRound = function(array){
-  var numberOfMatches = array.length/2
+  var numberOfMatches = array.length/2;
   for ( let i = 0; i < numberOfMatches; i++ ) {
     competitionMatPopulator(bullPen);
     variableAssigner(theCompetitionMat);
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory);
     ratingsAdjuster(theCompetitionMat);
     competitionMatDepopulator(firstCompetitorRecord,theCompetitionMat);
-  };
+  }
 };
 
 /**
@@ -289,15 +259,12 @@ var swissTournament = function(numberOfRoundsDesired){
   bullPenGenerator(competitorsSquared);
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
     runOneTournamentRound(bullPen);
-    console.log("swissTournament --> winnersBracket",winnersBracket);
-    console.log("swissTournament --> losersBracket",losersBracket);
-
     newBullPenConstructor(winnersBracket,losersBracket);
     winnersBracket = [];
     losersBracket  = [];
-  };
+  }
   // console.log("from swissTournament --> bullPen:",bullPen)
 };
 
-//
-swissTournament(2);
+//Adjust this number for number of rounds in the swiss tournament
+swissTournament(4);
