@@ -60,9 +60,9 @@ var bullPenGenerator = function(integer) {
 
       bullPen.push(JSON.parse(competitorBlueprint));
     }
-  }
+  };
   competitorAssembler(squaredNumber);
-}
+};
 
 /**
  * @name - competitionMatPopulator
@@ -74,7 +74,7 @@ var bullPenGenerator = function(integer) {
 var competitionMatPopulator = function(array){
   theCompetitionMat.push(array.shift());
   theCompetitionMat.push(array.shift());
-}
+};
 
 /**
  * @name - variableAssigner
@@ -98,7 +98,7 @@ var variableAssigner = function(array){
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
-}
+};
 
 /**
  * @name - matchRecorder
@@ -125,7 +125,7 @@ var matchRecorder = function(){
                                                     + secondCompetitorRating.toString()
                                                     + "-" + firstCompetitorName
                                                     + "-" + firstCompetitorRating.toString() + "***";
-}
+};
 
 /**
  * @name - referee
@@ -150,8 +150,8 @@ var referee = function(probability){
 
     secondCompetitor[secondCompetitorName]['wins']++;
     secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w";
-  }
-}
+  };
+};
 
 /**
  * @name - ratingsAtStakeCalculator
@@ -164,7 +164,7 @@ var ratingsAtStakeCalculator = function(k){
   ifFirstCompetitorLoses  = k*(-firstCompetitorsProbabilityOfVictory);
   ifSecondCompetitorWins  = k*(1-secondCompetitorsProbabilityOfVictory);
   ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory);
-}
+};
 
 /**
  * @name - ratingsAdjuster
@@ -173,6 +173,9 @@ var ratingsAtStakeCalculator = function(k){
  *                Rounds raw rating, then assigns new rating to competitor
  **/
 var ratingsAdjuster = function(array) {
+
+  console.log("ratingsAdjuster invoked!")
+
   let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1);
   ratingsAtStakeCalculator(k);
 
@@ -184,7 +187,18 @@ var ratingsAdjuster = function(array) {
     firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins);
   }
-}
+
+  console.log("before variable reassignment --> firstCompetitorRecord:",firstCompetitorRecord);
+  console.log("before variable reassignment --> secondCompetitorRecord:",secondCompetitorRecord);
+
+  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
+
+  console.log("after variable reassignment --> firstCompetitorRecord:",firstCompetitorRecord);
+  console.log("after variable reassignment --> secondCompetitorRecord:",secondCompetitorRecord);
+
+
+};
 
 /**
  * @name - competitionMatDepopulator
@@ -196,16 +210,16 @@ var ratingsAdjuster = function(array) {
  **/
 var competitionMatDepopulator = function(string,array){
 
-  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
-  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
+  // firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
+  // secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
 
-  console.log("after assignment --> competitionMatDepopulator firstCompetitorRecord:",firstCompetitorRecord);
-  console.log("after assignment --> competitionMatDepopulator secondCompetitorRecord:",secondCompetitorRecord);
+  // console.log("after assignment --> competitionMatDepopulator firstCompetitorRecord:",firstCompetitorRecord);
+  // console.log("after assignment --> competitionMatDepopulator secondCompetitorRecord:",secondCompetitorRecord);
 
-  console.log("theCompetitionMats about to be depopulated:",array);
-  console.log("string:",string);
-  console.log("string.length-1:",string.length-1);
-  console.log("string.charAt(string.length-1):",string.charAt(string.length-1));
+  // console.log("theCompetitionMats about to be depopulated:",array);
+  // console.log("string:",string);
+  // console.log("string.length-1:",string.length-1);
+  // console.log("string.charAt(string.length-1):",string.charAt(string.length-1));
 
   if ( string.charAt(string.length-1) === 'l' ) {
 
@@ -215,8 +229,8 @@ var competitionMatDepopulator = function(string,array){
 
     losersBracket.push(array.pop());
     winnersBracket.push(array.pop());
-  }
-}
+  };
+};
 
 /**
  * @name - newBullPenConstructor
@@ -235,12 +249,12 @@ var newBullPenConstructor = function(winnersBracket, losersBracket){
   let winnersLength = winnersBracket.length;
   for ( let i = 0; i < winnersLength; i++ ) {
     bullPen.push(losersBracket[i]);
-  }
+  };
   bullPen = _.shuffle(bullPen);
-}
+};
 
 /**
- * @name - makeAllCompetitorsCompete
+ * @name - runOneTournamentRound
  * @description - Takes as input bullPen array
  *                Makes all competitorObjects in bullPen compete once
  *                **competitorMatPopulator     -- Puts two competitorObjects into theCompetitionMats
@@ -250,7 +264,7 @@ var newBullPenConstructor = function(winnersBracket, losersBracket){
  *                **competitionMatsDepopulator -- Empties theCompetitionMats
  * @param - bullPen
  **/
-var makeAllCompetitorsCompete = function(array){
+var runOneTournamentRound = function(array){
   var numberOfMatches = array.length/2
   for ( let i = 0; i < numberOfMatches; i++ ) {
     competitionMatPopulator(bullPen);
@@ -258,15 +272,15 @@ var makeAllCompetitorsCompete = function(array){
     referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory);
     ratingsAdjuster(theCompetitionMat);
     competitionMatDepopulator(firstCompetitorRecord,theCompetitionMat);
-  }
-}
+  };
+};
 
 /**
  * @name - swissTournament
  * @description - Takes as input number of rounds competitors are obliged to compete
  *                **bullPenGenerator -- Creates competitors; Adds them to bullPen array
  *                For desired number of rounds, competitors will compete
- *                  **makeAllCompetitorsCompete -- Forces all competitors to compete once; Empties bullPen array
+ *                  **runOneTournamentRound -- Forces all competitors to compete once; Empties bullPen array
  *                  **newBullPenConstructor     -- Repopulates bullPen with winnersBracket and losersBracket
  *                  Then empties both winnersBracket and losersBracket
  * @param - Number of Rounds competitors will compete
@@ -274,15 +288,16 @@ var makeAllCompetitorsCompete = function(array){
 var swissTournament = function(numberOfRoundsDesired){
   bullPenGenerator(competitorsSquared);
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
-    makeAllCompetitorsCompete(bullPen);
+    runOneTournamentRound(bullPen);
     console.log("swissTournament --> winnersBracket",winnersBracket);
     console.log("swissTournament --> losersBracket",losersBracket);
 
     newBullPenConstructor(winnersBracket,losersBracket);
     winnersBracket = [];
     losersBracket  = [];
-  }
+  };
   // console.log("from swissTournament --> bullPen:",bullPen)
-}
+};
 
+//
 swissTournament(2);
