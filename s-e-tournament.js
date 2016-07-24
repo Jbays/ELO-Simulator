@@ -7,6 +7,8 @@ var fs = require('fs');
 var _  = require('lodash');
 
 //bullPen format is =[{c1},{c2},{c3}]
+var numberOfRounds = null;
+
 var bullPen            = [];
 var theCompetitionMats = [];
 var winnersBracket     = [];
@@ -67,6 +69,16 @@ var bullPenGenerator = function(integer) {
 var competitionMatPopulator = function(array){
   theCompetitionMats.push(array.shift())
   theCompetitionMats.push(array.shift())
+  //
+  // console.log("from competitionMatPopulator --> theCompetitionMats[1]:",theCompetitionMats[1])
+  //
+  // if ( theCompetitionMats[1] === undefined ) {
+  //
+  //   break;
+  //
+  // }
+
+
 }
 
 /**
@@ -211,9 +223,9 @@ var competitionMatDepopulator = function(string,array){
  *                **competitionMatsDepopulator -- Empties theCompetitionMats
  * @param - bullPen
  **/
-var runAllRounds = function(array,k){
-  let requiredIterations = array.length/2
-  for ( let i = 0; i < requiredIterations; i++ ){
+var runAllMatchesForOneRound = function(array,k){
+  let numberOfMatches = array.length/2
+  for ( let i = 0; i < numberOfMatches; i++ ){
     competitionMatPopulator(array);
     variableAssigner(theCompetitionMats);
     referee(firstCompetitorsProbabilityOfVictory);
@@ -224,10 +236,29 @@ var runAllRounds = function(array,k){
   winnersBracket = [];
 };
 
+var roundsCalculator = function(integer){
+  let originalNumber = integer;
+  let oNSquared = originalNumber*originalNumber;
+  var calculateNumberOfRounds = function(integer){
+    let competitorsHalved = integer/2;
+    numberOfRounds++;
+
+    if ( competitorsHalved !== 1 ) {
+      calculateNumberOfRounds(competitorsHalved);
+    } else {
+      console.log("The winner will fight",numberOfRounds,"times!");
+    }
+  };
+  calculateNumberOfRounds(oNSquared);
+}
+
+
 var singleEliminationTournament = function(integer,k){
   bullPenGenerator(integer);
-  for ( let i = 1; i <= integer; i++ ) {
-    runAllRounds(bullPen,k);
+
+  roundsCalculator(integer);
+  for ( let i = 1; i <= numberOfRounds; i++ ) {
+    runAllMatchesForOneRound(bullPen,k);
   }
   console.log("losersBracket:",losersBracket);
   console.log("TOURNAMENT'S WINNER!",bullPen[0]);
@@ -235,12 +266,9 @@ var singleEliminationTournament = function(integer,k){
   console.log("losersBracket.length:",losersBracket.length);
 }
 
-
 // Will generate n^2 competitors which will
 // Compete in a single-elimination tournament
 // Until a winner is declared.
-
 //k is the maximal number of points a player can win/lose in a given match
-
-singleEliminationTournament(4,25);
+singleEliminationTournament(32,25);
 
