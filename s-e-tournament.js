@@ -13,7 +13,6 @@ var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory  = 0
 var secondCompetitorsProbabilityOfVictory = 0
-var numberOfRequiredRounds = 32
 
 var firstCompetitor        = null
 var secondCompetitor       = null
@@ -42,7 +41,6 @@ var ifSecondCompetitorLoses = null;
 
 //k is the maximal number of points a player can win/lose in a given match
 var k = 8
-var n = 1
 
 /**
  * @name bullPenGenerator
@@ -93,13 +91,6 @@ var variableAssigner = function(array){
   firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses'];
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
 
-  console.log("firstCompetitor:",firstCompetitor)
-  console.log("firstCompetitorName:",firstCompetitorName)
-  console.log("firstCompetitorRating:",firstCompetitorRating)
-  console.log("firstCompetitorWins:",firstCompetitorWins)
-  console.log("firstCompetitorLosses:",firstCompetitorLosses)
-  console.log("firstCompetitorRecord:",firstCompetitorRecord)
-
   secondCompetitor       = array[1];
   secondCompetitorName   = Object.keys(secondCompetitor)[0];
   secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating'];
@@ -107,32 +98,9 @@ var variableAssigner = function(array){
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
 
-  console.log("secondCompetitor:",secondCompetitor)
-  console.log("secondCompetitorName:",secondCompetitorName)
-  console.log("secondCompetitorRating:",secondCompetitorRating)
-  console.log("secondCompetitorWins:",secondCompetitorWins)
-  console.log("secondCompetitorLosses:",secondCompetitorLosses)
-  console.log("secondCompetitorRecord:",secondCompetitorRecord)
-
   firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
-
-  console.log("firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
-  console.log("secondCompetitorsProbabilityOfVictory:",secondCompetitorsProbabilityOfVictory)
 };
-
-/**
- * @name - probabilityCalculator
- * @description - Calculates the likelihood of victory for the competitors
- *                on theCompetitionMats. Calculation based on the players's
- *                respective rating
- * @param - firstCompetitorRating
- * @param - secondCompetitorRating
- **/
-var probabilityCalculator = function(firstCompetitorRating,secondCompetitorRating){
-  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)))
-  secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)))
-}
 
 /**
  * @name - referee
@@ -177,14 +145,14 @@ var referee = function(probability){
  **/
 var matchRecorder = function(){
   firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
-    + firstCompetitorRating.toString()
-    + "-" + secondCompetitorName
-    + "-" + secondCompetitorRating.toString() + "***";
+                                                  + firstCompetitorRating.toString()
+                                                  + "-" + secondCompetitorName
+                                                  + "-" + secondCompetitorRating.toString() + "***";
 
   secondCompetitor[secondCompetitorName]['matches'] = secondCompetitor[secondCompetitorName]['matches']
-    + secondCompetitorRating.toString()
-    + "-" + firstCompetitorName
-    + "-" + firstCompetitorRating.toString() + "***";
+                                                    + secondCompetitorRating.toString()
+                                                    + "-" + firstCompetitorName
+                                                    + "-" + firstCompetitorRating.toString() + "***";
 };
 
 /**
@@ -240,18 +208,6 @@ var competitionMatDepopulator = function(string,array){
   }
 };
 
-var bullPenRepopulator = function(array){
-  // console.log("bullPen from bullPenRepopulator:",bullPen)
-  // console.log("array from bullPenRepopulator:",array)
-
-  // bullPen = winnersBracket;
-
-  // console.log("after assignment --> bullPen from bullPenRepopulator:",bullPen)
-  // console.log("after assignment -->   array from bullPenRepopulator:",array)
-
-
-}
-
 /**
  * @name - runOneTournamentRound
  * @description - Takes as input bullPen array
@@ -263,26 +219,30 @@ var bullPenRepopulator = function(array){
  *                **competitionMatsDepopulator -- Empties theCompetitionMats
  * @param - bullPen
  **/
-var runOneRound = function(array){
-  competitionMatPopulator(array);
-  console.log("theCompetitionMats:",theCompetitionMats)
-  console.log("bullPen:",bullPen)
-
-  variableAssigner(theCompetitionMats);
-
-
-  // referee(theCompetitionMats, firstCompetitorsProbabilityOfVictory);
-  // ratingsAdjuster(theCompetitionMats);
-  // competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
-  // console.log("from runOneRound before bullPenRepopulator --> winnersBracket:",winnersBracket)
-  // bullPenRepopulator(winnersBracket)
+var runAllRounds = function(array){
+  let requiredIterations = array.length/2
+  for ( let i = 0; i < requiredIterations; i++ ){
+    competitionMatPopulator(array);
+    variableAssigner(theCompetitionMats);
+    referee(firstCompetitorsProbabilityOfVictory);
+    ratingsAdjuster(theCompetitionMats);
+    competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
+  }
+  bullPen = winnersBracket;
+  winnersBracket = [];
 };
 
 var singleEliminationTournament = function(integer){
   bullPenGenerator(integer);
-  // for ( let i = 0; i < 2; i++ ) {
-    runOneRound(bullPen);
-  // }
+  for ( let i = 1; i <= integer; i++ ) {
+    runAllRounds(bullPen);
+  }
+
+  console.log("TOURNAMENT'S WINNER!",bullPen[0]);
+  console.log("losersBracket:",losersBracket.reverse());
+
+  console.log("winnersBracket.length:",winnersBracket.length);
+  console.log("losersBracket.length:",losersBracket.length);
 
 
 }
