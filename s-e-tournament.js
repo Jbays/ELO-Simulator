@@ -8,7 +8,7 @@ var _  = require('lodash');
 
 //bullPen format is =[{c1},{c2},{c3}]
 var bullPen            = []
-var theCompetitionMat  = []
+var theCompetitionMats  = []
 var winnersBracket     = []
 var losersBracket      = []
 var firstCompetitorsProbabilityOfVictory  = 0
@@ -70,13 +70,13 @@ var bullPenGenerator = function(integer) {
  * @name - competitionMatPopulator
  * @description - Takes as input bullPen array
  *                Removes first and second competitors from bullPen
- *                And places them inside theCompetitionMat
+ *                And places them inside theCompetitionMats
  * @param - bullPen
  *
  **/
 var competitionMatPopulator = function(array){
-  theCompetitionMat.push(array.shift())
-  theCompetitionMat.push(array.shift())
+  theCompetitionMats.push(array.shift())
+  theCompetitionMats.push(array.shift())
 }
 
 /**
@@ -92,7 +92,13 @@ var variableAssigner = function(array){
   firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins'];
   firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses'];
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
-  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
+
+  console.log("firstCompetitor:",firstCompetitor)
+  console.log("firstCompetitorName:",firstCompetitorName)
+  console.log("firstCompetitorRating:",firstCompetitorRating)
+  console.log("firstCompetitorWins:",firstCompetitorWins)
+  console.log("firstCompetitorLosses:",firstCompetitorLosses)
+  console.log("firstCompetitorRecord:",firstCompetitorRecord)
 
   secondCompetitor       = array[1];
   secondCompetitorName   = Object.keys(secondCompetitor)[0];
@@ -100,7 +106,19 @@ var variableAssigner = function(array){
   secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins'];
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
+
+  console.log("secondCompetitor:",secondCompetitor)
+  console.log("secondCompetitorName:",secondCompetitorName)
+  console.log("secondCompetitorRating:",secondCompetitorRating)
+  console.log("secondCompetitorWins:",secondCompetitorWins)
+  console.log("secondCompetitorLosses:",secondCompetitorLosses)
+  console.log("secondCompetitorRecord:",secondCompetitorRecord)
+
+  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
+
+  console.log("firstCompetitorsProbabilityOfVictory:",firstCompetitorsProbabilityOfVictory)
+  console.log("secondCompetitorsProbabilityOfVictory:",secondCompetitorsProbabilityOfVictory)
 };
 
 /**
@@ -207,10 +225,10 @@ var ratingsAtStakeCalculator = function(k){
 /**
  * @name - competitionMatDepopulator
  * @description - Takes as input bullPen array
- *                Removes both competitors from theCompetitionMat
+ *                Removes both competitors from theCompetitionMats
  *                Places winner of match into Winners Bracket
  *                And loser of match into Losers Bracket
- * @param - theCompetitionMat
+ * @param - theCompetitionMats
  **/
 var competitionMatDepopulator = function(string,array){
   if ( string.charAt(string.length-1) === 'l' ) {
@@ -221,6 +239,18 @@ var competitionMatDepopulator = function(string,array){
     winnersBracket.push(array.pop());
   }
 };
+
+var bullPenRepopulator = function(array){
+  // console.log("bullPen from bullPenRepopulator:",bullPen)
+  // console.log("array from bullPenRepopulator:",array)
+
+  // bullPen = winnersBracket;
+
+  // console.log("after assignment --> bullPen from bullPenRepopulator:",bullPen)
+  // console.log("after assignment -->   array from bullPenRepopulator:",array)
+
+
+}
 
 /**
  * @name - runOneTournamentRound
@@ -233,59 +263,28 @@ var competitionMatDepopulator = function(string,array){
  *                **competitionMatsDepopulator -- Empties theCompetitionMats
  * @param - bullPen
  **/
-var runOneRound = function(integer,array){
+var runOneRound = function(array){
+  competitionMatPopulator(array);
+  console.log("theCompetitionMats:",theCompetitionMats)
+  console.log("bullPen:",bullPen)
+
+  variableAssigner(theCompetitionMats);
 
 
-  // var numberOfMatches = array.length/2;
-  // var runOneRound = function(integer, array){
-  //   console.log("from runOneRound:",integer,array)
-  //   for ( let i = 0; i < integer; i++ ) {
-      competitionMatPopulator(array);
-      variableAssigner(theCompetitionMat);
-      referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory);
-      ratingsAdjuster(theCompetitionMat);
-      competitionMatDepopulator(firstCompetitorRecord,theCompetitionMat);
-
-  //   }
-  // }
-  // runOneRound(integer,array);
-
-
+  // referee(theCompetitionMats, firstCompetitorsProbabilityOfVictory);
+  // ratingsAdjuster(theCompetitionMats);
+  // competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
+  // console.log("from runOneRound before bullPenRepopulator --> winnersBracket:",winnersBracket)
+  // bullPenRepopulator(winnersBracket)
 };
 
 var singleEliminationTournament = function(integer){
   bullPenGenerator(integer);
-  for ( let i = 0; i < integer; i++ ) {
-    runOneRound(integer,bullPen);
-  }
-
-  // if ( winnersBracket.length === 1 ) {
-  //   console.log("TOURNAMENT WINNER!",winnersBracket[0])
-  // } else if ( winnersBracket > 1 ) {
-
+  // for ( let i = 0; i < 2; i++ ) {
+    runOneRound(bullPen);
   // }
-  console.log("theCompetitionMat:",theCompetitionMat)
-  console.log("winnersBracket:",winnersBracket)
-  console.log("losersBracket:",losersBracket)
 
 
-  // for ( var i = 0; i < array.length; i++ ) {
-  //   competitionMatPopulator(array)
-  //   variableAssigner(theCompetitionMat)
-  //   probabilityCalculator(firstCompetitorRating,secondCompetitorRating)
-  //   referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory)
-  //   ratingsAdjuster()
-  //   competitionMatDepopulator(theCompetitionMat)
-  // }
-  //
-  // if ( array.length === 1 ) {
-  //   console.log("YOU ARE THE WINNER!:",array[0])
-  //   // console.log("Loser's Bracket reversed:",losersBracket.reverse())
-  // } else if ( array.length === 0 ) {
-  //   singleEliminationTournament(winnersBracket)
-  // } else if ( array.length ) {
-  //   singleEliminationTournament(array)
-  // }
 }
 
 
