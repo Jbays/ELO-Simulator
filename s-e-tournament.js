@@ -7,40 +7,32 @@ var fs = require('fs');
 var _  = require('lodash');
 
 //bullPen format is =[{c1},{c2},{c3}]
-var bullPen            = []
-var theCompetitionMats  = []
-var winnersBracket     = []
-var losersBracket      = []
-var firstCompetitorsProbabilityOfVictory  = 0
-var secondCompetitorsProbabilityOfVictory = 0
+var bullPen            = [];
+var theCompetitionMats = [];
+var winnersBracket     = [];
+var losersBracket      = [];
+var firstCompetitorsProbabilityOfVictory  = 0;
+var secondCompetitorsProbabilityOfVictory = 0;
 
-var firstCompetitor        = null
-var secondCompetitor       = null
-var nameOfFirstCompetitor  = null
-var nameOfSecondCompetitor = null
-var firstCompetitorRating  = null
-var secondCompetitorRating = null
-var recordWinsForFirstCompetitor    = 0
-var recordWinsForSecondCompetitor   = 0
-var recordLossesForFirstCompetitor  = 0
-var recordLossesForSecondCompetitor = 0
+var firstCompetitor       = null;
+var firstCompetitorLosses = 0;
+var firstCompetitorName   = null;
+var firstCompetitorRating = null;
+var firstCompetitorRecord = null;
+var firstCompetitorWins   = 0;
 
-var firstCompetitorName    = null;
-var firstCompetitorWins    = 0;
-var firstCompetitorLosses  = 0;
-var firstCompetitorRecord  = null;
-var ifFirstCompetitorWins  = null;
-var ifFirstCompetitorLoses = null;
+var secondCompetitor       = null;
+var secondCompetitorName   = null;
+var secondCompetitorWins   = 0;
+var secondCompetitorLosses = 0;
+var secondCompetitorRating = null;
+var secondCompetitorRecord = null;
 
-var secondCompetitorName    = null;
-var secondCompetitorWins    = 0;
-var secondCompetitorLosses  = 0;
-var secondCompetitorRecord  = null;
+var ifFirstCompetitorWins   = null;
+var ifFirstCompetitorLoses  = null;
 var ifSecondCompetitorWins  = null;
 var ifSecondCompetitorLoses = null;
 
-//k is the maximal number of points a player can win/lose in a given match
-var k = 8
 
 /**
  * @name bullPenGenerator
@@ -161,7 +153,7 @@ var matchRecorder = function(){
  *                the results of their match has been tabulated.
  *                Rounds raw rating, then assigns new rating to competitor
  **/
-var ratingsAdjuster = function(array) {
+var ratingsAdjuster = function(array,k) {
   let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1);
   ratingsAtStakeCalculator(k);
 
@@ -219,32 +211,28 @@ var competitionMatDepopulator = function(string,array){
  *                **competitionMatsDepopulator -- Empties theCompetitionMats
  * @param - bullPen
  **/
-var runAllRounds = function(array){
+var runAllRounds = function(array,k){
   let requiredIterations = array.length/2
   for ( let i = 0; i < requiredIterations; i++ ){
     competitionMatPopulator(array);
     variableAssigner(theCompetitionMats);
     referee(firstCompetitorsProbabilityOfVictory);
-    ratingsAdjuster(theCompetitionMats);
+    ratingsAdjuster(theCompetitionMats,k);
     competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
   }
   bullPen = winnersBracket;
   winnersBracket = [];
 };
 
-var singleEliminationTournament = function(integer){
+var singleEliminationTournament = function(integer,k){
   bullPenGenerator(integer);
   for ( let i = 1; i <= integer; i++ ) {
-    runAllRounds(bullPen);
+    runAllRounds(bullPen,k);
   }
-
+  console.log("losersBracket:",losersBracket);
   console.log("TOURNAMENT'S WINNER!",bullPen[0]);
-  console.log("losersBracket:",losersBracket.reverse());
-
   console.log("winnersBracket.length:",winnersBracket.length);
   console.log("losersBracket.length:",losersBracket.length);
-
-
 }
 
 
@@ -252,6 +240,7 @@ var singleEliminationTournament = function(integer){
 // Compete in a single-elimination tournament
 // Until a winner is declared.
 
+//k is the maximal number of points a player can win/lose in a given match
 
-singleEliminationTournament(4);
+singleEliminationTournament(4,25);
 
