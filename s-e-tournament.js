@@ -28,22 +28,22 @@ var n = 1
  **/
 
 var bullPenGenerator = function(integer) {
-  var squaredNumber = integer * integer
+  let squaredNumber = integer * integer;
   var competitorAssembler = function (squaredNumber) {
-    console.log("Number of Competitors:",squaredNumber)
-    for (var j = 1; j <= squaredNumber; j++) {
-      let yourNumber = j.toString()
-      let competitorBlueprint = '{"c' + yourNumber +'":{"rating":1600,"wins":0,"losses":0}}'
+    console.log("Number of Competitors In Your Tournament:",squaredNumber);
+    for (let i = 1; i <= squaredNumber; i++) {
+      let yourNumber = i.toString();
+      let competitorBlueprint = '{"c' + yourNumber + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":""}}';
 
-      bullPen.push(JSON.parse(competitorBlueprint))
+      bullPen.push(JSON.parse(competitorBlueprint));
     }
-  }
-  competitorAssembler(squaredNumber)
-}
+  };
+  competitorAssembler(squaredNumber);
+};
 
 bullPenGenerator(numberOfRequiredRounds)
 
-var tournamentCoordinator = function(array){
+var singleEliminationTournament = function(array){
   for ( var i = 0; i < array.length; i++ ) {
     var firstCompetitor        = null
     var secondCompetitor       = null
@@ -173,10 +173,10 @@ var tournamentCoordinator = function(array){
     console.log("YOU ARE THE WINNER!:",array[0])
     console.log("Loser's Bracket reversed:",losersBracket.reverse())
   } else if ( array.length === 0 ) {
-    tournamentCoordinator(winnersBracket)
+    singleEliminationTournament(winnersBracket)
   } else if ( array.length ) {
-    tournamentCoordinator(array)
+    singleEliminationTournament(array)
   }
 }
 
-tournamentCoordinator(bullPen)
+singleEliminationTournament(bullPen)
