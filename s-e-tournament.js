@@ -65,7 +65,7 @@ var bullPenGenerator = function(integer) {
 var competitionMatPopulator = function(array){
   theCompetitionMats.push(array.shift())
   theCompetitionMats.push(array.shift())
-}
+};
 
 /**
  * @name - variableAssigner
@@ -97,8 +97,12 @@ var variableAssigner = function(array){
 
 /**
  * @name - referee
- * @description - Pulls a random draw (between 0-1) and assigns a victory based
- *                on firstCompetitorsProbabilityOfVictory
+ * @description - Pulls a random number between 0 and 1
+ *                ** matchRecorder -- Writes match as a string on competitor's record
+ *                If firstCompetitorsProbabilityOfVictory is greater than randomNumber
+ *                  Assigns victory to firstCompetitor
+ *                else
+ *                  Assigns victory to secondCompetitor
  * @param - firstCompetitorsProbabilityOfVictory
  **/
 var referee = function(probability){
@@ -150,9 +154,8 @@ var matchRecorder = function(){
 /**
  * @name - ratingsAdjuster
  * @description - Determines the result of firstCompetitor's match
- *                ** ratingsAtStakeCalculator(k)
- *                ** calculates the ratings at stake for each player
- *                ** depending on whether they win or lose
+ *                ** ratingsAtStakeCalculator(k) -- calculates the ratings at stake for each player
+ *                                                  depending on whether they win or lose
  *                Adds additional ratings points to winner
  *                Subtracts rating points from loser
  * @param - theCompetitionMats
@@ -165,7 +168,6 @@ var ratingsAdjuster = function(array,k) {
   if ( firstCompetitorLastMatchResult === 'w' ) {
     firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses);
-
   } else {
     firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins);
@@ -229,15 +231,18 @@ var runAllMatchesForOneRound = function(array,k){
   winnersBracket = [];
 };
 
-
+/**
+ * @name - roundsCalculator
+ * @description - Makes all competitorObjects in bullPen compete once
+ *                **calculateNumberOfRounds -- calculates the number of rounds 1st and 2nd will fight!
+ * @param - integer
+ **/
 
 var roundsCalculator = function(integer){
-  let originalNumber = integer;
-  let oNSquared = originalNumber*originalNumber;
+  let oNSquared = integer*integer;
   var calculateNumberOfRounds = function(integer){
     let competitorsHalved = integer/2;
     numberOfRounds++;
-
     if ( competitorsHalved !== 1 ) {
       calculateNumberOfRounds(competitorsHalved);
     } else {
@@ -245,12 +250,19 @@ var roundsCalculator = function(integer){
     }
   };
   calculateNumberOfRounds(oNSquared);
-}
+};
 
-
+/**
+ * @name - singleEliminationTournament
+ * @description - Makes all competitorObjects in bullPen compete once
+ *                **bullPenGenerator -- builds competitors; populates bullPen
+ *                **roundsCalculator -- calculates the number of rounds 1st and 2nd will fight!
+ *                Invokes runAllMatchesForOneRound() for numberOfRounds
+ * @param - integer
+ * @param - k-factor
+ **/
 var singleEliminationTournament = function(integer,k){
   bullPenGenerator(integer);
-
   roundsCalculator(integer);
   for ( let i = 1; i <= numberOfRounds; i++ ) {
     runAllMatchesForOneRound(bullPen,k);
@@ -259,11 +271,11 @@ var singleEliminationTournament = function(integer,k){
   console.log("TOURNAMENT'S WINNER!",bullPen[0]);
   console.log("winnersBracket.length:",winnersBracket.length);
   console.log("losersBracket.length:",losersBracket.length);
-}
+};
 
 // Will generate n^2 competitors which will
 // Compete in a single-elimination tournament
 // Until a winner is declared.
-//k is the maximal number of points a player can win/lose in a given match
+// k is the maximal number of points a player can win/lose in a given match
 singleEliminationTournament(32,25);
 
