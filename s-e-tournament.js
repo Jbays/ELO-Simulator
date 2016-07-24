@@ -1,7 +1,3 @@
-/**
- * Created by justin.baize on 6/16/16.
- */
-
 'use strict'
 var fs = require('fs');
 var _  = require('lodash');
@@ -37,11 +33,11 @@ var ifSecondCompetitorLoses = null;
 
 
 /**
- * @name bullPenGenerator
- * @description - takes an integer as input
- *                outputs number of competitors === integer^2
- *                in form bullPen = [{c1},{c2},{c3}]
- * @param numberOfRequiredRounds
+ * @name - bullPenGenerator
+ * @description - outputs bullPen populated with integer^2 number of competitors
+ * @example - bullPen = [{c1},{c2},{c3},...,{c(integer^2)}]
+ *            bullPen.length = integer^2
+ * @param - integer
  **/
 
 var bullPenGenerator = function(integer) {
@@ -69,16 +65,6 @@ var bullPenGenerator = function(integer) {
 var competitionMatPopulator = function(array){
   theCompetitionMats.push(array.shift())
   theCompetitionMats.push(array.shift())
-  //
-  // console.log("from competitionMatPopulator --> theCompetitionMats[1]:",theCompetitionMats[1])
-  //
-  // if ( theCompetitionMats[1] === undefined ) {
-  //
-  //   break;
-  //
-  // }
-
-
 }
 
 /**
@@ -102,6 +88,9 @@ var variableAssigner = function(array){
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
 
+  //important to save this step for last
+  //otherwise secondCompetitorsRating may not be defined
+  //at assignment-time for firstCompetitorsProbabilityOfVictory
   firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
 };
@@ -110,7 +99,6 @@ var variableAssigner = function(array){
  * @name - referee
  * @description - Pulls a random draw (between 0-1) and assigns a victory based
  *                on firstCompetitorsProbabilityOfVictory
- * @param - theCompetitorMats
  * @param - firstCompetitorsProbabilityOfVictory
  **/
 var referee = function(probability){
@@ -137,14 +125,14 @@ var referee = function(probability){
  * @description - To 'matches' key in competitorObject, assigns value -->
  *                stringified record of match just finished in theCompetitionMats.
  *                Each match is delimited by '***'
- *                EX: 'matches': {'1600-c733-1600***1588-c503-1613'}
- *                  where at time of match: '1600' is competitorObject's rating
- *                                          'c733' is competitorObject's opponent
- *                                          '1600' is competitorObject's opponent's rating
- *                  '***' delimiter
- *                  Second match:           '1588' is competitorObject's rating
- *                                          'c503' is competitorObject's opponent
- *                                          '1613' is competitorObject's opponent's rating
+ * @example - 'matches': {'1600-c733-1600***1588-c503-1613'}
+ *             where at time of match: '1600' is competitorObject's rating
+ *                                     'c733' is competitorObject's opponent
+ *                                     '1600' is competitorObject's opponent's rating
+ *             '***' delimiter
+ *             Second match:           '1588' is competitorObject's rating
+ *                                     'c503' is competitorObject's opponent
+ *                                     '1613' is competitorObject's opponent's rating
  * @param - none
  **/
 var matchRecorder = function(){
@@ -161,9 +149,14 @@ var matchRecorder = function(){
 
 /**
  * @name - ratingsAdjuster
- * @description - Calculates the raw new ratings for the competitors after
- *                the results of their match has been tabulated.
- *                Rounds raw rating, then assigns new rating to competitor
+ * @description - Determines the result of firstCompetitor's match
+ *                ** ratingsAtStakeCalculator(k)
+ *                ** calculates the ratings at stake for each player
+ *                ** depending on whether they win or lose
+ *                Adds additional ratings points to winner
+ *                Subtracts rating points from loser
+ * @param - theCompetitionMats
+ * @param - k-factor
  **/
 var ratingsAdjuster = function(array,k) {
   let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1);
@@ -184,7 +177,7 @@ var ratingsAdjuster = function(array,k) {
 /**
  * @name - ratingsAtStakeCalculator
  * @description - Calculates how much each competitorObject in theCompetitionMats
- *                stands to win or lose in their match.
+ *                stands to win or lose based on the result of the match.
  * @param - k-factor
  **/
 var ratingsAtStakeCalculator = function(k){
@@ -196,10 +189,10 @@ var ratingsAtStakeCalculator = function(k){
 
 /**
  * @name - competitionMatDepopulator
- * @description - Takes as input bullPen array
- *                Removes both competitors from theCompetitionMats
- *                Places winner of match into Winners Bracket
- *                And loser of match into Losers Bracket
+ * @description - Checks last entry of firstCompetitorRecord
+ *                Then places winner of match into innersBracket
+ *                And loser of match into losersBracket
+ * @param - firstCompetitorRecord
  * @param - theCompetitionMats
  **/
 var competitionMatDepopulator = function(string,array){
@@ -213,15 +206,15 @@ var competitionMatDepopulator = function(string,array){
 };
 
 /**
- * @name - runOneTournamentRound
- * @description - Takes as input bullPen array
- *                Makes all competitorObjects in bullPen compete once
+ * @name - runAllMatchesForOneRound
+ * @description - Makes all competitorObjects in bullPen compete once
  *                **competitorMatPopulator     -- Puts two competitorObjects into theCompetitionMats
  *                **variableAssigner           -- Gives values to all variables required for ELO-calculation
  *                **referee                    -- Declares winner and loser in theCompetitionMats
  *                **ratingsAdjuster            -- Adjusts both winner's and loser's rating
  *                **competitionMatsDepopulator -- Empties theCompetitionMats
  * @param - bullPen
+ * @param - k-factor
  **/
 var runAllMatchesForOneRound = function(array,k){
   let numberOfMatches = array.length/2
@@ -235,6 +228,8 @@ var runAllMatchesForOneRound = function(array,k){
   bullPen = winnersBracket;
   winnersBracket = [];
 };
+
+
 
 var roundsCalculator = function(integer){
   let originalNumber = integer;
