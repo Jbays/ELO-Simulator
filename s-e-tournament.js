@@ -263,11 +263,12 @@ var roundsCalculator = function(integer){
  **/
 var singleEliminationTournament = function(integer,k){
   bullPenGenerator(integer);
+  console.log("bullPen had",bullPen.length,"number of competitors!")
   roundsCalculator(integer);
   for ( let i = 1; i <= numberOfRounds; i++ ) {
     runAllMatchesForOneRound(bullPen,k);
   }
-  console.log("losersBracket:",losersBracket);
+  // console.log("losersBracket:",losersBracket);
   console.log("TOURNAMENT'S WINNER!",bullPen[0]);
   console.log("winnersBracket.length:",winnersBracket.length);
   console.log("losersBracket.length:",losersBracket.length);
@@ -277,5 +278,5 @@ var singleEliminationTournament = function(integer,k){
 // Compete in a single-elimination tournament
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
-singleEliminationTournament(32,25);
+singleEliminationTournament(256,25);
 
