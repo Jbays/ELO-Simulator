@@ -52,6 +52,55 @@ var bullPenGenerator = function(integer) {
   competitorAssembler(nSquared);
 };
 
+var beltAwarder = function(array,integer){
+
+  let totalCompetitors = _.reduce(array, function(memo, num) { return memo + num; }, 0);
+
+  let blackBeltCompetitors  = Math.round((array[0]/totalCompetitors)*integer);
+  let brownBeltCompetitors  = Math.round((array[1]/totalCompetitors)*integer);
+  let purpleBeltCompetitors = Math.round((array[2]/totalCompetitors)*integer);
+  let blueBeltCompetitors   = Math.round((array[3]/totalCompetitors)*integer);
+  let whiteBeltCompetitors  = Math.round((array[4]/totalCompetitors)*integer);
+
+  console.log("beltAwarder invoked!");
+  console.log("array:",array);
+  console.log("integer:",integer);
+
+  console.log("blackBeltCompetitors:", blackBeltCompetitors);
+  console.log("brownBeltCompetitors:", brownBeltCompetitors);
+  console.log("purpleBeltCompetitors:",purpleBeltCompetitors);
+  console.log("blueBeltCompetitors:",  blueBeltCompetitors);
+  console.log("whiteBeltCompetitors:", whiteBeltCompetitors);
+
+  let beltedCompetitors = [
+    blackBeltCompetitors,
+    brownBeltCompetitors,
+    purpleBeltCompetitors,
+    blueBeltCompetitors,
+    whiteBeltCompetitors
+  ];
+
+  let sumOfBelts = blackBeltCompetitors + brownBeltCompetitors + purpleBeltCompetitors
+                 + blueBeltCompetitors + whiteBeltCompetitors;
+
+  console.log("sumOfBelts:",sumOfBelts);
+
+  if ( sumOfBelts !== totalCompetitors ) {
+
+    let difference = sumOfBelts - totalCompetitors;
+
+    let maxCompetitors = _.max(beltedCompetitors);
+    console.log("maxCompetitors:",maxCompetitors);
+
+    // for ( let i = 0; i <= 4; i++ ) {
+    //
+    //   console.log("i:",i)
+    //
+    // }
+
+  }
+};
+
 /**
  * @name - singleEliminationTournament
  * @description - Makes all competitorObjects in bullPen compete once
@@ -61,19 +110,25 @@ var bullPenGenerator = function(integer) {
  * @param - integer
  * @param - k-factor
  **/
-var singleEliminationTournament = function(integer,k){
+var singleEliminationTournament = function(integer,object,k){
   bullPenGenerator(integer);
-  console.log("bullPen:",bullPen)
-  console.log("bullPen had",bullPen.length,"number of competitors!")
-    // runAllMatchesForOneRound(bullPen,k);
+  console.log("bullPen:",bullPen);
+  console.log("bullPen had",bullPen.length,"number of competitors!");
+
+
+
+  beltAwarder(object,bullPen.length);
+  // runAllMatchesForOneRound(bullPen,k);
   // console.log("losersBracket:",losersBracket);
   // console.log("TOURNAMENT'S WINNER!",bullPen[0]);
   // console.log("winnersBracket.length:",winnersBracket.length);
   // console.log("losersBracket.length:",losersBracket.length);
 };
 
+var demographicInformation = [144,306,551,642,198];
+
 // Will generate n^2 competitors which will
 // Compete in a single-elimination tournament
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
-singleEliminationTournament(4,25);
+singleEliminationTournament(4,demographicInformation,25);
