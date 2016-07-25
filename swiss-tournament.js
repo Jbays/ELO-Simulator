@@ -97,6 +97,9 @@ var variableAssigner = function(array){
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
 
+  //important to save this step for last
+  //otherwise secondCompetitorRating may not be defined
+  //at assignment-time for firstCompetitorsProbabilityOfVictory
   firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
 };
@@ -169,9 +172,13 @@ var ratingsAtStakeCalculator = function(k){
 
 /**
  * @name - ratingsAdjuster
- * @description - Calculates the raw new ratings for the competitors after
- *                the results of their match has been tabulated.
- *                Rounds raw rating, then assigns new rating to competitor
+ * @description - Determines the result of firstCompetitor's match
+ *                ** ratingsAtStakeCalculator(k) -- calculates the ratings at stake for each player
+ *                                                  depending on whether they win or lose
+ *                Adds additional ratings points to winner
+ *                Subtracts rating points from loser
+ * @param - theCompetitionMats
+ * @param - k-factor
  **/
 var ratingsAdjuster = function(array) {
   let firstCompetitorLastMatchResult = array[0][firstCompetitorName]['record'].slice(array[0][firstCompetitorName]['record'].length-1);
@@ -226,12 +233,14 @@ var newBullPenConstructor = function(winnersBracket, losersBracket){
 /**
  * @name - runOneTournamentRound
  * @description - Takes as input bullPen array
- *                Makes all competitorObjects in bullPen compete once
- *                **competitorMatPopulator     -- Puts two competitorObjects into theCompetitionMats
- *                **variableAssigner           -- Gives values to all variables required for ELO-calculation
- *                **referee                    -- Declares winner and loser in theCompetitionMats
- *                **ratingsAdjuster            -- Adjusts both winner's and loser's rating
- *                **competitionMatsDepopulator -- Empties theCompetitionMats
+ *                Makes all competitorObjects in bullPen
+ *                Compete once for every pair of competitors {
+ *                  **competitorMatPopulator     -- Puts two competitorObjects into theCompetitionMats
+ *                  **variableAssigner           -- Gives values to all variables required for ELO-calculation
+ *                  **referee                    -- Declares winner and loser in theCompetitionMats
+ *                  **ratingsAdjuster            -- Adjusts both winner's and loser's rating
+ *                  **competitionMatsDepopulator -- Empties theCompetitionMats
+ *                }
  * @param - bullPen
  **/
 var runOneTournamentRound = function(array){
@@ -249,10 +258,11 @@ var runOneTournamentRound = function(array){
  * @name - swissTournament
  * @description - Takes as input number of rounds competitors are obliged to compete
  *                **bullPenGenerator -- Creates competitors; Adds them to bullPen array
- *                For desired number of rounds, competitors will compete
+ *                For numberOfRoundsDesired, competitors will compete {
  *                  **runOneTournamentRound -- Forces all competitors to compete once; Empties bullPen array
- *                  **newBullPenConstructor     -- Repopulates bullPen with winnersBracket and losersBracket
+ *                  **newBullPenConstructor -- Repopulates bullPen with winnersBracket and losersBracket
  *                  Then empties both winnersBracket and losersBracket
+ *                }
  * @param - Number of Rounds competitors will compete
  **/
 var swissTournament = function(numberOfRoundsDesired){
