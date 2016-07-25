@@ -7,7 +7,7 @@ var bullPen            = [];
 var theCompetitionMat  = [];
 var winnersBracket     = [];
 var losersBracket      = [];
-var competitorsSquared = 32;
+var competitorsSquared = 4;
 
 //k is the maximal number of points a player can win/lose in a given match
 //---------------------------------------------------------------------
@@ -89,7 +89,6 @@ var variableAssigner = function(array){
   firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins'];
   firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses'];
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
-  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
 
   secondCompetitor       = array[1];
   secondCompetitorName   = Object.keys(secondCompetitor)[0];
@@ -97,6 +96,8 @@ var variableAssigner = function(array){
   secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins'];
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
+
+  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
 };
 
@@ -179,7 +180,6 @@ var ratingsAdjuster = function(array) {
   if ( firstCompetitorLastMatchResult === 'w' ) {
     firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses);
-
   } else {
     firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins);
@@ -239,7 +239,7 @@ var runOneTournamentRound = function(array){
   for ( let i = 0; i < numberOfMatches; i++ ) {
     competitionMatPopulator(bullPen);
     variableAssigner(theCompetitionMat);
-    referee(theCompetitionMat, firstCompetitorsProbabilityOfVictory);
+    referee(firstCompetitorsProbabilityOfVictory);
     ratingsAdjuster(theCompetitionMat);
     competitionMatDepopulator(firstCompetitorRecord,theCompetitionMat);
   }
@@ -259,6 +259,8 @@ var swissTournament = function(numberOfRoundsDesired){
   bullPenGenerator(competitorsSquared);
   for ( let i = 0; i < numberOfRoundsDesired; i++ ) {
     runOneTournamentRound(bullPen);
+    // console.log("winnersBracket:",winnersBracket);
+    // console.log("losersBracket:",losersBracket);
     newBullPenConstructor(winnersBracket,losersBracket);
     winnersBracket = [];
     losersBracket  = [];
@@ -267,4 +269,4 @@ var swissTournament = function(numberOfRoundsDesired){
 };
 
 //Adjust this number for number of rounds in the swiss tournament
-swissTournament(30);
+swissTournament(4);
