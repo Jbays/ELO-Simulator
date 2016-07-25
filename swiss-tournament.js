@@ -7,7 +7,7 @@ var bullPen            = [];
 var theCompetitionMat  = [];
 var winnersBracket     = [];
 var losersBracket      = [];
-var competitorsSquared = 4;
+var competitorsSquared = 32;
 
 //k is the maximal number of points a player can win/lose in a given match
 //---------------------------------------------------------------------
@@ -150,7 +150,7 @@ var referee = function(probability){
 
     secondCompetitor[secondCompetitorName]['wins']++;
     secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w";
-  };
+  }
 };
 
 /**
@@ -263,8 +263,8 @@ var swissTournament = function(numberOfRoundsDesired){
     winnersBracket = [];
     losersBracket  = [];
   }
-  // console.log("from swissTournament --> bullPen:",bullPen)
+  console.log("from swissTournament --> bullPen:",bullPen);
 };
 
 //Adjust this number for number of rounds in the swiss tournament
-swissTournament(4);
+swissTournament(30);
