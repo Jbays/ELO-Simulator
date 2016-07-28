@@ -9,6 +9,7 @@ var bullPen            = [];
 var theCompetitionMats = [];
 var winnersBracket     = [];
 var losersBracket      = [];
+var nSquared           = null;
 var firstCompetitorsProbabilityOfVictory  = 0;
 var secondCompetitorsProbabilityOfVictory = 0;
 
@@ -40,7 +41,7 @@ var ifSecondCompetitorLoses = null;
  **/
 
 var bullPenGenerator = function(integer) {
-  var nSquared = integer*integer;
+  nSquared = integer*integer;
   var competitorAssembler = function (nSquared) {
     for (let i = 1; i <= nSquared; i++) {
       let yourNumber = i.toString();
@@ -73,31 +74,47 @@ var beltAwarder = function(array,integer){
   console.log("whiteBeltCompetitors:", whiteBeltCompetitors);
 
   let beltedCompetitors = [
-    blackBeltCompetitors,
-    brownBeltCompetitors,
-    purpleBeltCompetitors,
-    blueBeltCompetitors,
-    whiteBeltCompetitors
+    [ 'black',
+      'brown',
+      'purple',
+      'blue',
+      'white' ],
+    [ blackBeltCompetitors,
+      brownBeltCompetitors,
+      purpleBeltCompetitors,
+      blueBeltCompetitors,
+      whiteBeltCompetitors ]
   ];
 
+  console.log("beltedCompetitors:",beltedCompetitors);
+
   let sumOfBelts = blackBeltCompetitors + brownBeltCompetitors + purpleBeltCompetitors
-                 + blueBeltCompetitors + whiteBeltCompetitors;
+                 + blueBeltCompetitors  + whiteBeltCompetitors;
 
   console.log("sumOfBelts:",sumOfBelts);
 
   if ( sumOfBelts !== totalCompetitors ) {
 
-    let difference = sumOfBelts - totalCompetitors;
+    console.log("the converted number of competitors (with belts) is not equal to the original number of competitors")
 
-    let maxCompetitors = _.max(beltedCompetitors);
-    console.log("maxCompetitors:",maxCompetitors);
+    let difference = Math.abs(sumOfBelts - nSquared);
+    console.log("difference:",difference);
 
-    // for ( let i = 0; i <= 4; i++ ) {
-    //
-    //   console.log("i:",i)
-    //
-    // }
+    let maxCompetitorsInAllDivisions = _.max(beltedCompetitors[1]);
+    console.log("maxCompetitorsInAllDivisions:",maxCompetitorsInAllDivisions);
+    let indexOfMaxCompetitorsInAllDivisions = beltedCompetitors[1].indexOf(maxCompetitorsInAllDivisions)
+    console.log("indexOfMaxCompetitorsInAllDivisions:",indexOfMaxCompetitorsInAllDivisions)
 
+    let mostNumerousBelts = beltedCompetitors[0][indexOfMaxCompetitorsInAllDivisions];
+    console.log("mostNumerousBelts:",mostNumerousBelts)
+
+
+    //most numerous belt now correctly logs to the console
+    //the goal is to subtract the difference variable from the most numerous belt
+    //this should cause the smallest deviation in numbers
+
+    //future iterations of code will handle for any number of competitors
+    //as opposed to current code which can only handle for m^2 number of competitors
   }
 };
 
