@@ -5,6 +5,9 @@ var _  = require('lodash');
 //bullPen format is =[{c1},{c2},{c3}]
 var numberOfRounds = null;
 
+var demographicInformation = [144,306,551,642,198];
+var jiujitsuBelts = ['black','brown','purple','blue','white'];
+
 var bullPen            = [];
 var theCompetitionMats = [];
 var winnersBracket     = [];
@@ -40,86 +43,50 @@ var ifSecondCompetitorLoses = null;
  * @param - integer
  **/
 
-var bullPenGenerator = function(integer) {
-  nSquared = integer*integer;
-  var competitorAssembler = function (nSquared) {
-    for (let i = 1; i <= nSquared; i++) {
-      let yourNumber = i.toString();
-      let competitorBlueprint = '{"c' + yourNumber + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":""}}';
+var bullPenGenerator = function(demographicInformation) {
+  let counter = 1;
 
-      bullPen.push(JSON.parse(competitorBlueprint));
+  var competitorAssembler = function(demographicInformation){
+    for ( let j = 0; j < demographicInformation.length; j++ ) {
+      for ( let i = 1; i <= demographicInformation[j]; i++ ) {
+        let competitorNameBlueprint = counter.toString();
+        let competitorBlueprint = '{"c' + competitorNameBlueprint
+                                + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":"","belt":'
+                                + '"' + jiujitsuBelts[j]+ '"' + '}}';
+        counter++;
+
+        bullPen.push(JSON.parse(competitorBlueprint));
+      }
     }
   };
-  competitorAssembler(nSquared);
+  competitorAssembler(demographicInformation);
 };
 
-var beltAwarder = function(array,integer){
+var separateByBelt = function(bullPen){
 
-  let totalCompetitors = _.reduce(array, function(memo, num) { return memo + num; }, 0);
+  console.log("separateByBelt invoked!");
+  console.log("bullPen:",bullPen);
 
-  let blackBeltCompetitors  = Math.round((array[0]/totalCompetitors)*integer);
-  let brownBeltCompetitors  = Math.round((array[1]/totalCompetitors)*integer);
-  let purpleBeltCompetitors = Math.round((array[2]/totalCompetitors)*integer);
-  let blueBeltCompetitors   = Math.round((array[3]/totalCompetitors)*integer);
-  let whiteBeltCompetitors  = Math.round((array[4]/totalCompetitors)*integer);
-
-  console.log("beltAwarder invoked!");
-  console.log("array:",array);
-  console.log("integer:",integer);
-
-  console.log("blackBeltCompetitors:", blackBeltCompetitors);
-  console.log("brownBeltCompetitors:", brownBeltCompetitors);
-  console.log("purpleBeltCompetitors:",purpleBeltCompetitors);
-  console.log("blueBeltCompetitors:",  blueBeltCompetitors);
-  console.log("whiteBeltCompetitors:", whiteBeltCompetitors);
-
-  let beltedCompetitors = [
-    [ 'black',
-      'brown',
-      'purple',
-      'blue',
-      'white' ],
-    [ blackBeltCompetitors,
-      brownBeltCompetitors,
-      purpleBeltCompetitors,
-      blueBeltCompetitors,
-      whiteBeltCompetitors ]
-  ];
-
-  console.log("beltedCompetitors:",beltedCompetitors);
-
-  let sumOfBelts = blackBeltCompetitors + brownBeltCompetitors + purpleBeltCompetitors
-                 + blueBeltCompetitors  + whiteBeltCompetitors;
-
-  console.log("sumOfBelts:",sumOfBelts);
-
-  if ( sumOfBelts !== totalCompetitors ) {
-
-    console.log("the converted number of competitors (with belts) is not equal to the original number of competitors")
-
-    let difference = Math.abs(sumOfBelts - nSquared);
-    console.log("difference:",difference);
-
-    let maxCompetitorsInAllDivisions = _.max(beltedCompetitors[1]);
-    console.log("maxCompetitorsInAllDivisions:",maxCompetitorsInAllDivisions);
-    let indexOfMaxCompetitorsInAllDivisions = beltedCompetitors[1].indexOf(maxCompetitorsInAllDivisions)
-    console.log("indexOfMaxCompetitorsInAllDivisions:",indexOfMaxCompetitorsInAllDivisions)
-
-    let mostNumerousBelts = beltedCompetitors[0][indexOfMaxCompetitorsInAllDivisions];
-    console.log("mostNumerousBelts:",mostNumerousBelts)
-
-
-    //most numerous belt now correctly logs to the console
-    //the goal is to subtract the difference variable from the most numerous belt
-    //this should cause the smallest deviation in numbers
-
-    //future iterations of code will handle for any number of competitors
-    //as opposed to current code which can only handle for m^2 number of competitors
-  }
-};
+}
 
 /**
- * @name - singleEliminationTournament
+ * @name - competitionMatPopulator
+ * @description - Takes as input bullPen array
+ *                Removes first and second competitors from bullPen
+ *                And places them inside theCompetitionMats
+ * @param - bullPen
+ *
+ **/
+var competitionMatPopulator = function(bullPen){
+  theCompetitionMats.push(bullPen.shift())
+  theCompetitionMats.push(bullPen.shift())
+};
+
+
+
+
+/**
+ * @name - mundialTournament
  * @description - Makes all competitorObjects in bullPen compete once
  *                **bullPenGenerator -- builds competitors; populates bullPen
  *                **roundsCalculator -- calculates the number of rounds 1st and 2nd will fight!
@@ -127,14 +94,16 @@ var beltAwarder = function(array,integer){
  * @param - integer
  * @param - k-factor
  **/
-var singleEliminationTournament = function(integer,object,k){
-  bullPenGenerator(integer);
-  console.log("bullPen:",bullPen);
+var mundialTournament = function(demographicInformation,k){
+  bullPenGenerator(demographicInformation);
+
+
+  // console.log("bullPen:",bullPen);
+  // console.log("theCompetitionMats:",theCompetitionMats);
   console.log("bullPen had",bullPen.length,"number of competitors!");
 
 
-
-  beltAwarder(object,bullPen.length);
+  // getAllCompetitorNames(object,bullPen.length);
   // runAllMatchesForOneRound(bullPen,k);
   // console.log("losersBracket:",losersBracket);
   // console.log("TOURNAMENT'S WINNER!",bullPen[0]);
@@ -142,10 +111,8 @@ var singleEliminationTournament = function(integer,object,k){
   // console.log("losersBracket.length:",losersBracket.length);
 };
 
-var demographicInformation = [144,306,551,642,198];
-
 // Will generate n^2 competitors which will
 // Compete in a single-elimination tournament
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
-singleEliminationTournament(4,demographicInformation,25);
+mundialTournament(demographicInformation,25);
