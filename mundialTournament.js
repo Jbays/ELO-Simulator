@@ -23,6 +23,7 @@ var firstCompetitorName   = null;
 var firstCompetitorRating = null;
 var firstCompetitorRecord = null;
 var firstCompetitorWins   = 0;
+var firstCompetitorBelt   = null;
 
 var secondCompetitor       = null;
 var secondCompetitorName   = null;
@@ -30,6 +31,8 @@ var secondCompetitorWins   = 0;
 var secondCompetitorLosses = 0;
 var secondCompetitorRating = null;
 var secondCompetitorRecord = null;
+var secondCompetitorBelt   = null;
+
 
 var ifFirstCompetitorWins   = null;
 var ifFirstCompetitorLoses  = null;
@@ -47,6 +50,15 @@ var ifSecondCompetitorLoses = null;
 var bullPenGenerator = function(demographicInformation) {
   let counter = 1;
 
+  //competitionAssembler should have a numerical representation of belts
+  //black = 0;
+  //brown = 1;
+  //purple = 2;
+  //blue = 3;
+  //white = 4;
+  //then the referee function can compare these values
+  //as opposed to being forced to compare two strings (where I'll have to make some hierarchical
+  //comparision anyway!
   var competitorAssembler = function(demographicInformation){
     for ( let j = 0; j < demographicInformation.length; j++ ) {
       for ( let i = 1; i <= demographicInformation[j]; i++ ) {
@@ -91,6 +103,79 @@ var competitionMatPopulator = function(aboutToCompeteArray, bullPen){
 };
 
 
+/**
+ * @name - variableAssigner
+ * @description - Assigns to variables all statistics relevant to calculations for
+ *                the two competitors on theCompetitionMats.
+ * @param - theCompetitionMats
+ **/
+var scribe = function(theCompetitionMats){
+  firstCompetitor       = theCompetitionMats[0];
+  firstCompetitorName   = Object.keys(firstCompetitor)[0];
+  firstCompetitorRating = firstCompetitor[firstCompetitorName]['rating'];
+  firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins'];
+  firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses'];
+  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
+  firstCompetitorBelt   = firstCompetitor[firstCompetitorName]['belt'];
+
+  secondCompetitor       = theCompetitionMats[1];
+  secondCompetitorName   = Object.keys(secondCompetitor)[0];
+  secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating'];
+  secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins'];
+  secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
+  secondCompetitorBelt   = secondCompetitor[secondCompetitorName]['belt'];
+};
+
+//should compare against numerical representation of belt
+var referee = function(firstCompetitorBelt,secondCompetitorBelt){
+  matchRecorder();
+
+  // if ( probability > randomNumber ) {
+  //   firstCompetitor[firstCompetitorName]['wins']++;
+  //   firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w";
+  //
+  //   secondCompetitor[secondCompetitorName]['losses']++;
+  //   secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l";
+  // } else {
+  //   firstCompetitor[firstCompetitorName]['losses']++;
+  //   firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "l";
+  //
+  //   secondCompetitor[secondCompetitorName]['wins']++;
+  //   secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w";
+  // }
+};
+
+/**
+ * @name - matchRecorder
+ * @description - To 'matches' key in competitorObject, assigns value -->
+ *                stringified record of match just finished in theCompetitionMats.
+ *                Each match is delimited by '***'
+ * @example - 'matches': {'1600-c733-1600***1588-c503-1613'}
+ *             where at time of match: '1600' is competitorObject's rating
+ *                                     'c733' is competitorObject's opponent
+ *                                     '1600' is competitorObject's opponent's rating
+ *             '***' delimiter
+ *             Second match:           '1588' is competitorObject's rating
+ *                                     'c503' is competitorObject's opponent
+ *                                     '1613' is competitorObject's opponent's rating
+ * @param - none
+ **/
+
+//should record belt of opponent too
+var matchRecorder = function(){
+  firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
+    + firstCompetitorRating.toString()
+    + "-" + secondCompetitorName
+    + "-" + secondCompetitorRating.toString() + "***";
+
+  secondCompetitor[secondCompetitorName]['matches'] = secondCompetitor[secondCompetitorName]['matches']
+    + secondCompetitorRating.toString()
+    + "-" + firstCompetitorName
+    + "-" + firstCompetitorRating.toString() + "***";
+};
+
+
 
 
 /**
@@ -106,11 +191,16 @@ var mundialTournament = function(demographicInformation,k){
   bullPenGenerator(demographicInformation);
   separateBelts(demographicInformation,bullPen);
   competitionMatPopulator(aboutToCompeteArray,bullPen);
+  //these steps will probably have to sit in their own cycle
+  scribe(theCompetitionMats);
+  referee(firstCompetitorBelt,secondCompetitorBelt);
 
   console.log("aboutToCompeteArray:",aboutToCompeteArray);
   console.log("bullPen:",bullPen);
   console.log("theCompetitionMats:",theCompetitionMats);
   console.log("bullPen had",bullPen.length,"number of competitors!");
+  console.log("firstCompetitorBelt:",firstCompetitorBelt)
+  console.log("secondCompetitorBelt:",secondCompetitorBelt)
 
 
   // console.log("losersBracket:",losersBracket);
@@ -119,8 +209,8 @@ var mundialTournament = function(demographicInformation,k){
   // console.log("losersBracket.length:",losersBracket.length);
 };
 
-// Will generate n^2 competitors which will
-// Compete in a single-elimination tournament
+// Will generate competitors equal to sum of demographicInformation which will
+// Compete each belt vs each other belt
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
 mundialTournament(demographicInformation,25);
