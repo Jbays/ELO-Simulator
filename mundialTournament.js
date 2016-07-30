@@ -10,6 +10,7 @@ var jiujitsuBelts = ['black','brown','purple','blue','white'];
 
 var bullPen            = [];
 var theCompetitionMats = [];
+var aboutToCompeteArray = []
 var winnersBracket     = [];
 var losersBracket      = [];
 var nSquared           = null;
@@ -62,11 +63,18 @@ var bullPenGenerator = function(demographicInformation) {
   competitorAssembler(demographicInformation);
 };
 
-var separateByBelt = function(bullPen){
+var separateBelts = function(demographicInformation,bullPen){
+  let leadingBelt      = Object.keys(bullPen[0]);
+  let leadingBeltColor = bullPen[0][leadingBelt]['belt']
+  let numberOfBelts = demographicInformation.shift();
 
-  console.log("separateByBelt invoked!");
-  console.log("bullPen:",bullPen);
+  for ( let i = 0; i < numberOfBelts; i++ ) {
+    aboutToCompeteArray.push(bullPen.shift());
+  }
 
+  console.log("separateBelts invoked!");
+  console.log("leadingBelt:",leadingBelt);
+  console.log("leadingBeltColor:",leadingBeltColor);
 }
 
 /**
@@ -77,8 +85,8 @@ var separateByBelt = function(bullPen){
  * @param - bullPen
  *
  **/
-var competitionMatPopulator = function(bullPen){
-  theCompetitionMats.push(bullPen.shift())
+var competitionMatPopulator = function(aboutToCompeteArray, bullPen){
+  theCompetitionMats.push(aboutToCompeteArray.shift())
   theCompetitionMats.push(bullPen.shift())
 };
 
@@ -96,15 +104,15 @@ var competitionMatPopulator = function(bullPen){
  **/
 var mundialTournament = function(demographicInformation,k){
   bullPenGenerator(demographicInformation);
+  separateBelts(demographicInformation,bullPen);
+  competitionMatPopulator(aboutToCompeteArray,bullPen);
 
-
-  // console.log("bullPen:",bullPen);
-  // console.log("theCompetitionMats:",theCompetitionMats);
+  console.log("aboutToCompeteArray:",aboutToCompeteArray);
+  console.log("bullPen:",bullPen);
+  console.log("theCompetitionMats:",theCompetitionMats);
   console.log("bullPen had",bullPen.length,"number of competitors!");
 
 
-  // getAllCompetitorNames(object,bullPen.length);
-  // runAllMatchesForOneRound(bullPen,k);
   // console.log("losersBracket:",losersBracket);
   // console.log("TOURNAMENT'S WINNER!",bullPen[0]);
   // console.log("winnersBracket.length:",winnersBracket.length);
