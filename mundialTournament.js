@@ -8,12 +8,12 @@ var numberOfRounds = null;
 var demographicInformation = [144,306,551,642,198];
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 
-var bullPen            = [];
-var theCompetitionMats = [];
+var bullPen             = [];
+var theCompetitionMats  = [];
 var aboutToCompeteArray = []
-var winnersBracket     = [];
-var losersBracket      = [];
-var nSquared           = null;
+var winnersBracket      = [];
+var losersBracket       = [];
+var nSquared            = null;
 var firstCompetitorsProbabilityOfVictory  = 0;
 var secondCompetitorsProbabilityOfVictory = 0;
 
@@ -24,6 +24,7 @@ var firstCompetitorRating = null;
 var firstCompetitorRecord = null;
 var firstCompetitorWins   = 0;
 var firstCompetitorBelt   = null;
+var firstCompetitorBeltRank = null;
 
 var secondCompetitor       = null;
 var secondCompetitorName   = null;
@@ -32,7 +33,7 @@ var secondCompetitorLosses = 0;
 var secondCompetitorRating = null;
 var secondCompetitorRecord = null;
 var secondCompetitorBelt   = null;
-
+var secondCompetitorBeltRank = null;
 
 var ifFirstCompetitorWins   = null;
 var ifFirstCompetitorLoses  = null;
@@ -64,8 +65,8 @@ var bullPenGenerator = function(demographicInformation) {
       for ( let i = 1; i <= demographicInformation[j]; i++ ) {
         let competitorNameBlueprint = counter.toString();
         let competitorBlueprint = '{"c' + competitorNameBlueprint
-                                + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":"","belt":'
-                                + '"' + jiujitsuBelts[j]+ '"' + '}}';
+                                + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":"","beltRank":'
+                                + j  + ',"belt":"' + jiujitsuBelts[j]+ '"' + '}}';
         counter++;
 
         bullPen.push(JSON.parse(competitorBlueprint));
@@ -99,7 +100,7 @@ var separateBelts = function(demographicInformation,bullPen){
  **/
 var competitionMatPopulator = function(aboutToCompeteArray, bullPen){
   theCompetitionMats.push(aboutToCompeteArray.shift())
-  theCompetitionMats.push(bullPen.shift())
+  theCompetitionMats.push(bullPen.pop())
 };
 
 
@@ -117,6 +118,7 @@ var scribe = function(theCompetitionMats){
   firstCompetitorLosses = firstCompetitor[firstCompetitorName]['losses'];
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
   firstCompetitorBelt   = firstCompetitor[firstCompetitorName]['belt'];
+  firstCompetitorBeltRank = firstCompetitor[firstCompetitorName]['beltRank'];
 
   secondCompetitor       = theCompetitionMats[1];
   secondCompetitorName   = Object.keys(secondCompetitor)[0];
@@ -125,25 +127,29 @@ var scribe = function(theCompetitionMats){
   secondCompetitorLosses = secondCompetitor[secondCompetitorName]['losses'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
   secondCompetitorBelt   = secondCompetitor[secondCompetitorName]['belt'];
+  secondCompetitorBeltRank = secondCompetitor[secondCompetitorName]['beltRank'];
 };
 
 //should compare against numerical representation of belt
-var referee = function(firstCompetitorBelt,secondCompetitorBelt){
+var referee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
   matchRecorder();
 
-  // if ( probability > randomNumber ) {
-  //   firstCompetitor[firstCompetitorName]['wins']++;
-  //   firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w";
-  //
-  //   secondCompetitor[secondCompetitorName]['losses']++;
-  //   secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l";
-  // } else {
-  //   firstCompetitor[firstCompetitorName]['losses']++;
-  //   firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "l";
-  //
-  //   secondCompetitor[secondCompetitorName]['wins']++;
-  //   secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w";
-  // }
+  console.log("firstCompetitorBeltRank:",firstCompetitorBeltRank);
+  console.log("secondCompetitorBeltRank:",secondCompetitorBeltRank);
+
+  if ( firstCompetitorBeltRank < secondCompetitorBeltRank ) {
+    firstCompetitor[firstCompetitorName]['wins']++;
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w";
+
+    secondCompetitor[secondCompetitorName]['losses']++;
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "l";
+  } else {
+    firstCompetitor[firstCompetitorName]['losses']++;
+    firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "l";
+
+    secondCompetitor[secondCompetitorName]['wins']++;
+    secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w";
+  }
 };
 
 /**
@@ -165,18 +171,15 @@ var referee = function(firstCompetitorBelt,secondCompetitorBelt){
 //should record belt of opponent too
 var matchRecorder = function(){
   firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
-    + firstCompetitorRating.toString()
-    + "-" + secondCompetitorName
-    + "-" + secondCompetitorRating.toString() + "***";
+                                                  + firstCompetitorRating.toString()
+                                                  + "-" + secondCompetitorName
+                                                  + "-" + secondCompetitorRating.toString() + "***";
 
   secondCompetitor[secondCompetitorName]['matches'] = secondCompetitor[secondCompetitorName]['matches']
-    + secondCompetitorRating.toString()
-    + "-" + firstCompetitorName
-    + "-" + firstCompetitorRating.toString() + "***";
+                                                    + secondCompetitorRating.toString()
+                                                    + "-" + firstCompetitorName
+                                                    + "-" + firstCompetitorRating.toString() + "***";
 };
-
-
-
 
 /**
  * @name - mundialTournament
@@ -193,7 +196,7 @@ var mundialTournament = function(demographicInformation,k){
   competitionMatPopulator(aboutToCompeteArray,bullPen);
   //these steps will probably have to sit in their own cycle
   scribe(theCompetitionMats);
-  referee(firstCompetitorBelt,secondCompetitorBelt);
+  referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
 
   console.log("aboutToCompeteArray:",aboutToCompeteArray);
   console.log("bullPen:",bullPen);
