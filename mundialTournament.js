@@ -9,6 +9,7 @@ var demographicInformation = [144,306,551,642,198];
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 
 var bullPen             = [];
+var bullPenLength       = null;
 var theCompetitionMats  = [];
 var aboutToCompeteArray = []
 var winnersBracket      = [];
@@ -57,8 +58,8 @@ var bullPenGenerator = function(demographicInformation) {
       for ( let i = 1; i <= demographicInformation[j]; i++ ) {
         let competitorNameBlueprint = counter.toString();
         let competitorBlueprint = '{"c' + competitorNameBlueprint
-              + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":"","beltRank":'
-              + j  + ',"belt":"' + jiujitsuBelts[j]+ '"' + '}}';
+              + '":{"rating":1600,"wins":0,"losses":0,"record":"","beltRank":'
+              + j  + ',"belt":"' + jiujitsuBelts[j] + '","matches":""}}';
         counter++;
 
         bullPen.push(JSON.parse(competitorBlueprint));
@@ -70,15 +71,18 @@ var bullPenGenerator = function(demographicInformation) {
 
 var separateBelts = function(demographicInformation,bullPen){
   let leadingBelt      = Object.keys(bullPen[0]);
-  let leadingBeltColor = bullPen[0][leadingBelt]['belt']
+  // let leadingBeltColor = bullPen[0][leadingBelt]['belt']
   let numberOfBelts = demographicInformation.shift();
 
   for ( let i = 0; i < numberOfBelts; i++ ) {
     aboutToCompeteArray.push(bullPen.shift());
   }
-  console.log("separateBelts invoked!");
-  console.log("leadingBelt:",leadingBelt);
-  console.log("leadingBeltColor:",leadingBeltColor);
+
+  bullPenLength = bullPen.length;
+  // console.log("inside separateBelts --> bullPen.length:",bullPen.length);
+  // console.log("separateBelts invoked!");
+  // console.log("leadingBelt:",leadingBelt);
+  // console.log("leadingBeltColor:",leadingBeltColor);
 }
 
 /**
@@ -123,16 +127,13 @@ var scribe = function(theCompetitionMats){
   //important to save this step for last
   //otherwise secondCompetitorsRating may not be defined
   //at assignment-time for firstCompetitorsProbabilityOfVictory
-  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
+  firstCompetitorsProbabilityOfVictory  = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
 };
 
 //should compare against numerical representation of belt
 var referee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
   matchRecorder();
-
-  console.log("firstCompetitorBeltRank:",firstCompetitorBeltRank);
-  console.log("secondCompetitorBeltRank:",secondCompetitorBeltRank);
 
   if ( firstCompetitorBeltRank < secondCompetitorBeltRank ) {
     firstCompetitor[firstCompetitorName]['wins']++;
@@ -167,11 +168,10 @@ var ratingsAdjuster = function(theCompetitionMats,k) {
     firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses);
   } else {
-    firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
-    console.log()
+    firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
     secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins);
   }
-  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
+  firstCompetitorRecord  = firstCompetitor[firstCompetitorName]['record'];
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
 };
 
@@ -181,20 +181,11 @@ var ratingsAdjuster = function(theCompetitionMats,k) {
  *                stands to win or lose based on the result of the match.
  * @param - k-factor
  **/
-// just ran node mundialTournament.js.  here are results -->
-// ifFirstCompetitorWins: 25
-// ifFirstCompetitorLoses: 0
-// ifSecondCompetitorWins: 25
-// ifSecondCompetitorLoses: 0
 var ratingsAtStakeCalculator = function(k){
   ifFirstCompetitorWins   = k*(1-firstCompetitorsProbabilityOfVictory);
   ifFirstCompetitorLoses  = k*(-firstCompetitorsProbabilityOfVictory);
   ifSecondCompetitorWins  = k*(1-secondCompetitorsProbabilityOfVictory);
   ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory);
-  console.log("ifFirstCompetitorWins:",ifFirstCompetitorWins);
-  console.log("ifFirstCompetitorLoses:",ifFirstCompetitorLoses);
-  console.log("ifSecondCompetitorWins:",ifSecondCompetitorWins);
-  console.log("ifSecondCompetitorLoses:",ifSecondCompetitorLoses);
 };
 
 /**
@@ -214,6 +205,8 @@ var ratingsAtStakeCalculator = function(k){
  **/
 
 //should record belt of opponent too
+//should also record the match number in the field
+//would help keep everything in place
 var matchRecorder = function(){
   firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
                                                   + firstCompetitorRating.toString()
@@ -224,6 +217,34 @@ var matchRecorder = function(){
                                                     + secondCompetitorRating.toString()
                                                     + "-" + firstCompetitorName
                                                     + "-" + firstCompetitorRating.toString() + "***";
+};
+
+// var callNextCompetitor = function(bullPen){
+//   theCompetitionMats.push(bullPen.pop());
+// }
+
+// var fightAllOtherBelts = function(theCompetitionMats,bullPen,k){
+//   for ( let i = 0; i < bullPen.length/144; i++ ) {
+//     // scribe(theCompetitionMats);
+//     // referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+//     // ratingsAdjuster(theCompetitionMats,k)
+//     // competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
+//     theCompetitionMats.push(bullPen.pop())
+//   }
+// }
+
+/**
+ * @name - competitionMatDepopulator
+ * @description - Checks last entry of firstCompetitorRecord
+ *                Then places winner of match into innersBracket
+ *                And loser of match into losersBracket
+ * @param - firstCompetitorRecord
+ * @param - theCompetitionMats
+ **/
+var competitionMatDepopulator = function(firstCompetitorRecord,theCompetitionMats){
+  if ( firstCompetitorRecord.charAt(firstCompetitorRecord.length-1) === 'w' ) {
+    losersBracket.push(theCompetitionMats.pop());
+  }
 };
 
 /**
@@ -237,25 +258,39 @@ var matchRecorder = function(){
  **/
 var mundialTournament = function(demographicInformation,k){
   bullPenGenerator(demographicInformation);
+  console.log("BEFORE ASSIGNMENT --> bullPen had",bullPen.length,"number of competitors!");
   separateBelts(demographicInformation,bullPen);
   competitionMatPopulator(aboutToCompeteArray,bullPen);
-  //these steps will probably have to sit in their own cycle
-  scribe(theCompetitionMats);
-  referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
-  ratingsAdjuster(theCompetitionMats,k)
 
-  console.log("aboutToCompeteArray:",aboutToCompeteArray);
+  //these steps will probably have to sit in their own cycle
+  for ( let i = 0; i < bullPenLength; i++ ) {
+    scribe(theCompetitionMats);
+    referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+    ratingsAdjuster(theCompetitionMats,k)
+    competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
+    if ( bullPen.length !== 0 ) {
+      theCompetitionMats.push(bullPen.pop())
+    }
+  }
+  bullPen = losersBracket;
+  losersBracket = [];
+
+
+
+
+  // console.log("aboutToCompeteArray:",aboutToCompeteArray);
   console.log("bullPen:",bullPen);
   console.log("theCompetitionMats:",theCompetitionMats);
+  console.log("theCompetitionMats.length:",theCompetitionMats.length);
+
   console.log("bullPen had",bullPen.length,"number of competitors!");
-  console.log("firstCompetitorBelt:",firstCompetitorBelt)
-  console.log("secondCompetitorBelt:",secondCompetitorBelt)
 
-
-  // console.log("losersBracket:",losersBracket);
+  console.log("winnersBracket:",winnersBracket);
+  console.log("losersBracket:",losersBracket);
   // console.log("TOURNAMENT'S WINNER!",bullPen[0]);
+
   // console.log("winnersBracket.length:",winnersBracket.length);
-  // console.log("losersBracket.length:",losersBracket.length);
+  console.log("losersBracket.length:",losersBracket.length);
 };
 
 // Will generate competitors equal to sum of demographicInformation which will
