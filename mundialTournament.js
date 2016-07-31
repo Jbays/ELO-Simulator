@@ -50,23 +50,15 @@ var ifSecondCompetitorLoses = null;
 
 var bullPenGenerator = function(demographicInformation) {
   let counter = 1;
-
-  //competitionAssembler should have a numerical representation of belts
-  //black = 0;
-  //brown = 1;
-  //purple = 2;
-  //blue = 3;
-  //white = 4;
-  //then the referee function can compare these values
-  //as opposed to being forced to compare two strings (where I'll have to make some hierarchical
-  //comparision anyway!
   var competitorAssembler = function(demographicInformation){
+    //go across each item in demographicInformation array
     for ( let j = 0; j < demographicInformation.length; j++ ) {
+      //for as many as are in each of demographicInformation's elements
       for ( let i = 1; i <= demographicInformation[j]; i++ ) {
         let competitorNameBlueprint = counter.toString();
         let competitorBlueprint = '{"c' + competitorNameBlueprint
-                                + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":"","beltRank":'
-                                + j  + ',"belt":"' + jiujitsuBelts[j]+ '"' + '}}';
+              + '":{"rating":1600,"wins":0,"losses":0,"record":"","matches":"","beltRank":'
+              + j  + ',"belt":"' + jiujitsuBelts[j]+ '"' + '}}';
         counter++;
 
         bullPen.push(JSON.parse(competitorBlueprint));
@@ -84,7 +76,6 @@ var separateBelts = function(demographicInformation,bullPen){
   for ( let i = 0; i < numberOfBelts; i++ ) {
     aboutToCompeteArray.push(bullPen.shift());
   }
-
   console.log("separateBelts invoked!");
   console.log("leadingBelt:",leadingBelt);
   console.log("leadingBeltColor:",leadingBeltColor);
@@ -128,6 +119,12 @@ var scribe = function(theCompetitionMats){
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
   secondCompetitorBelt   = secondCompetitor[secondCompetitorName]['belt'];
   secondCompetitorBeltRank = secondCompetitor[secondCompetitorName]['beltRank'];
+
+  //important to save this step for last
+  //otherwise secondCompetitorsRating may not be defined
+  //at assignment-time for firstCompetitorsProbabilityOfVictory
+  firstCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((secondCompetitorRating - firstCompetitorRating) / 400)));
+  secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
 };
 
 //should compare against numerical representation of belt
@@ -150,6 +147,54 @@ var referee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
     secondCompetitor[secondCompetitorName]['wins']++;
     secondCompetitor[secondCompetitorName]['record'] = secondCompetitorRecord + "w";
   }
+};
+
+/**
+ * @name - ratingsAdjuster
+ * @description - Determines the result of firstCompetitor's match
+ *                ** ratingsAtStakeCalculator(k) -- calculates the ratings at stake for each player
+ *                                                  depending on whether they win or lose
+ *                Adds additional ratings points to winner
+ *                Subtracts rating points from loser
+ * @param - theCompetitionMats
+ * @param - k-factor
+ **/
+var ratingsAdjuster = function(theCompetitionMats,k) {
+  let firstCompetitorLastMatchResult = theCompetitionMats[0][firstCompetitorName]['record'].slice(theCompetitionMats[0][firstCompetitorName]['record'].length-1);
+  ratingsAtStakeCalculator(k);
+
+  if ( firstCompetitorLastMatchResult === 'w' ) {
+    firstCompetitor[firstCompetitorName]['rating']   = Math.round(firstCompetitorRating + ifFirstCompetitorWins);
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorLoses);
+  } else {
+    firstCompetitor[firstCompetitorName]['rating'] = Math.round(firstCompetitorRating + ifFirstCompetitorLoses);
+    console.log()
+    secondCompetitor[secondCompetitorName]['rating'] = Math.round(secondCompetitorRating + ifSecondCompetitorWins);
+  }
+  firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
+  secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
+};
+
+/**
+ * @name - ratingsAtStakeCalculator
+ * @description - Calculates how much each competitorObject in theCompetitionMats
+ *                stands to win or lose based on the result of the match.
+ * @param - k-factor
+ **/
+// just ran node mundialTournament.js.  here are results -->
+// ifFirstCompetitorWins: 25
+// ifFirstCompetitorLoses: 0
+// ifSecondCompetitorWins: 25
+// ifSecondCompetitorLoses: 0
+var ratingsAtStakeCalculator = function(k){
+  ifFirstCompetitorWins   = k*(1-firstCompetitorsProbabilityOfVictory);
+  ifFirstCompetitorLoses  = k*(-firstCompetitorsProbabilityOfVictory);
+  ifSecondCompetitorWins  = k*(1-secondCompetitorsProbabilityOfVictory);
+  ifSecondCompetitorLoses = k*(-secondCompetitorsProbabilityOfVictory);
+  console.log("ifFirstCompetitorWins:",ifFirstCompetitorWins);
+  console.log("ifFirstCompetitorLoses:",ifFirstCompetitorLoses);
+  console.log("ifSecondCompetitorWins:",ifSecondCompetitorWins);
+  console.log("ifSecondCompetitorLoses:",ifSecondCompetitorLoses);
 };
 
 /**
@@ -197,6 +242,7 @@ var mundialTournament = function(demographicInformation,k){
   //these steps will probably have to sit in their own cycle
   scribe(theCompetitionMats);
   referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+  ratingsAdjuster(theCompetitionMats,k)
 
   console.log("aboutToCompeteArray:",aboutToCompeteArray);
   console.log("bullPen:",bullPen);
