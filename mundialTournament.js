@@ -5,16 +5,20 @@ var _  = require('lodash');
 //bullPen format is =[{c1},{c2},{c3}]
 var numberOfRounds = null;
 
-var demographicInformation = [144,306,551,642,198];
+// var demographicInformation = [144,306,551,642,198];
+var demographicInformation = [5,5,5,5,5];
+var demographicInformationLength = 5;
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 
 var bullPen             = [];
 var bullPenLength       = null;
 var theCompetitionMats  = [];
-var aboutToCompeteArray = []
+var aboutToCompeteArray = [];
+var aboutToCompeteArrayLength = null;
 var winnersBracket      = [];
 var losersBracket       = [];
 var nSquared            = null;
+var finishedCompeting   = [];
 var firstCompetitorsProbabilityOfVictory  = 0;
 var secondCompetitorsProbabilityOfVictory = 0;
 
@@ -51,7 +55,7 @@ var ifSecondCompetitorLoses = null;
 
 var bullPenGenerator = function(demographicInformation) {
   let counter = 1;
-  var competitorAssembler = function(demographicInformation){
+  var competitorAssemblerAndBullPenPopulator = function(demographicInformation){
     //go across each item in demographicInformation array
     for ( let j = 0; j < demographicInformation.length; j++ ) {
       //for as many as are in each of demographicInformation's elements
@@ -66,19 +70,27 @@ var bullPenGenerator = function(demographicInformation) {
       }
     }
   };
-  competitorAssembler(demographicInformation);
+  competitorAssemblerAndBullPenPopulator(demographicInformation);
 };
 
 var separateBelts = function(demographicInformation,bullPen){
-  let leadingBelt      = Object.keys(bullPen[0]);
+
+  console.log("separateBelts invoked!");
+  console.log("demographicInformation",demographicInformation);
+  console.log("bullPen:",bullPen);
+
+
+
+  // let leadingBelt      = Object.keys(bullPen[0]);
   // let leadingBeltColor = bullPen[0][leadingBelt]['belt']
-  let numberOfBelts = demographicInformation.shift();
+  // let numberOfBelts = demographicInformation.shift();
 
-  for ( let i = 0; i < numberOfBelts; i++ ) {
-    aboutToCompeteArray.push(bullPen.shift());
-  }
+  // for ( let i = 0; i < numberOfBelts; i++ ) {
+  //   aboutToCompeteArray.push(bullPen.shift());
+  // }
 
-  bullPenLength = bullPen.length;
+  // bullPenLength = bullPen.length;
+  // aboutToCompeteArrayLength = aboutToCompeteArray.length;
   // console.log("inside separateBelts --> bullPen.length:",bullPen.length);
   // console.log("separateBelts invoked!");
   // console.log("leadingBelt:",leadingBelt);
@@ -258,39 +270,43 @@ var competitionMatDepopulator = function(firstCompetitorRecord,theCompetitionMat
  **/
 var mundialTournament = function(demographicInformation,k){
   bullPenGenerator(demographicInformation);
-  console.log("BEFORE ASSIGNMENT --> bullPen had",bullPen.length,"number of competitors!");
   separateBelts(demographicInformation,bullPen);
-  competitionMatPopulator(aboutToCompeteArray,bullPen);
+  // console.log("BEFORE ASSIGNMENT --> bullPen had",bullPen.length,"number of competitors!");
+  // console.log("demographicInformation.length:",demographicInformation.length);
 
-  //these steps will probably have to sit in their own cycle
-  for ( let i = 0; i < bullPenLength; i++ ) {
-    scribe(theCompetitionMats);
-    referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
-    ratingsAdjuster(theCompetitionMats,k)
-    competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
-    if ( bullPen.length !== 0 ) {
-      theCompetitionMats.push(bullPen.pop())
-    }
-  }
-  bullPen = losersBracket;
-  losersBracket = [];
+  // for ( let i = 0; i < demographicInformation.length; i++ ) {
+  //   separateBelts(demographicInformation,bullPen);
+  //   for ( let i = 0; i < aboutToCompeteArrayLength; i++ ) {
+  //     theCompetitionMats.push(aboutToCompeteArray.shift());
+  //     theCompetitionMats.push(bullPen.pop());
+  //     for ( let i = 0; i < bullPenLength; i++ ) {
+  //       scribe(theCompetitionMats);
+  //       referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+  //       ratingsAdjuster(theCompetitionMats,k)
+  //       competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
+  //       if ( bullPen.length !== 0 ) {
+  //         theCompetitionMats.push(bullPen.pop())
+  //       }
+  //     }
+  //     bullPen = losersBracket;
+  //     losersBracket = [];
+  //     finishedCompeting.push(theCompetitionMats.pop());
+  //   }
+  // }
 
 
 
-
-  // console.log("aboutToCompeteArray:",aboutToCompeteArray);
+  console.log("aboutToCompeteArray:",aboutToCompeteArray);
   console.log("bullPen:",bullPen);
   console.log("theCompetitionMats:",theCompetitionMats);
   console.log("theCompetitionMats.length:",theCompetitionMats.length);
-
   console.log("bullPen had",bullPen.length,"number of competitors!");
-
-  console.log("winnersBracket:",winnersBracket);
-  console.log("losersBracket:",losersBracket);
+  console.log("finishedCompeting:",finishedCompeting);
+  // console.log("losersBracket:",losersBracket);
   // console.log("TOURNAMENT'S WINNER!",bullPen[0]);
 
   // console.log("winnersBracket.length:",winnersBracket.length);
-  console.log("losersBracket.length:",losersBracket.length);
+  // console.log("losersBracket.length:",losersBracket.length);
 };
 
 // Will generate competitors equal to sum of demographicInformation which will
