@@ -6,8 +6,8 @@ var _  = require('lodash');
 var numberOfRounds = null;
 
 // var demographicInformation = [144,306,551,642,198];
-var demographicInformation = [5,5,5,5,5];
-var demographicInformationLength = 5;
+var demographicInformation = [2,2,2,2,2];
+var demographicInformationLength = demographicInformation.length;
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 
 var bullPen             = [];
@@ -74,28 +74,16 @@ var bullPenGenerator = function(demographicInformation) {
 };
 
 var separateBelts = function(demographicInformation,bullPen){
+  console.log("demographicInformation:",demographicInformation);
+  console.log("separateBelt's bullPen:",bullPen);
+  let numberOfBelts = demographicInformation.shift();
+  for ( let i = 0; i < numberOfBelts; i++ ) {
+    aboutToCompeteArray.push(bullPen.shift());
+  }
 
-  console.log("separateBelts invoked!");
-  console.log("demographicInformation",demographicInformation);
-  console.log("bullPen:",bullPen);
-
-
-
-  // let leadingBelt      = Object.keys(bullPen[0]);
-  // let leadingBeltColor = bullPen[0][leadingBelt]['belt']
-  // let numberOfBelts = demographicInformation.shift();
-
-  // for ( let i = 0; i < numberOfBelts; i++ ) {
-  //   aboutToCompeteArray.push(bullPen.shift());
-  // }
-
-  // bullPenLength = bullPen.length;
-  // aboutToCompeteArrayLength = aboutToCompeteArray.length;
-  // console.log("inside separateBelts --> bullPen.length:",bullPen.length);
-  // console.log("separateBelts invoked!");
-  // console.log("leadingBelt:",leadingBelt);
-  // console.log("leadingBeltColor:",leadingBeltColor);
-}
+  bullPenLength = bullPen.length;
+  aboutToCompeteArrayLength = aboutToCompeteArray.length;
+};
 
 /**
  * @name - competitionMatPopulator
@@ -144,9 +132,12 @@ var scribe = function(theCompetitionMats){
 };
 
 //should compare against numerical representation of belt
-var referee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
+var biasedReferee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
+
+  //records all their relevant information
   matchRecorder();
 
+  //calculates winner -- highest belt always wins
   if ( firstCompetitorBeltRank < secondCompetitorBeltRank ) {
     firstCompetitor[firstCompetitorName]['wins']++;
     firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w";
@@ -231,20 +222,6 @@ var matchRecorder = function(){
                                                     + "-" + firstCompetitorRating.toString() + "***";
 };
 
-// var callNextCompetitor = function(bullPen){
-//   theCompetitionMats.push(bullPen.pop());
-// }
-
-// var fightAllOtherBelts = function(theCompetitionMats,bullPen,k){
-//   for ( let i = 0; i < bullPen.length/144; i++ ) {
-//     // scribe(theCompetitionMats);
-//     // referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
-//     // ratingsAdjuster(theCompetitionMats,k)
-//     // competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
-//     theCompetitionMats.push(bullPen.pop())
-//   }
-// }
-
 /**
  * @name - competitionMatDepopulator
  * @description - Checks last entry of firstCompetitorRecord
@@ -259,6 +236,75 @@ var competitionMatDepopulator = function(firstCompetitorRecord,theCompetitionMat
   }
 };
 
+var runMatchesAgainstDifferentBelts = function(theCompetitionMats,bullPen,k){
+  // console.log("at the beginning of runMatchesAgainstDifferentBelts --> demographicInformation:",demographicInformation);
+  // console.log("at the beginning of runMatchesAgainstDifferentBelts --> bullPen:",bullPen);
+
+  //black belt beats every single non-black belt in the tournament
+  for ( let i = 0; i < bullPenLength; i++ ) {
+    //puts last white belt on stage
+    theCompetitionMats.push(bullPen.pop());
+
+    //ringside assistants record their information
+    scribe(theCompetitionMats);
+
+    //assigns victory to competitor with highest belt
+    biasedReferee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+
+    //calculates ratings at stake
+    //and adjusts competitors's ratings based on their result
+    ratingsAdjuster(theCompetitionMats,k);
+
+    //loser is pushed to losersBracket
+    losersBracket.push(theCompetitionMats.pop());
+  }
+
+  // console.log("at the end of runMatchesAgainstDifferentBelts --> demographicInformation:",demographicInformation);
+  // console.log("at the end of runMatchesAgainstDifferentBelts --> bullPen:",bullPen);
+};
+
+var makeAWholeBeltDivisionCompete = function(demographicInformation,bullPen,k) {
+  console.log("makeAWholeBeltDivisionCompete's --> demographicInformation:",demographicInformation);
+  console.log("makeAWholeBeltDivisionCompete's --> bullPen:",bullPen);
+
+  //makes each black belt compete
+  for ( let i = 0; i < aboutToCompeteArrayLength; i++ ) {
+
+    //puts first black belt on stage
+    theCompetitionMats.push(aboutToCompeteArray.shift());
+
+    //makes black belt on stage have a match with every non-black belt competitor
+    //the error is here!
+
+    //unsure exactly what is wrong.
+    //for some reason -- while i = 1,
+    //bullPen is empty
+    //losersBracket is also empty
+    //But the logic does not fail when i = 0
+    //the logic works perfectly
+    //cant figure out exactly why
+
+    runMatchesAgainstDifferentBelts(theCompetitionMats,bullPen,k);
+    console.log("i:",i);
+    console.log("inside makeAWholeBeltDivisionCompete's -- after runMatchesAgainstDifferentBelts --> bullPen:",bullPen);
+    console.log("losersBracket:",losersBracket);
+    console.log("bullPen immediately after runMatchesAgainstDifferentBelts:",bullPen);
+    //take finished black belt off stage
+    finishedCompeting.push(theCompetitionMats.pop());
+
+    debugger;
+    //put losers (who all lost to an individual higher belt) back into bullPen
+    bullPen = losersBracket.reverse();
+
+    //empty losersBracket
+    losersBracket = [];
+  };
+  console.log("after a for-loop makeAWholeBeltDivisionCompete's --> demographicInformation:",demographicInformation);
+  console.log("after a for-loop makeAWholeBeltDivisionCompete's --> bullPen:",bullPen);
+
+  // console.log("right after makeAWholeBeltDivisionCompete finished --> bullPen:",bullPen)
+};
+
 /**
  * @name - mundialTournament
  * @description - Makes all competitorObjects in bullPen compete once
@@ -269,10 +315,41 @@ var competitionMatDepopulator = function(firstCompetitorRecord,theCompetitionMat
  * @param - k-factor
  **/
 var mundialTournament = function(demographicInformation,k){
+
+  //sets up the tournament
   bullPenGenerator(demographicInformation);
-  separateBelts(demographicInformation,bullPen);
-  // console.log("BEFORE ASSIGNMENT --> bullPen had",bullPen.length,"number of competitors!");
-  // console.log("demographicInformation.length:",demographicInformation.length);
+
+  for ( let i = 0; i < 2; i++ ) {
+    // console.log("right before makeAWholeBeltDivisionCompete bullPen:",bullPen)
+
+    //gets leftmost belts ready to compete
+    separateBelts(demographicInformation,bullPen);
+
+    // console.log("after separateBelts bullPen:",bullPen);
+    // console.log("after separateBelts losersBracket:",losersBracket);
+    // console.log("after separateBelts aboutToCompeteArray:",aboutToCompeteArray);
+    // console.log("after separateBelts theCompetitionMats:",theCompetitionMats);
+    // console.log("after separateBelts theCompetitionMats.length:",theCompetitionMats.length);
+    // console.log("after separateBelts bullPen had",bullPen.length,"number of competitors!");
+    // console.log("after separateBelts finishedCompeting:",finishedCompeting);
+
+
+    //separates leftmost belts in original bullPen array
+    makeAWholeBeltDivisionCompete(demographicInformation,bullPen,k);
+
+    // console.log("after makeAWholeBeltDivisionCompete --> bullPen:",bullPen);
+    // console.log("after makeAWholeBeltDivisionCompete --> losersBracket:",losersBracket);
+    // console.log("after makeAWholeBeltDivisionCompete --> aboutToCompeteArray:",aboutToCompeteArray);
+    // console.log("after makeAWholeBeltDivisionCompete --> theCompetitionMats:",theCompetitionMats);
+    // console.log("after makeAWholeBeltDivisionCompete --> theCompetitionMats.length:",theCompetitionMats.length);
+    // console.log("after makeAWholeBeltDivisionCompete --> bullPen had",bullPen.length,"number of competitors!");
+    // console.log("after makeAWholeBeltDivisionCompete --> finishedCompeting:",finishedCompeting);
+
+    //put losers who lost to all belts higher back into bullPen
+    // bullPen = losersBracket;
+  }
+
+
 
   // for ( let i = 0; i < demographicInformation.length; i++ ) {
   //   separateBelts(demographicInformation,bullPen);
@@ -281,7 +358,7 @@ var mundialTournament = function(demographicInformation,k){
   //     theCompetitionMats.push(bullPen.pop());
   //     for ( let i = 0; i < bullPenLength; i++ ) {
   //       scribe(theCompetitionMats);
-  //       referee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+  //       biasedReferee(firstCompetitorBeltRank,secondCompetitorBeltRank);
   //       ratingsAdjuster(theCompetitionMats,k)
   //       competitionMatDepopulator(firstCompetitorRecord,theCompetitionMats);
   //       if ( bullPen.length !== 0 ) {
@@ -293,20 +370,6 @@ var mundialTournament = function(demographicInformation,k){
   //     finishedCompeting.push(theCompetitionMats.pop());
   //   }
   // }
-
-
-
-  console.log("aboutToCompeteArray:",aboutToCompeteArray);
-  console.log("bullPen:",bullPen);
-  console.log("theCompetitionMats:",theCompetitionMats);
-  console.log("theCompetitionMats.length:",theCompetitionMats.length);
-  console.log("bullPen had",bullPen.length,"number of competitors!");
-  console.log("finishedCompeting:",finishedCompeting);
-  // console.log("losersBracket:",losersBracket);
-  // console.log("TOURNAMENT'S WINNER!",bullPen[0]);
-
-  // console.log("winnersBracket.length:",winnersBracket.length);
-  // console.log("losersBracket.length:",losersBracket.length);
 };
 
 // Will generate competitors equal to sum of demographicInformation which will
