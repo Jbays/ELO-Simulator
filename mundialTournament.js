@@ -13,11 +13,9 @@ var generalPopulationArray = [];
 
 var bullPen             = [];
 var bullPenLength       = null;
-var theCompetitionMats  = [];
+var compMats = [];
 var aboutToCompeteArray = [];
 var aboutToCompeteArrayLength = null;
-var winnersBracket      = [];
-var losersBracket       = [];
 var nSquared            = null;
 var finishedCompeting   = [];
 var firstCompetitorsProbabilityOfVictory  = 0;
@@ -56,27 +54,26 @@ var ifSecondCompetitorLoses = null;
 
 var setUpTournament = function(demographicInformation) {
   let counter = 1;
-  var competitorAssemblerAndBullPenPopulator = function(demographicInformation){
+  var assembleGeneralPopulationArray = function(demographicInformation){
     //go across each item in demographicInformation array
     for ( let j = 0; j < demographicInformation.length; j++ ) {
-      //for as many as are in each of demographicInformation's elements
       let tempArr = [];
+      //assembles competitors
+      //for as many as are in each of demographicInformation's elements
       for ( let i = 1; i <= demographicInformation[j]; i++ ) {
         let competitorNameBlueprint = counter.toString();
         let competitorBlueprint = '{"c' + competitorNameBlueprint
-              + '":{"rating":1600,"wins":0,"losses":0,"record":"","beltRank":'
-              + j  + ',"belt":"' + jiujitsuBelts[j] + '","matches":""}}';
-        let realCompetitor = JSON.parse(competitorBlueprint)
+          + '":{"rating":1600,"wins":0,"losses":0,"record":"","beltRank":'
+          + j  + ',"belt":"' + jiujitsuBelts[j] + '","matches":""}}';
+        let realCompetitor = JSON.parse(competitorBlueprint);
 
         counter++;
         tempArr.push(realCompetitor);
-        // console.log("competitorBlueprint:",competitorBlueprint);
-        // console.log(tempArr);
       }
       generalPopulationArray.push(tempArr);
     }
   };
-  competitorAssemblerAndBullPenPopulator(demographicInformation);
+  assembleGeneralPopulationArray(demographicInformation);
 };
 
 var separateBelts = function(demographicInformation,bullPen){
@@ -139,10 +136,8 @@ var scribe = function(theCompetitionMats){
 
 //should compare against numerical representation of belt
 var biasedReferee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
-
   //records all their relevant information
   matchRecorder();
-
   //calculates winner -- highest belt always wins
   if ( firstCompetitorBeltRank < secondCompetitorBeltRank ) {
     firstCompetitor[firstCompetitorName]['wins']++;
@@ -302,7 +297,7 @@ var makeAWholeBeltDivisionCompete = function(demographicInformation,bullPen,k) {
     bullPen = losersBracket.reverse();
 
     //empty losersBracket
-    losersBracket = [];
+    // losersBracket = [];
   };
   // console.log("after a for-loop makeAWholeBeltDivisionCompete's --> demographicInformation:",demographicInformation);
   // console.log("after a for-loop makeAWholeBeltDivisionCompete's --> bullPen:",bullPen);
@@ -321,8 +316,63 @@ var makeAWholeBeltDivisionCompete = function(demographicInformation,bullPen,k) {
  **/
 var mundialTournament = function(demographicInformation,k){
 
+  //step 1 & 2
   setUpTournament(demographicInformation);
-  console.log("generalPopulationArray-->:",generalPopulationArray);
+
+  //not quite working
+  //I suspect generalPopulationArray is being depopulated incorrectly
+  //brown belts have 6 victories and no losses
+  //purple belts have no victories and no losses
+  //while blue belts have no victories and no losses
+  //and white belts have 14 losses
+  
+  for ( let i = 0; i < 2; i ++ ) {
+    //step 3 -- load black belts into bullPen
+    bullPen.push(generalPopulationArray.shift());
+    //make each black belt compete against every non-black belt competitor
+    for ( let i = 0; i < generalPopulationArray.length; i ++ ) {
+      //step 4 -- load white belts into bullPen
+      bullPen.push(generalPopulationArray.pop());
+      //step 11
+      //for each black belt in bullPen
+      for ( let i = 0; i < bullPen[0].length; i++ ) {
+        //step 5 -- put first black belt into compMats
+        compMats.push(bullPen[0].shift());
+        //step 9 -- make all white belts compete against that one black belt
+        //for each white belt in bullPen
+        for ( let i = 0; i < bullPen[1].length; i++ ) {
+          //step 6 -- put first white belt into compMats
+          compMats.push(bullPen[1].shift());
+          //step 7 -- make first black belt and first white belt compete
+          scribe(compMats);
+          biasedReferee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+          ratingsAdjuster(compMats,k);
+          //step 8
+          bullPen[1].push(compMats.pop());
+        }
+        //return first black belt to bullPen
+        bullPen[0].push(compMats.pop());
+      }
+      //return white belts to general Population
+      generalPopulationArray.push(bullPen.pop());
+    }
+    //put black belts into finishedCompeting array
+    finishedCompeting.push(bullPen.pop());
+  }
+
+
+  console.log("finishedCompeting:",finishedCompeting);
+  console.log("finishedCompeting[0]:",finishedCompeting[0]);
+  console.log("finishedCompeting[1]:",finishedCompeting[1]);
+  // console.log("generalPopulationArray-->:",generalPopulationArray);
+  console.log("generalPopulationArray[0]-->:",generalPopulationArray[0]);
+  console.log("generalPopulationArray[1]-->:",generalPopulationArray[1]);
+  console.log("generalPopulationArray[2]-->:",generalPopulationArray[2]);
+  // console.log("generalPopulationArray[3]-->:",generalPopulationArray[3]);
+  console.log("bullPen:",bullPen);
+  // console.log("bullPen[0]:",bullPen[0]);
+  // console.log("bullPen[1]:",bullPen[1]);
+  console.log("compMats:",compMats);
 
   //According to my black-book notes from 8/3, these are the steps.
   //
