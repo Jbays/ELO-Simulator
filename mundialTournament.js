@@ -74,8 +74,8 @@ var bullPenGenerator = function(demographicInformation) {
 };
 
 var separateBelts = function(demographicInformation,bullPen){
-  console.log("demographicInformation:",demographicInformation);
-  console.log("separateBelt's bullPen:",bullPen);
+  // console.log("demographicInformation:",demographicInformation);
+  // console.log("separateBelt's bullPen:",bullPen);
   let numberOfBelts = demographicInformation.shift();
   for ( let i = 0; i < numberOfBelts; i++ ) {
     aboutToCompeteArray.push(bullPen.shift());
@@ -264,8 +264,8 @@ var runMatchesAgainstDifferentBelts = function(theCompetitionMats,bullPen,k){
 };
 
 var makeAWholeBeltDivisionCompete = function(demographicInformation,bullPen,k) {
-  console.log("makeAWholeBeltDivisionCompete's --> demographicInformation:",demographicInformation);
-  console.log("makeAWholeBeltDivisionCompete's --> bullPen:",bullPen);
+  // console.log("makeAWholeBeltDivisionCompete's --> demographicInformation:",demographicInformation);
+  // console.log("makeAWholeBeltDivisionCompete's --> bullPen:",bullPen);
 
   //makes each black belt compete
   for ( let i = 0; i < aboutToCompeteArrayLength; i++ ) {
@@ -285,22 +285,21 @@ var makeAWholeBeltDivisionCompete = function(demographicInformation,bullPen,k) {
     //cant figure out exactly why
 
     runMatchesAgainstDifferentBelts(theCompetitionMats,bullPen,k);
-    console.log("i:",i);
-    console.log("inside makeAWholeBeltDivisionCompete's -- after runMatchesAgainstDifferentBelts --> bullPen:",bullPen);
-    console.log("losersBracket:",losersBracket);
-    console.log("bullPen immediately after runMatchesAgainstDifferentBelts:",bullPen);
+    // console.log("i:",i);
+    // console.log("inside makeAWholeBeltDivisionCompete's -- after runMatchesAgainstDifferentBelts --> bullPen:",bullPen);
+    // console.log("losersBracket:",losersBracket);
+    // console.log("bullPen immediately after runMatchesAgainstDifferentBelts:",bullPen);
     //take finished black belt off stage
     finishedCompeting.push(theCompetitionMats.pop());
 
-    debugger;
     //put losers (who all lost to an individual higher belt) back into bullPen
     bullPen = losersBracket.reverse();
 
     //empty losersBracket
     losersBracket = [];
   };
-  console.log("after a for-loop makeAWholeBeltDivisionCompete's --> demographicInformation:",demographicInformation);
-  console.log("after a for-loop makeAWholeBeltDivisionCompete's --> bullPen:",bullPen);
+  // console.log("after a for-loop makeAWholeBeltDivisionCompete's --> demographicInformation:",demographicInformation);
+  // console.log("after a for-loop makeAWholeBeltDivisionCompete's --> bullPen:",bullPen);
 
   // console.log("right after makeAWholeBeltDivisionCompete finished --> bullPen:",bullPen)
 };
@@ -316,14 +315,54 @@ var makeAWholeBeltDivisionCompete = function(demographicInformation,bullPen,k) {
  **/
 var mundialTournament = function(demographicInformation,k){
 
-  //sets up the tournament
-  bullPenGenerator(demographicInformation);
+  //According to my black-book notes from 8/3, these are the steps.
+  //
+  //1.  Make competitors
+  //2.  Put competitors of each belt into array
+  //3.  Put firstmost beltLine (black belts) of generalPopulationArray into bullPen array
+  //4.  Put lastmost beltLine (white belts) from genPopArray into bullPen
+  //-Make competitors compete in a systematic fashion!-//
+  //5.  Put lastmost (firstMostBeltLine)Competitor (the last black belt) into theCompetitionMatsArray
+  //6.  Put lastmost (lastMostBeltLine) Competitor (the last white belt) into theCompetitionMatsArray
+  //-The Competition Mat Competes!-//
+  //7.  Make compMats compete!
+  //8.  Return loser (white belt) to front of lastMostBeltLine (white belts)
+  //9.  Recurse 6-8 until all white belts have competed -- Queue data-structure
+  //9b.  compMats=[lastBBCompetitor] --> compMats.length = 1
+  //-Nice to have: shuffling the white belts after they've all returned and competed-//
+  //10.  Return winner (black belt) to front of firstMostBeltLine (black belts)
+  //10b.  compMats=[] --> compMats.length = 0
+  //11.  Recurse steps 5-10 until all firstMostBeltLine (black belts) have competed
+  //11b.  with all competitors in tournament, aka gPop
+  //11c.  bullPen = [blackBeltLine]; gPop=[brownBeltLine,purpleBeltLine,blueBeltLine,whiteBeltLine]
+  //12.  Put firstMostBeltLine into finishedCompetingArray
+  //12b.  bullPen = []; gPop=[brownBeltLine,purpleBeltLine,blueBeltLine,whiteBeltLine]
+  //13.  Recurse steps 5-12 until only lastMostBeltLine remain in gPop
+  //14.  Put lastMostBeltLine into finishedCompetingArray
 
-  for ( let i = 0; i < 2; i++ ) {
+
+
+
+
+
+
+
+
+
+
+
+
+  //Forget everything below.  New try.  8-5-2016
+  // --------------------------
+
+  //sets up the tournament
+  // bullPenGenerator(demographicInformation);
+
+  // for ( let i = 0; i < 1; i++ ) {
     // console.log("right before makeAWholeBeltDivisionCompete bullPen:",bullPen)
 
     //gets leftmost belts ready to compete
-    separateBelts(demographicInformation,bullPen);
+    // separateBelts(demographicInformation,bullPen);
 
     // console.log("after separateBelts bullPen:",bullPen);
     // console.log("after separateBelts losersBracket:",losersBracket);
@@ -335,7 +374,7 @@ var mundialTournament = function(demographicInformation,k){
 
 
     //separates leftmost belts in original bullPen array
-    makeAWholeBeltDivisionCompete(demographicInformation,bullPen,k);
+    // makeAWholeBeltDivisionCompete(demographicInformation,bullPen,k);
 
     // console.log("after makeAWholeBeltDivisionCompete --> bullPen:",bullPen);
     // console.log("after makeAWholeBeltDivisionCompete --> losersBracket:",losersBracket);
@@ -370,7 +409,7 @@ var mundialTournament = function(demographicInformation,k){
   //     finishedCompeting.push(theCompetitionMats.pop());
   //   }
   // }
-};
+}
 
 // Will generate competitors equal to sum of demographicInformation which will
 // Compete each belt vs each other belt
