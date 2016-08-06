@@ -6,7 +6,7 @@ var _  = require('lodash');
 var numberOfRounds = null;
 
 // var demographicInformation = [144,306,551,642,198];
-var demographicInformation = [2,2,2,2,2];
+var demographicInformation = [1,1,1,1,1];
 var demographicInformationLength = demographicInformation.length;
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 
