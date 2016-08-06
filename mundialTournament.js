@@ -6,9 +6,10 @@ var _  = require('lodash');
 var numberOfRounds = null;
 
 // var demographicInformation = [144,306,551,642,198];
-var demographicInformation = [1,1,1,1,1];
+var demographicInformation = [2,2,2,2,2];
 var demographicInformationLength = demographicInformation.length;
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
+var generalPopulationArray = [];
 
 var bullPen             = [];
 var bullPenLength       = null;
@@ -46,28 +47,33 @@ var ifSecondCompetitorWins  = null;
 var ifSecondCompetitorLoses = null;
 
 /**
- * @name - bullPenGenerator
+ * @name - setUpTournament
  * @description - outputs bullPen populated with integer^2 number of competitors
  * @example - bullPen = [{c1},{c2},{c3},...,{c(integer^2)}]
  *            bullPen.length = integer^2
- * @param - integer
+ * @param - array
  **/
 
-var bullPenGenerator = function(demographicInformation) {
+var setUpTournament = function(demographicInformation) {
   let counter = 1;
   var competitorAssemblerAndBullPenPopulator = function(demographicInformation){
     //go across each item in demographicInformation array
     for ( let j = 0; j < demographicInformation.length; j++ ) {
       //for as many as are in each of demographicInformation's elements
+      let tempArr = [];
       for ( let i = 1; i <= demographicInformation[j]; i++ ) {
         let competitorNameBlueprint = counter.toString();
         let competitorBlueprint = '{"c' + competitorNameBlueprint
               + '":{"rating":1600,"wins":0,"losses":0,"record":"","beltRank":'
               + j  + ',"belt":"' + jiujitsuBelts[j] + '","matches":""}}';
-        counter++;
+        let realCompetitor = JSON.parse(competitorBlueprint)
 
-        bullPen.push(JSON.parse(competitorBlueprint));
+        counter++;
+        tempArr.push(realCompetitor);
+        // console.log("competitorBlueprint:",competitorBlueprint);
+        // console.log(tempArr);
       }
+      generalPopulationArray.push(tempArr);
     }
   };
   competitorAssemblerAndBullPenPopulator(demographicInformation);
@@ -307,13 +313,16 @@ var makeAWholeBeltDivisionCompete = function(demographicInformation,bullPen,k) {
 /**
  * @name - mundialTournament
  * @description - Makes all competitorObjects in bullPen compete once
- *                **bullPenGenerator -- builds competitors; populates bullPen
+ *                **setUpTournament -- builds competitors; populates bullPen
  *                **roundsCalculator -- calculates the number of rounds 1st and 2nd will fight!
  *                Invokes runAllMatchesForOneRound() for numberOfRounds
  * @param - integer
  * @param - k-factor
  **/
 var mundialTournament = function(demographicInformation,k){
+
+  setUpTournament(demographicInformation);
+  console.log("generalPopulationArray-->:",generalPopulationArray);
 
   //According to my black-book notes from 8/3, these are the steps.
   //
@@ -356,7 +365,7 @@ var mundialTournament = function(demographicInformation,k){
   // --------------------------
 
   //sets up the tournament
-  // bullPenGenerator(demographicInformation);
+  // setUpTournament(demographicInformation);
 
   // for ( let i = 0; i < 1; i++ ) {
     // console.log("right before makeAWholeBeltDivisionCompete bullPen:",bullPen)
@@ -386,7 +395,7 @@ var mundialTournament = function(demographicInformation,k){
 
     //put losers who lost to all belts higher back into bullPen
     // bullPen = losersBracket;
-  }
+  // }
 
 
 
