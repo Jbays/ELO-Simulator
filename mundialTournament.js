@@ -4,7 +4,7 @@ var _  = require('lodash');
 
 //for the Mundials 2015
 //var demographicInformation = [144,306,551,642,198];
-var demographicInformation = [2,2,2,2,2];
+var demographicInformation = [50,50,50,50,50];
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 var beltAbbreviations = ['b','br','p','u','w'];
 var generalPopulationArray = [];
@@ -284,7 +284,7 @@ var mundialTournament = function(demographicInformation,k){
 // Compete each belt vs each other belt
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
-mundialTournament(demographicInformation,8);
+mundialTournament(demographicInformation,40);
 
 //will develop function to output significant values
 //what counts as significant values?
@@ -292,6 +292,7 @@ mundialTournament(demographicInformation,8);
 //lowest rating in division
 //average rating in division
 //statistical calculations about division
+
 var numberCruncher = function(finishedCompeting){
   let numberOfBeltLines = finishedCompeting.length;
   let competitorNames = [];
@@ -317,9 +318,13 @@ var numberCruncher = function(finishedCompeting){
   // console.log("flatFinishedComp:",flatFinishedComp);
 };
 
-numberCruncher(finishedCompeting);
+// numberCruncher(finishedCompeting);
 
-
+console.log("finishedCompeting[0][0]:",finishedCompeting[0][0]);
+console.log("finishedCompeting[1][0]:",finishedCompeting[1][0]);
+console.log("finishedCompeting[2][0]:",finishedCompeting[2][0]);
+console.log("finishedCompeting[3][0]:",finishedCompeting[3][0]);
+console.log("finishedCompeting[4][0]:",finishedCompeting[4][0]);
 // console.log("generalPopulationArray-->:",generalPopulationArray);
 // console.log("generalPopulationArray[0]-->:",generalPopulationArray[0]);
 // console.log("generalPopulationArray[1]-->:",generalPopulationArray[1]);
