@@ -227,11 +227,7 @@ var matchRecorder = function(){
 
 /**
  * @name - mundialTournament
- * @description - Makes all competitorObjects in generalPopulationArray compete
- *
- *                **setUpTournament -- builds competitors; populates bullPen
- *                **roundsCalculator -- calculates the number of rounds 1st and 2nd will fight!
- *                Invokes runAllMatchesForOneRound() for numberOfRounds
+ * @description - Makes all competitors in generalPopulationArray compete
  * @param - demographicInformation (array)
  * @param - k-factor (integer)
  **/
@@ -282,27 +278,55 @@ var mundialTournament = function(demographicInformation,k){
     //put black belts into finishedCompeting array
     finishedCompeting.push(bullPen.pop());
   }
-
-  console.log("finishedCompeting:",finishedCompeting);
-  console.log("finishedCompeting[0][0]:",finishedCompeting[0][0]);
-  console.log("finishedCompeting[1][0]:",finishedCompeting[1][0]);
-  console.log("finishedCompeting[2][0]:",finishedCompeting[2][0]);
-  console.log("finishedCompeting[3][0]:",finishedCompeting[3][0]);
-  console.log("finishedCompeting[4][0]:",finishedCompeting[4][0]);
-  console.log("generalPopulationArray-->:",generalPopulationArray);
-  // console.log("generalPopulationArray[0]-->:",generalPopulationArray[0]);
-  // console.log("generalPopulationArray[1]-->:",generalPopulationArray[1]);
-  // console.log("generalPopulationArray[2]-->:",generalPopulationArray[2]);
-  // console.log("generalPopulationArray[3]-->:",generalPopulationArray[3]);
-  console.log("bullPen:",bullPen);
-  // console.log("bullPen[0]:",bullPen[0]);
-  // console.log("bullPen[1]:",bullPen[1]);
-  console.log("compMats:",compMats);
-}
+};
 
 // Will generate competitors equal to sum of demographicInformation which will
 // Compete each belt vs each other belt
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
 mundialTournament(demographicInformation,8);
+
+//will develop function to output significant values
+//what counts as significant values?
+//highest rating in division
+//lowest rating in division
+//average rating in division
+//statistical calculations about division
+var numberCruncher = function(finishedCompeting){
+  let numberOfBeltLines = finishedCompeting.length;
+  let competitorNames = [];
+  let flatFinishedComp = _.flatten(finishedCompeting);
+
+  //fetch all competitor names
+  for ( let i = 0; i < numberOfBeltLines; i++ ) {
+    for ( let j = 0; j < finishedCompeting[i].length; j++ ) {
+      competitorNames.push(Object.keys(finishedCompeting[i][j]));
+    }
+  }
+  competitorNames = _.flatten(competitorNames);
+  console.log("competitorNames:",competitorNames);
+
+
+  //accesses each competitor's body of data
+  for ( let i = 0; i < flatFinishedComp.length; i++ ) {
+
+    console.log("each competitor:",flatFinishedComp[i][competitorNames[i]]);
+
+
+  }
+  // console.log("flatFinishedComp:",flatFinishedComp);
+};
+
+numberCruncher(finishedCompeting);
+
+
+// console.log("generalPopulationArray-->:",generalPopulationArray);
+// console.log("generalPopulationArray[0]-->:",generalPopulationArray[0]);
+// console.log("generalPopulationArray[1]-->:",generalPopulationArray[1]);
+// console.log("generalPopulationArray[2]-->:",generalPopulationArray[2]);
+// console.log("generalPopulationArray[3]-->:",generalPopulationArray[3]);
+// console.log("bullPen:",bullPen);
+// console.log("bullPen[0]:",bullPen[0]);
+// console.log("bullPen[1]:",bullPen[1]);
+// console.log("compMats:",compMats);
 
