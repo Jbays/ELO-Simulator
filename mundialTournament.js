@@ -2,15 +2,15 @@
 var fs = require('fs');
 var _  = require('lodash');
 
-//bullPen format is =[{c1},{c2},{c3}]
-
-// var demographicInformation = [144,306,551,642,198];
-var demographicInformation = [40,40,40,40,40];
+//for the Mundials 2015
+//var demographicInformation = [144,306,551,642,198];
+var demographicInformation = [2,2,2,2,2];
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
+var beltAbbreviations = ['b','br','p','u','w'];
 var generalPopulationArray = [];
 
 var bullPen             = [];
-var compMats = [];
+var compMats            = [];
 var finishedCompeting   = [];
 var firstCompetitorsProbabilityOfVictory  = 0;
 var secondCompetitorsProbabilityOfVictory = 0;
@@ -38,46 +38,57 @@ var ifFirstCompetitorLoses  = null;
 var ifSecondCompetitorWins  = null;
 var ifSecondCompetitorLoses = null;
 
+var firstCompetitorsTotalMatches = null;
+var secondCompetitorsTotalMatches = null;
+
+
+
 /**
- * @name - setUpTournament
- * @description - outputs bullPen populated with integer^2 number of competitors
- * @example - bullPen = [{c1},{c2},{c3},...,{c(integer^2)}]
- *            bullPen.length = integer^2
- * @param - array
+ * @name - assembleGeneralPopulationArray
+ * @description - populates generalPopulationArray with competitors
+ **               who are separated by belt.
+ * @example - generalPopulationArray = [
+ **             [blackBeltLine],[brownBeltLine],[purpleBeltLine],[blueBeltLine],[whiteBeltLine]
+ **           ]
+ * @param - demographicInformation (array with five values)
  **/
-
-var setUpTournament = function(demographicInformation) {
+var assembleGeneralPopulationArray = function(demographicInformation){
+  //this is for the competitor's name
   let counter = 1;
-  var assembleGeneralPopulationArray = function(demographicInformation){
-    //go across each item in demographicInformation array
-    for ( let j = 0; j < demographicInformation.length; j++ ) {
-      let tempArr = [];
-      //assembles competitors
-      //for as many as are in each of demographicInformation's elements
-      for ( let i = 1; i <= demographicInformation[j]; i++ ) {
-        let competitorNameBlueprint = counter.toString();
-        let competitorBlueprint = '{"c' + competitorNameBlueprint
-          + '":{"rating":1600,"wins":0,"losses":0,"record":"","beltRank":'
-          + j  + ',"belt":"' + jiujitsuBelts[j] + '","matches":""}}';
-        let realCompetitor = JSON.parse(competitorBlueprint);
 
-        counter++;
-        tempArr.push(realCompetitor);
-      }
-      generalPopulationArray.push(tempArr);
+  //for each belt demographic in demographicInformation array
+  for ( let j = 0; j < demographicInformation.length; j++ ) {
+    //empty beltLine
+    let tempArr = [];
+
+    //for each belt in a single belt demographic
+    for ( let i = 1; i <= demographicInformation[j]; i++ ) {
+      //competitor's name
+      let competitorNameBlueprint = counter.toString();
+      //string of competitors statistical information
+      let competitorBlueprint = '{"c' + competitorNameBlueprint
+                              + '":{"belt":"' + jiujitsuBelts[j]
+                              + '","rating":1600,"wins":0,"losses":0,"beltRank":' + j
+                              + ',"record":"","matches":""}}';
+      //parses string into JSON
+      let realLifeCompetitor = JSON.parse(competitorBlueprint);
+      //push realLifeCompetitor into beltLine
+      tempArr.push(realLifeCompetitor);
+      //increment name
+      counter++;
     }
-  };
-  assembleGeneralPopulationArray(demographicInformation);
+    //pushes beltLine into generalPopulationArray
+    generalPopulationArray.push(tempArr);
+  }
 };
 
 /**
- * @name - variableAssigner
- * @description - Assigns to variables all statistics relevant to calculations for
- *                the two competitors on theCompetitionMats.
- * @param - theCompetitionMats
+ * @name - scribe
+ * @description - Assigns all variables required for the two competitors on compMats.
+ * @param - compMat
  **/
-var scribe = function(theCompetitionMats){
-  firstCompetitor       = theCompetitionMats[0];
+var scribe = function(compMat){
+  firstCompetitor       = compMat[0];
   firstCompetitorName   = Object.keys(firstCompetitor)[0];
   firstCompetitorRating = firstCompetitor[firstCompetitorName]['rating'];
   firstCompetitorWins   = firstCompetitor[firstCompetitorName]['wins'];
@@ -85,8 +96,9 @@ var scribe = function(theCompetitionMats){
   firstCompetitorRecord = firstCompetitor[firstCompetitorName]['record'];
   firstCompetitorBelt   = firstCompetitor[firstCompetitorName]['belt'];
   firstCompetitorBeltRank = firstCompetitor[firstCompetitorName]['beltRank'];
+  firstCompetitorsTotalMatches = firstCompetitorWins + firstCompetitorLosses+1;
 
-  secondCompetitor       = theCompetitionMats[1];
+  secondCompetitor       = compMat[1];
   secondCompetitorName   = Object.keys(secondCompetitor)[0];
   secondCompetitorRating = secondCompetitor[secondCompetitorName]['rating'];
   secondCompetitorWins   = secondCompetitor[secondCompetitorName]['wins'];
@@ -94,6 +106,7 @@ var scribe = function(theCompetitionMats){
   secondCompetitorRecord = secondCompetitor[secondCompetitorName]['record'];
   secondCompetitorBelt   = secondCompetitor[secondCompetitorName]['belt'];
   secondCompetitorBeltRank = secondCompetitor[secondCompetitorName]['beltRank'];
+  secondCompetitorsTotalMatches = secondCompetitorWins + secondCompetitorLosses+1;
 
   //important to save this step for last
   //otherwise secondCompetitorsRating may not be defined
@@ -102,11 +115,22 @@ var scribe = function(theCompetitionMats){
   secondCompetitorsProbabilityOfVictory = 1 / (1 + Math.pow(10, ((firstCompetitorRating - secondCompetitorRating) / 400)));
 };
 
+/**
+ * @name - biasedReferee
+ * @description - Calculates winner && loser of match based on beltRank
+ **               The highest belt always wins
+ **               **matchRecorder**
+ **               Wins/loss and record are modified for both competitors
+ * @param - compMat
+ * @param - k-factor
+ **/
+
 //should compare against numerical representation of belt
-var biasedReferee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
-  //records all their relevant information
+var biasedReferee = function(){
+  //writes to each competitor's 'matches' key
   matchRecorder();
-  //calculates winner -- highest belt always wins
+
+  //calculates winner
   if ( firstCompetitorBeltRank < secondCompetitorBeltRank ) {
     firstCompetitor[firstCompetitorName]['wins']++;
     firstCompetitor[firstCompetitorName]['record'] = firstCompetitorRecord + "w";
@@ -124,16 +148,15 @@ var biasedReferee = function(firstCompetitorBeltRank,secondCompetitorBeltRank){
 
 /**
  * @name - ratingsAdjuster
- * @description - Determines the result of firstCompetitor's match
- *                ** ratingsAtStakeCalculator(k) -- calculates the ratings at stake for each player
- *                                                  depending on whether they win or lose
- *                Adds additional ratings points to winner
- *                Subtracts rating points from loser
- * @param - theCompetitionMats
+ * @description - Looks up result of firstCompetitor's match
+ **               **ratingsAtStakeCalculator(k)**
+ **               Adds additional ratings points to winner
+ **               Subtracts rating points from loser
+ * @param - compMat
  * @param - k-factor
  **/
-var ratingsAdjuster = function(theCompetitionMats,k) {
-  let firstCompetitorLastMatchResult = theCompetitionMats[0][firstCompetitorName]['record'].slice(theCompetitionMats[0][firstCompetitorName]['record'].length-1);
+var ratingsAdjuster = function(compMat,k) {
+  let firstCompetitorLastMatchResult = compMat[0][firstCompetitorName]['record'].slice(compMat[0][firstCompetitorName]['record'].length-1);
   ratingsAtStakeCalculator(k);
 
   if ( firstCompetitorLastMatchResult === 'w' ) {
@@ -149,8 +172,8 @@ var ratingsAdjuster = function(theCompetitionMats,k) {
 
 /**
  * @name - ratingsAtStakeCalculator
- * @description - Calculates how much each competitorObject in theCompetitionMats
- *                stands to win or lose based on the result of the match.
+ * @description - Calculates how much many rating points each competitor wins/loses
+ **               based on match result
  * @param - k-factor
  **/
 var ratingsAtStakeCalculator = function(k){
@@ -162,17 +185,24 @@ var ratingsAtStakeCalculator = function(k){
 
 /**
  * @name - matchRecorder
- * @description - To 'matches' key in competitorObject, assigns value -->
- *                stringified record of match just finished in theCompetitionMats.
- *                Each match is delimited by '***'
- * @example - 'matches': {'1600-c733-1600***1588-c503-1613'}
- *             where at time of match: '1600' is competitorObject's rating
- *                                     'c733' is competitorObject's opponent
- *                                     '1600' is competitorObject's opponent's rating
- *             '***' delimiter
- *             Second match:           '1588' is competitorObject's rating
- *                                     'c503' is competitorObject's opponent
- *                                     '1613' is competitorObject's opponent's rating
+ * @description - Writes record of a competitor's match
+ * To 'matches' key in competitor, assigns value -->
+ **                stringified record of match just finished in compMat.
+ **                Each match is delimited by '***'
+ * @example - 'matches': {'1-1600-c9-w-1600***2-1588-c8-u-1613***'}
+ **            where at time of match:
+ **              1 is their match number
+ **              1600 is competitor's rating
+ **              c9 is their opponent's name
+ **              w is their opponent's belt (white)
+ **              1600 is their opponent's rating
+ **            '***' delimiter
+ **            Second example:
+ **              2 is their match number
+ **              1588 is competitor's rating
+ **              c8 is their opponent's name
+ **              u is their opponent's belt (blue)
+ **              1613 is their opponent's rating
  * @param - none
  **/
 
@@ -181,117 +211,93 @@ var ratingsAtStakeCalculator = function(k){
 //would help keep everything in place
 var matchRecorder = function(){
   firstCompetitor[firstCompetitorName]['matches'] = firstCompetitor[firstCompetitorName]['matches']
+                                                  + firstCompetitorsTotalMatches.toString() + "-"
                                                   + firstCompetitorRating.toString()
                                                   + "-" + secondCompetitorName
+                                                  + "-" + beltAbbreviations[secondCompetitorBeltRank]
                                                   + "-" + secondCompetitorRating.toString() + "***";
 
   secondCompetitor[secondCompetitorName]['matches'] = secondCompetitor[secondCompetitorName]['matches']
+                                                    + secondCompetitorsTotalMatches.toString() + "-"
                                                     + secondCompetitorRating.toString()
                                                     + "-" + firstCompetitorName
+                                                    + "-" + beltAbbreviations[firstCompetitorBeltRank]
                                                     + "-" + firstCompetitorRating.toString() + "***";
 };
 
 /**
  * @name - mundialTournament
- * @description - Makes all competitorObjects in bullPen compete once
+ * @description - Makes all competitorObjects in generalPopulationArray compete
+ *
  *                **setUpTournament -- builds competitors; populates bullPen
  *                **roundsCalculator -- calculates the number of rounds 1st and 2nd will fight!
  *                Invokes runAllMatchesForOneRound() for numberOfRounds
- * @param - integer
- * @param - k-factor
+ * @param - demographicInformation (array)
+ * @param - k-factor (integer)
  **/
 var mundialTournament = function(demographicInformation,k){
 
-  //step 1 & 2
-  setUpTournament(demographicInformation);
+  //generates competitors
+  //separates competitors by belt
+  //Enters all into generalPopulationArray
+  assembleGeneralPopulationArray(demographicInformation);
 
-  let numberOfBelts = generalPopulationArray.length
-  for ( let i = 0; i < numberOfBelts; i++ ) {
-    // console.log("generalPopulationArray.length:",generalPopulationArray.length);
+  let numberOfDifferentBelts = generalPopulationArray.length
 
-    //loads black belts into bullPen
+  //for each beltLine
+  for ( let i = 0; i < numberOfDifferentBelts; i++ ) {
+    //loads blackBeltLine into bullPen
     bullPen.push(generalPopulationArray.shift());
 
+    //for each of the remainder of generalPopulationArray
     for ( let i = 0; i < generalPopulationArray.length; i++ ) {
-
-      //takes white belts from generalPopulation and loads them into bullPen
+      //loads whiteBeltLine into bullPen
       bullPen.push(generalPopulationArray.pop());
 
-      //makes each black belt compete against all white belts
+      //for each black belt in blackBeltLine
       for ( let i = 0; i < bullPen[0].length; i++ ) {
-
         //first black belt on the mats
         compMats.push(bullPen[0].shift());
 
+        //for each white belt
         for ( let i = 0; i < bullPen[1].length; i++ ) {
 
-          //first white belt on the mats
+          //first white belt on compMats
           compMats.push(bullPen[1].shift());
 
-          //makes white belt compete
+          //makes black belt compete against white belt
           scribe(compMats);
-          biasedReferee(firstCompetitorBeltRank,secondCompetitorBeltRank);
+          biasedReferee();
           ratingsAdjuster(compMats,k);
 
           //puts white belt back into bullPen
           bullPen[1].push(compMats.pop());
-
         }
-
         //returns black belt to his beltLine
         bullPen[0].push(compMats.pop());
       }
-
       // puts white belts back into generalPopulation
       generalPopulationArray.unshift(bullPen.pop());
     }
-
     //put black belts into finishedCompeting array
     finishedCompeting.push(bullPen.pop());
   }
 
-  // console.log("finishedCompeting:",finishedCompeting);
+  console.log("finishedCompeting:",finishedCompeting);
   console.log("finishedCompeting[0][0]:",finishedCompeting[0][0]);
   console.log("finishedCompeting[1][0]:",finishedCompeting[1][0]);
   console.log("finishedCompeting[2][0]:",finishedCompeting[2][0]);
   console.log("finishedCompeting[3][0]:",finishedCompeting[3][0]);
   console.log("finishedCompeting[4][0]:",finishedCompeting[4][0]);
-  // console.log("finishedCompeting[1]:",finishedCompeting[1]);
-  // console.log("generalPopulationArray-->:",generalPopulationArray);
+  console.log("generalPopulationArray-->:",generalPopulationArray);
   // console.log("generalPopulationArray[0]-->:",generalPopulationArray[0]);
   // console.log("generalPopulationArray[1]-->:",generalPopulationArray[1]);
   // console.log("generalPopulationArray[2]-->:",generalPopulationArray[2]);
   // console.log("generalPopulationArray[3]-->:",generalPopulationArray[3]);
-  // console.log("bullPen:",bullPen);
+  console.log("bullPen:",bullPen);
   // console.log("bullPen[0]:",bullPen[0]);
   // console.log("bullPen[1]:",bullPen[1]);
-  // console.log("compMats:",compMats);
-
-  //According to my black-book notes from 8/3, these are the steps.
-  //
-  //1.  Make competitors
-  //2.  Put competitors of each belt into array
-  //3.  Put firstmost beltLine (black belts) of generalPopulationArray into bullPen array
-  //4.  Put lastmost beltLine (white belts) from genPopArray into bullPen
-  //-Make competitors compete in a systematic fashion!-//
-  //5.  Put lastmost (firstMostBeltLine)Competitor (the last black belt) into theCompetitionMatsArray
-  //6.  Put lastmost (lastMostBeltLine) Competitor (the last white belt) into theCompetitionMatsArray
-  //-The Competition Mat Competes!-//
-  //7.  Make compMats compete!
-  //8.  Return loser (white belt) to front of lastMostBeltLine (white belts)
-  //9.  Recurse 6-8 until all white belts have competed -- Queue data-structure
-  //9b.  compMats=[lastBBCompetitor] --> compMats.length = 1
-  //-Nice to have: shuffling the white belts after they've all returned and competed-//
-  //10.  Return winner (black belt) to front of firstMostBeltLine (black belts)
-  //10b.  compMats=[] --> compMats.length = 0
-  //11.  Recurse steps 5-10 until all firstMostBeltLine (black belts) have competed
-  //11b.  with all competitors in tournament, aka gPop
-  //11c.  bullPen = [blackBeltLine]; gPop=[brownBeltLine,purpleBeltLine,blueBeltLine,whiteBeltLine]
-  //12.  Put firstMostBeltLine into finishedCompetingArray
-  //12b.  bullPen = []; gPop=[brownBeltLine,purpleBeltLine,blueBeltLine,whiteBeltLine]
-  //13.  Recurse steps 5-12 until only lastMostBeltLine remain in gPop
-  //14.  Put lastMostBeltLine into finishedCompetingArray
-
+  console.log("compMats:",compMats);
 }
 
 // Will generate competitors equal to sum of demographicInformation which will
@@ -299,3 +305,4 @@ var mundialTournament = function(demographicInformation,k){
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
 mundialTournament(demographicInformation,8);
+
