@@ -4,7 +4,7 @@ var _  = require('lodash');
 
 //for the Mundials 2015
 //var demographicInformation = [144,306,551,642,198];
-var demographicInformation = [50,50,50,50,50];
+var demographicInformation = [2,4,7,9,3];
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 var beltAbbreviations = ['b','br','p','u','w'];
 var generalPopulationArray = [];
@@ -278,13 +278,14 @@ var mundialTournament = function(demographicInformation,k){
     //put black belts into finishedCompeting array
     finishedCompeting.push(bullPen.pop());
   }
+
 };
 
 // Will generate competitors equal to sum of demographicInformation which will
 // Compete each belt vs each other belt
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
-mundialTournament(demographicInformation,40);
+mundialTournament(demographicInformation,25);
 
 //will develop function to output significant values
 //what counts as significant values?
@@ -292,39 +293,69 @@ mundialTournament(demographicInformation,40);
 //lowest rating in division
 //average rating in division
 //statistical calculations about division
+//range of each division
+//number of data points in each division
 
-var numberCruncher = function(finishedCompeting){
-  let numberOfBeltLines = finishedCompeting.length;
-  let competitorNames = [];
-  let flatFinishedComp = _.flatten(finishedCompeting);
+var reporter = function(finishedCompeting, demographicInformation){
+
+  let competitorNames   = [];
+  let competitorRatings = [];
+  let compNamesInBrackets = [];
 
   //fetch all competitor names
-  for ( let i = 0; i < numberOfBeltLines; i++ ) {
+  for ( let i = 0; i < demographicInformation.length; i++ ) {
     for ( let j = 0; j < finishedCompeting[i].length; j++ ) {
       competitorNames.push(Object.keys(finishedCompeting[i][j]));
     }
   }
-  competitorNames = _.flatten(competitorNames);
-  console.log("competitorNames:",competitorNames);
 
+  competitorNames = _.flatten(competitorNames).reverse();
+  // console.log("competitorNames:",competitorNames);
 
-  //accesses each competitor's body of data
-  for ( let i = 0; i < flatFinishedComp.length; i++ ) {
+  //dynamically nest competitors according to their rank
+  for ( let i = 0; i < demographicInformation.length; i++ ) {
 
-    console.log("each competitor:",flatFinishedComp[i][competitorNames[i]]);
+    let numberOfCompetitors = demographicInformation[i];
+    // console.log("i:",i);
+    // console.log("numberOfCompetitors:",numberOfCompetitors);
+    let tempArr = [];
 
+    for ( let j = 0; j < numberOfCompetitors; j++ ) {
 
+      tempArr.push(competitorNames.pop())
+    }
+    compNamesInBrackets.push(tempArr);
   }
-  // console.log("flatFinishedComp:",flatFinishedComp);
+
+  console.log("compNamesInBracket:",compNamesInBrackets);
+
+
+
+
+
+
+
 };
 
-// numberCruncher(finishedCompeting);
+reporter(finishedCompeting, demographicInformation);
 
-console.log("finishedCompeting[0][0]:",finishedCompeting[0][0]);
-console.log("finishedCompeting[1][0]:",finishedCompeting[1][0]);
-console.log("finishedCompeting[2][0]:",finishedCompeting[2][0]);
-console.log("finishedCompeting[3][0]:",finishedCompeting[3][0]);
-console.log("finishedCompeting[4][0]:",finishedCompeting[4][0]);
+
+
+
+
+
+
+
+
+
+
+
+
+// console.log("finishedCompeting[0][0]:",finishedCompeting[0][0]);
+// console.log("finishedCompeting[1][0]:",finishedCompeting[1][0]);
+// console.log("finishedCompeting[2][0]:",finishedCompeting[2][0]);
+// console.log("finishedCompeting[3][0]:",finishedCompeting[3][0]);
+// console.log("finishedCompeting[4][0]:",finishedCompeting[4][0]);
 // console.log("generalPopulationArray-->:",generalPopulationArray);
 // console.log("generalPopulationArray[0]-->:",generalPopulationArray[0]);
 // console.log("generalPopulationArray[1]-->:",generalPopulationArray[1]);
