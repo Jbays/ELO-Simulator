@@ -327,9 +327,29 @@ var reporter = function(finishedCompeting, demographicInformation){
     compNamesInBrackets.push(tempArr);
   }
 
-  console.log("compNamesInBracket:",compNamesInBrackets);
+  // console.log("compNamesInBracket:",compNamesInBrackets);
+
+  //access each name in
+  for ( let i = 0; i < compNamesInBrackets.length; i++ ) {
+
+    let numberOfCompetitors = demographicInformation[i];
+    let tempArr = [];
+
+    // console.log(numberOfCompetitors);
 
 
+
+    //iterating on each competitor
+    for ( let j = 0; j < numberOfCompetitors; j++ ) {
+      let competitor = finishedCompeting[i][j][compNamesInBrackets[i][j]];
+      tempArr.push(competitor.rating)
+    }
+    competitorRatings.push(tempArr);
+
+
+  }
+
+  console.log("competitorRatings:",competitorRatings);
 
 
 
