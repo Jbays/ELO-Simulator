@@ -287,90 +287,7 @@ var mundialTournament = function(demographicInformation,k){
 // k is the maximal number of points a player can win/lose in a given match
 mundialTournament(demographicInformation,25);
 
-//will develop function to output significant values
-//what counts as significant values?
-//highest rating in division
-//lowest rating in division
-//average rating in division
-//statistical calculations about division
-//range of each division
-//number of data points in each division
-
-var reporter = function(finishedCompeting, demographicInformation){
-
-  let competitorNames   = [];
-  let competitorRatings = [];
-  let compNamesInBrackets = [];
-
-  //fetch all competitor names
-  for ( let i = 0; i < demographicInformation.length; i++ ) {
-    for ( let j = 0; j < finishedCompeting[i].length; j++ ) {
-      competitorNames.push(Object.keys(finishedCompeting[i][j]));
-    }
-  }
-
-  competitorNames = _.flatten(competitorNames).reverse();
-  // console.log("competitorNames:",competitorNames);
-
-  //dynamically nest competitors according to their rank
-  for ( let i = 0; i < demographicInformation.length; i++ ) {
-
-    let numberOfCompetitors = demographicInformation[i];
-    // console.log("i:",i);
-    // console.log("numberOfCompetitors:",numberOfCompetitors);
-    let tempArr = [];
-
-    for ( let j = 0; j < numberOfCompetitors; j++ ) {
-
-      tempArr.push(competitorNames.pop())
-    }
-    compNamesInBrackets.push(tempArr);
-  }
-
-  // console.log("compNamesInBracket:",compNamesInBrackets);
-
-  //access each name in
-  for ( let i = 0; i < compNamesInBrackets.length; i++ ) {
-
-    let numberOfCompetitors = demographicInformation[i];
-    let tempArr = [];
-
-    // console.log(numberOfCompetitors);
-
-
-
-    //iterating on each competitor
-    for ( let j = 0; j < numberOfCompetitors; j++ ) {
-      let competitor = finishedCompeting[i][j][compNamesInBrackets[i][j]];
-      tempArr.push(competitor.rating)
-    }
-    competitorRatings.push(tempArr);
-
-
-  }
-
-  console.log("competitorRatings:",competitorRatings);
-
-
-
-
-
-};
-
-reporter(finishedCompeting, demographicInformation);
-
-
-
-
-
-
-
-
-
-
-
-
-
+// VARIOUS PRINTOUTS FOR mundialTournament
 // console.log("finishedCompeting[0][0]:",finishedCompeting[0][0]);
 // console.log("finishedCompeting[1][0]:",finishedCompeting[1][0]);
 // console.log("finishedCompeting[2][0]:",finishedCompeting[2][0]);
@@ -385,4 +302,149 @@ reporter(finishedCompeting, demographicInformation);
 // console.log("bullPen[0]:",bullPen[0]);
 // console.log("bullPen[1]:",bullPen[1]);
 // console.log("compMats:",compMats);
+
+
+
+
+
+//will develop function to output significant values
+//what counts as significant values?
+//highest rating in division
+//lowest rating in division
+//average rating in division
+//statistical calculations about division
+//range of each division
+//number of data points in each division
+
+var competitorNames   = [];
+var competitorRatings = [];
+var compNamesInBrackets = [];
+
+var reporter = function(finishedCompeting, demographicInformation){
+
+  //refactor probably involves using an Object.keys to fetch competitorNames inside finishedCompeting
+  //as opposed to using two separate double-for-loops
+  //first to fetch the names and put them in an array
+  //then to step through them, nest together each belt, then repopulate
+
+  //^^horribly inefficient
+
+  //fetch all competitor names
+  for ( let i = 0; i < demographicInformation.length; i++ ) {
+    for ( let j = 0; j < finishedCompeting[i].length; j++ ) {
+      competitorNames.push(Object.keys(finishedCompeting[i][j]));
+    }
+  }
+  competitorNames = _.flatten(competitorNames).reverse();
+  // console.log("competitorNames:",competitorNames);
+
+  //dynamically nest competitors according to their rank
+  for ( let i = 0; i < demographicInformation.length; i++ ) {
+    let numberOfCompetitors = demographicInformation[i];
+    let tempArr = [];
+    for ( let j = 0; j < numberOfCompetitors; j++ ) {
+      tempArr.push(competitorNames.pop());
+    }
+    compNamesInBrackets.push(tempArr);
+  }
+
+  //access each name in compNamesInBrackets
+  for ( let i = 0; i < compNamesInBrackets.length; i++ ) {
+    let numberOfCompetitors = demographicInformation[i];
+    let tempArr = [];
+
+    //iterating on each competitor
+    for ( let j = 0; j < numberOfCompetitors; j++ ) {
+      let competitor = finishedCompeting[i][j][compNamesInBrackets[i][j]];
+      tempArr.push(competitor.rating)
+    }
+    competitorRatings.push(tempArr);
+  }
+};
+
+reporter(finishedCompeting, demographicInformation);
+
+var averagesArr  = [];
+var distancesArr = [];
+var totalCompetitors = competitorRatings[0].length + competitorRatings[1].length
+                     + competitorRatings[2].length + competitorRatings[3].length
+                     + competitorRatings[4].length;
+
+var calculateRange = function(array){
+  let min = Math.min.apply(null,array);
+  let max = Math.max.apply(null,array);
+  let diff = max-min;
+
+  return [min,max,diff]
+};
+
+var calculateAverage = function(array){
+  let sum = array.reduce((prev, curr) => prev + curr);
+  let roundedAvg = Math.round(sum/array.length);
+  averagesArr.push(roundedAvg);
+
+  return roundedAvg;
+};
+
+var calculateDistanceBetweenBelts = function(averagesArr){
+  //don't need to start at i=0, because averagesArr[i-1] is NaN
+  for ( let i = 1; i < averagesArr.length; i++ ) {
+    let diff = averagesArr[i-1]-averagesArr[i];
+    distancesArr.push(diff);
+  }
+};
+
+
+
+
+
+console.log("........................................");
+
+// starting with black belts
+// console.log("all competitor Ratings in a nested array:",competitorRatings);
+
+console.log("total competitors in tournament -->",totalCompetitors);
+
+console.log("..........black..belt.stats..........");
+console.log("# of black belts-->",competitorRatings[0].length);
+// console.log("all black belts ratings-->",competitorRatings[0]);
+console.log("range---->",calculateRange(competitorRatings[0]));
+console.log("average-->",calculateAverage(competitorRatings[0]));
+
+console.log("..........brown..belt.stats..........");
+console.log("# of brown belts-->",competitorRatings[1].length);
+// console.log("all brown belt ratings",competitorRatings[1]);
+console.log("range---->",calculateRange(competitorRatings[1]));
+console.log("average-->",calculateAverage(competitorRatings[1]));
+
+console.log("..........purple.belt.stats..........");
+console.log("# of purple belts-->",competitorRatings[2].length);
+// console.log("all purple belt ratings",competitorRatings[2]);
+console.log("range---->",calculateRange(competitorRatings[2]));
+console.log("average-->",calculateAverage(competitorRatings[2]));
+
+console.log("..........blue...belt.stats..........");
+console.log("# of blue belts-->",competitorRatings[3].length);
+// console.log("all blue belt ratings-->",competitorRatings[3]);
+console.log("range---->",calculateRange(competitorRatings[3]));
+console.log("average-->",calculateAverage(competitorRatings[3]));
+
+console.log("..........white..belt.stats..........");
+console.log("# of white belts-->",competitorRatings[4].length);
+// console.log("all white belt ratings-->",competitorRatings[4]);
+console.log("range---->",calculateRange(competitorRatings[4]));
+console.log("average-->",calculateAverage(competitorRatings[4]));
+console.log("........................................");
+
+calculateDistanceBetweenBelts(averagesArr);
+
+console.log('distance between black and brown:',distancesArr[0]);
+console.log('distance between brown and purple:',distancesArr[1]);
+console.log('distance between purple and blue:',distancesArr[2]);
+console.log('distance between blue and white:',distancesArr[3]);
+
+console.log("........................................");
+
+
+
 
