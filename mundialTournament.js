@@ -303,18 +303,21 @@ mundialTournament(demographicInformation,25);
 // console.log("bullPen[1]:",bullPen[1]);
 // console.log("compMats:",compMats);
 
+// Now that I've developed simple automated reports
+// Which for a given belt output -->
+// the range of ratings
+// the average rating
+// the number of competitors
+// and the distances between averageBeltRatings
 
+// The next step is to write a function that'll run mundialTournament
+// while incrementing K and recording the simple automated reports.
+// if any values for k match my expected outcome, hone in your search!
+// Then run the tournament with that selected k value and see
+// if the tournament will follow approximately the same results
+// as mundialTournament.js with the biasedReferee()!
+// ^^The Ultimate Sanity Check^^
 
-
-
-//will develop function to output significant values
-//what counts as significant values?
-//highest rating in division
-//lowest rating in division
-//average rating in division
-//statistical calculations about division
-//range of each division
-//number of data points in each division
 
 var competitorNames   = [];
 var competitorRatings = [];
