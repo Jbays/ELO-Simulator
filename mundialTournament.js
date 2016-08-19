@@ -7,8 +7,9 @@ var _  = require('lodash');
 var demographicInformation = [2,4,7,9,3];
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 var beltAbbreviations = ['b','br','p','u','w'];
-var generalPopulationArray = [];
 
+var generalPopulationArray = [];
+var listOfNames = [];
 var bullPen             = [];
 var compMats            = [];
 var finishedCompeting   = [];
@@ -65,6 +66,9 @@ var assembleGeneralPopulationArray = function(demographicInformation){
     for ( let i = 1; i <= demographicInformation[j]; i++ ) {
       //competitor's name
       let competitorNameBlueprint = counter.toString();
+
+      listOfNames.push("c"+competitorNameBlueprint);
+
       //string of competitors statistical information
       let competitorBlueprint = '{"c' + competitorNameBlueprint
                               + '":{"belt":"' + jiujitsuBelts[j]
@@ -323,7 +327,9 @@ var competitorNames   = [];
 var competitorRatings = [];
 var compNamesInBrackets = [];
 
-var reporter = function(finishedCompeting, demographicInformation){
+var reporter = function(finishedCompeting, demographicInformation, listOfNames){
+
+  console.log("listOfNames:",listOfNames);
 
   //refactor probably involves using an Object.keys to fetch competitorNames inside finishedCompeting
   //as opposed to using two separate double-for-loops
@@ -331,6 +337,17 @@ var reporter = function(finishedCompeting, demographicInformation){
   //then to step through them, nest together each belt, then repopulate
 
   //^^horribly inefficient
+
+  //8-18-16
+  //Refactored code to write out a list of names while competitors were being generatored.
+  //this saves code.
+  //But can I use the competitors's names in a flatten array?
+  //Or is it best to follow the nesting logic
+  //aka -> black belts are an array by themselves, so are brown, purple, etc.
+  //and have the names grouped by belts?
+  //aka -> have competitors's names as nestedArrays (nested by belt) sitting inside
+  //generalPopulationArray?
+
 
   //fetch all competitor names
   for ( let i = 0; i < demographicInformation.length; i++ ) {
@@ -365,7 +382,7 @@ var reporter = function(finishedCompeting, demographicInformation){
   }
 };
 
-reporter(finishedCompeting, demographicInformation);
+reporter(finishedCompeting, demographicInformation, listOfNames);
 
 var averagesArr  = [];
 var distancesArr = [];
@@ -401,52 +418,52 @@ var calculateDistanceBetweenBelts = function(averagesArr){
 
 
 
-console.log("........................................");
+// console.log("........................................");
 
 // starting with black belts
 // console.log("all competitor Ratings in a nested array:",competitorRatings);
 
-console.log("total competitors in tournament -->",totalCompetitors);
-
-console.log("..........black..belt.stats..........");
-console.log("# of black belts-->",competitorRatings[0].length);
-// console.log("all black belts ratings-->",competitorRatings[0]);
-console.log("range---->",calculateRange(competitorRatings[0]));
-console.log("average-->",calculateAverage(competitorRatings[0]));
-
-console.log("..........brown..belt.stats..........");
-console.log("# of brown belts-->",competitorRatings[1].length);
-// console.log("all brown belt ratings",competitorRatings[1]);
-console.log("range---->",calculateRange(competitorRatings[1]));
-console.log("average-->",calculateAverage(competitorRatings[1]));
-
-console.log("..........purple.belt.stats..........");
-console.log("# of purple belts-->",competitorRatings[2].length);
-// console.log("all purple belt ratings",competitorRatings[2]);
-console.log("range---->",calculateRange(competitorRatings[2]));
-console.log("average-->",calculateAverage(competitorRatings[2]));
-
-console.log("..........blue...belt.stats..........");
-console.log("# of blue belts-->",competitorRatings[3].length);
-// console.log("all blue belt ratings-->",competitorRatings[3]);
-console.log("range---->",calculateRange(competitorRatings[3]));
-console.log("average-->",calculateAverage(competitorRatings[3]));
-
-console.log("..........white..belt.stats..........");
-console.log("# of white belts-->",competitorRatings[4].length);
-// console.log("all white belt ratings-->",competitorRatings[4]);
-console.log("range---->",calculateRange(competitorRatings[4]));
-console.log("average-->",calculateAverage(competitorRatings[4]));
-console.log("........................................");
-
-calculateDistanceBetweenBelts(averagesArr);
-
-console.log('distance between black and brown:',distancesArr[0]);
-console.log('distance between brown and purple:',distancesArr[1]);
-console.log('distance between purple and blue:',distancesArr[2]);
-console.log('distance between blue and white:',distancesArr[3]);
-
-console.log("........................................");
+// console.log("total competitors in tournament -->",totalCompetitors);
+//
+// console.log("..........black..belt.stats..........");
+// console.log("# of black belts-->",competitorRatings[0].length);
+// // console.log("all black belts ratings-->",competitorRatings[0]);
+// console.log("range---->",calculateRange(competitorRatings[0]));
+// console.log("average-->",calculateAverage(competitorRatings[0]));
+//
+// console.log("..........brown..belt.stats..........");
+// console.log("# of brown belts-->",competitorRatings[1].length);
+// // console.log("all brown belt ratings",competitorRatings[1]);
+// console.log("range---->",calculateRange(competitorRatings[1]));
+// console.log("average-->",calculateAverage(competitorRatings[1]));
+//
+// console.log("..........purple.belt.stats..........");
+// console.log("# of purple belts-->",competitorRatings[2].length);
+// // console.log("all purple belt ratings",competitorRatings[2]);
+// console.log("range---->",calculateRange(competitorRatings[2]));
+// console.log("average-->",calculateAverage(competitorRatings[2]));
+//
+// console.log("..........blue...belt.stats..........");
+// console.log("# of blue belts-->",competitorRatings[3].length);
+// // console.log("all blue belt ratings-->",competitorRatings[3]);
+// console.log("range---->",calculateRange(competitorRatings[3]));
+// console.log("average-->",calculateAverage(competitorRatings[3]));
+//
+// console.log("..........white..belt.stats..........");
+// console.log("# of white belts-->",competitorRatings[4].length);
+// // console.log("all white belt ratings-->",competitorRatings[4]);
+// console.log("range---->",calculateRange(competitorRatings[4]));
+// console.log("average-->",calculateAverage(competitorRatings[4]));
+// console.log("........................................");
+//
+// calculateDistanceBetweenBelts(averagesArr);
+//
+// console.log('distance between black and brown:',distancesArr[0]);
+// console.log('distance between brown and purple:',distancesArr[1]);
+// console.log('distance between purple and blue:',distancesArr[2]);
+// console.log('distance between blue and white:',distancesArr[3]);
+//
+// console.log("........................................");
 
 
 
