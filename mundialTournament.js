@@ -2,9 +2,15 @@
 var fs = require('fs');
 var _  = require('lodash');
 
-//for the Mundials 2015
-//var demographicInformation = [144,306,551,642,198];
-var demographicInformation = [2,4,7,9,3];
+// for the Mundials 2015 -- 1861 competitors
+// var demographicInformation = [144,306,551,642,198];
+// for 25 competitors
+// var demographicInformation = [2,4,7,9,3];
+// for 101 competitors
+var demographicInformation = [8,17,30,35,11];
+// for 202 competitors
+// var demographicInformation = [16,34,60,70,22];
+
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 var beltAbbreviations = ['b','br','p','u','w'];
 
@@ -41,7 +47,6 @@ var ifSecondCompetitorLoses = null;
 var firstCompetitorsTotalMatches = null;
 var secondCompetitorsTotalMatches = null;
 
-// var competitorNames      = [];
 var allCompetitorRatings = [];
 var allCompetitorNames  = [];
 var averagesArr  = [];
@@ -96,8 +101,6 @@ var assembleGeneralPopulationArray = function(demographicInformation){
     generalPopulationArray.push(tempArr);
   }
 };
-
-
 
 /**
  * @name - scribe
@@ -203,7 +206,7 @@ var ratingsAtStakeCalculator = function(k){
 /**
  * @name - matchRecorder
  * @description - Writes record of a competitor's match
- * To 'matches' key in competitor, assigns value -->
+ **  To 'matches' key in competitor, assigns value -->
  **                stringified record of match just finished in compMat.
  **                Each match is delimited by '***'
  * @example - 'matches': {'1-1600-c9-w-1600***2-1588-c8-u-1613***'}
@@ -239,6 +242,17 @@ var matchRecorder = function(){
                                                     + "-" + firstCompetitorRating.toString() + "***";
 };
 
+/**
+ * @name - mundialTournamentPrintouts
+ * @description - logs to the console parts of the arrays of interest for mundialTournament()
+ **  first set of console.logs prints out each beltLine in finishedCompeting array
+ **  REST OF console.logs SHOULD PRINT EMPTY!
+ **  second set prints out each beltLine in generalPopulationArray
+ **  third prints bullPen array
+ **  fourth prints compMats
+ * @param - none
+ **/
+
 var mundialTournamentPrintouts = function(){
   //first black belt
   console.log("finishedCompeting[0][0]:",finishedCompeting[0][0]);
@@ -266,18 +280,17 @@ var mundialTournamentPrintouts = function(){
 };
 
 //Mathematical functions
-var calculateRange = function(array){
-  let min = Math.min.apply(null,array);
-  let max = Math.max.apply(null,array);
+var calculateRange = function(beltLineRatingsArray){
+  let min = Math.min.apply(null,beltLineRatingsArray);
+  let max = Math.max.apply(null,beltLineRatingsArray);
   let diff = max-min;
 
   return [min,max,diff]
 };
 
-
-var calculateAverage = function(array){
-  let sum = array.reduce((prev, curr) => prev + curr);
-  let roundedAvg = Math.round(sum/array.length);
+var calculateAverage = function(beltLineRatingsArray){
+  let sum = beltLineRatingsArray.reduce((prev, curr) => prev + curr);
+  let roundedAvg = Math.round(sum/beltLineRatingsArray.length);
   averagesArr.push(roundedAvg);
 
   return roundedAvg;
@@ -324,7 +337,6 @@ var calculateStandardDeviation = function(varianceArray){
  * @param - k-factor (integer)
  **/
 var mundialTournament = function(demographicInformation,k){
-
   //generates competitors
   //separates competitors by belt
   //Enters all into generalPopulationArray
@@ -375,7 +387,16 @@ var mundialTournament = function(demographicInformation,k){
   // mundialTournamentPrintouts();
 };
 
-
+/**
+ * @name - printoutStatistics
+ * @description - for each beltLine --> logs to the console
+ **  (1) # of competitors
+ **  (2) average rating of a given beltLine
+ **  (3) lowest rating in a given beltLine
+ **  (4) highest rating in a given beltLine
+ **  (5) range
+ * @param - none
+ **/
 var printoutStatistics = function() {
   console.log("........................................");
   // console.log("all competitor Ratings in a nested array:",allCompetitorRatings);
@@ -385,7 +406,7 @@ var printoutStatistics = function() {
     console.log("..........black..belt.stats..........");
     console.log("# of black belts-->",allCompetitorRatings[0].length);
     console.log("average black belt rating:",calculateAverage(allCompetitorRatings[0]));
-    console.log("all black belts ratings-->",allCompetitorRatings[0]);
+    // console.log("all black belts ratings-->",allCompetitorRatings[0]);
     console.log("lowest black belt rating:",calculateRange(allCompetitorRatings[0])[0]);
     console.log("highest black belt rating:",calculateRange(allCompetitorRatings[0])[1]);
     console.log("range:",calculateRange(allCompetitorRatings[0])[2]);
@@ -395,7 +416,7 @@ var printoutStatistics = function() {
     console.log("..........brown..belt.stats..........");
     console.log("# of brown belts-->",allCompetitorRatings[1].length);
     console.log("average brown belt rating:",calculateAverage(allCompetitorRatings[1]));
-    console.log("all brown belt ratings",allCompetitorRatings[1]);
+    // console.log("all brown belt ratings",allCompetitorRatings[1]);
     console.log("lowest brown belt rating:",calculateRange(allCompetitorRatings[1])[0]);
     console.log("highest brown belt rating:",calculateRange(allCompetitorRatings[1])[1]);
     console.log("range:",calculateRange(allCompetitorRatings[1])[2]);
@@ -405,7 +426,7 @@ var printoutStatistics = function() {
     console.log("..........purple.belt.stats..........");
     console.log("# of purple belts-->",allCompetitorRatings[2].length);
     console.log("average purple belt rating:",calculateAverage(allCompetitorRatings[2]));
-    console.log("all purple belt ratings",allCompetitorRatings[2]);
+    // console.log("all purple belt ratings",allCompetitorRatings[2]);
     console.log("lowest purple belt rating:",calculateRange(allCompetitorRatings[2])[0]);
     console.log("highest purple belt rating:",calculateRange(allCompetitorRatings[2])[1]);
     console.log("range:",calculateRange(allCompetitorRatings[2])[2]);
@@ -415,7 +436,7 @@ var printoutStatistics = function() {
     console.log("..........blue...belt.stats..........");
     console.log("# of blue belts-->",allCompetitorRatings[3].length);
     console.log("average blue belt rating:",calculateAverage(allCompetitorRatings[3]));
-    console.log("all blue belt ratings-->",allCompetitorRatings[3]);
+    // console.log("all blue belt ratings-->",allCompetitorRatings[3]);
     console.log("lowest blue belt rating:",calculateRange(allCompetitorRatings[3])[0]);
     console.log("highest blue belt rating:",calculateRange(allCompetitorRatings[3])[1]);
     console.log("range:",calculateRange(allCompetitorRatings[3])[2]);
@@ -425,7 +446,7 @@ var printoutStatistics = function() {
     console.log("..........white..belt.stats..........");
     console.log("# of white belts-->",allCompetitorRatings[4].length);
     console.log("average white belt rating:",calculateAverage(allCompetitorRatings[4]));
-    console.log("all white belt ratings-->",allCompetitorRatings[4]);
+    // console.log("all white belt ratings-->",allCompetitorRatings[4]);
     console.log("lowest white belt rating:",calculateRange(allCompetitorRatings[4])[0]);
     console.log("highest white belt rating:",calculateRange(allCompetitorRatings[4])[1]);
     console.log("range:",calculateRange(allCompetitorRatings[4])[2]);
@@ -457,9 +478,12 @@ var printoutStatistics = function() {
   console.log("blue belt SD:",standDevArray[3]);
   console.log("white belt SD:",standDevArray[4]);
   console.log("........................................");
-
 };
 
+
+// this function needs to be refactored
+// the central question is -- why is the reporter function dynamically nesting competitor ratings?
+// no good answer.
 var reporter = function(finishedCompeting, demographicInformation, allCompetitorNames){
   // dynamically nest competitor rating according to their rank
   // access each name in allCompetitorNames
