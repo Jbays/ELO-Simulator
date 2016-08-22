@@ -57,6 +57,22 @@ var varianceArray = [];
 var standDevArray = [];
 
 /**
+ * @name - generateDemographicInformation
+ * @description - Scales competitors according to calculated ratio between beltLines in Mundials 2015
+ * @example - generalPopulationArray = [
+ **             [blackBeltLine],[brownBeltLine],[purpleBeltLine],[blueBeltLine],[whiteBeltLine]
+ **           ]
+ * @param - integer
+ **/
+var generateDemographicInformation = function(integer){
+  let twentyFiveCompetitors = [2,4,7,9,3];
+
+  demographicInformation = twentyFiveCompetitors.map(function(competitorsPerBelt){
+    return competitorsPerBelt*integer;
+  });
+}
+
+/**
  * @name - assembleGeneralPopulationArray
  * @description - populates generalPopulationArray with competitors
  **               who are separated by belt.
@@ -336,7 +352,12 @@ var calculateStandardDeviation = function(varianceArray){
  * @param - demographicInformation (array)
  * @param - k-factor (integer)
  **/
-var mundialTournament = function(demographicInformation,k){
+var mundialTournament = function(integer,k){
+
+
+  generateDemographicInformation(integer);
+
+
   //generates competitors
   //separates competitors by belt
   //Enters all into generalPopulationArray
@@ -510,7 +531,8 @@ var reporter = function(finishedCompeting, demographicInformation, allCompetitor
 // Compete each belt vs each other belt
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
-mundialTournament(demographicInformation,25);
+// mundialTournament(demographicInformation,25);
+mundialTournament(2,25);
 
 // The next step is to write a function that'll run mundialTournament
 // while incrementing K and recording the simple automated reports.

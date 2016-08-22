@@ -1,0 +1,23 @@
+{
+  "name": "elo-simulator",
+  "version": "1.0.0",
+  "description": "elo rating system applied to a brazilian jiu-jitsu tournament",
+  "main": "mundialTournament-compiled.js",
+  "dependencies": {
+    "mailgun.js": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jbays/ELO-Simulator.git"
+  },
+  "author": "jbays",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jbays/ELO-Simulator/issues"
+  },
+  "homepage": "https://github.com/Jbays/ELO-Simulator#readme"
+}
