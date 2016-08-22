@@ -9,7 +9,6 @@ var jiujitsuBelts = ['black','brown','purple','blue','white'];
 var beltAbbreviations = ['b','br','p','u','w'];
 
 var generalPopulationArray = [];
-var listOfNames         = [];
 var bullPen             = [];
 var compMats            = [];
 var finishedCompeting   = [];
@@ -44,7 +43,7 @@ var secondCompetitorsTotalMatches = null;
 
 // var competitorNames      = [];
 var allCompetitorRatings = [];
-var compNamesInBrackets  = [];
+var allCompetitorNames  = [];
 var averagesArr  = [];
 var distancesArr = [];
 var totalCompetitors = null;
@@ -68,15 +67,13 @@ var assembleGeneralPopulationArray = function(demographicInformation){
   //for each belt demographic in demographicInformation array
   for ( let j = 0; j < demographicInformation.length; j++ ) {
     //empty beltLine
-    let tempArr = [];
+    let tempArr  = [];
+    let listOfCompetitorNames = [];
 
     //for each belt in a single belt demographic
     for ( let i = 1; i <= demographicInformation[j]; i++ ) {
       //competitor's name
       let competitorNameBlueprint = counter.toString();
-
-      listOfNames.push("c"+competitorNameBlueprint);
-
       //string of competitors statistical information
       let competitorBlueprint = '{"c' + competitorNameBlueprint
                               + '":{"belt":"' + jiujitsuBelts[j]
@@ -88,24 +85,19 @@ var assembleGeneralPopulationArray = function(demographicInformation){
       tempArr.push(realLifeCompetitor);
       //increment name
       counter++;
+
+      //take competitor's fullName and pushes into listOfCompetitorNames
+      let competitorFullName = "c"+competitorNameBlueprint;
+      listOfCompetitorNames.push(competitorFullName);
     }
+    //pushes all listOfCompetitorNames into holding array
+    allCompetitorNames.push(listOfCompetitorNames);
     //pushes beltLine into generalPopulationArray
     generalPopulationArray.push(tempArr);
   }
-  prepareListOfNames(listOfNames);
 };
 
-//dynamically nest competitors according to their rank
-let prepareListOfNames = function(listOfNames){
-  for ( let i = 0; i < demographicInformation.length; i++ ) {
-    let numberOfCompetitors = demographicInformation[i];
-    let tempArr = [];
-    for ( let j = 0; j < numberOfCompetitors; j++ ) {
-      tempArr.push(listOfNames.shift());
-    }
-    compNamesInBrackets.push(tempArr);
-  }
-};
+
 
 /**
  * @name - scribe
@@ -320,7 +312,6 @@ var calculateVariance = function(averagesArr, allCompetitorRatings){
 
 var calculateStandardDeviation = function(varianceArray){
   for ( let i = 0; i < varianceArray.length; i++ ) {
-    // console.log("varianceArray[i]:",varianceArray[i]);
     standDevArray.push(Math.sqrt(varianceArray[i]));
   }
 };
@@ -448,36 +439,37 @@ var printoutStatistics = function() {
 
   console.log("........................................");
   calculateDistanceBetweenBelts(averagesArr);
-
   console.log("distance between average belt rating");
   console.log('between black and brown:',distancesArr[0]);
   console.log('between brown and purple:',distancesArr[1]);
   console.log('between purple and blue:',distancesArr[2]);
   console.log('between blue and white:',distancesArr[3]);
-
   console.log("........................................");
 
   calculateVariance(averagesArr,allCompetitorRatings);
-  console.log("varianceArray:",varianceArray)
+  // console.log("varianceArray:",varianceArray)
 
   calculateStandardDeviation(varianceArray);
-  console.log("standDevArray:",standDevArray);
-
+  console.log("Standard Deviations (SD) for Belts:");
+  console.log("black belt SD:",standDevArray[0]);
+  console.log("brown belt SD:",standDevArray[1]);
+  console.log("purple belt SD:",standDevArray[2]);
+  console.log("blue belt SD:",standDevArray[3]);
+  console.log("white belt SD:",standDevArray[4]);
   console.log("........................................");
 
-
 };
-//
-var reporter = function(finishedCompeting, demographicInformation, compNamesInBrackets){
+
+var reporter = function(finishedCompeting, demographicInformation, allCompetitorNames){
   // dynamically nest competitor rating according to their rank
-  // access each name in compNamesInBrackets
-  for ( let i = 0; i < compNamesInBrackets.length; i++ ) {
+  // access each name in allCompetitorNames
+  for ( let i = 0; i < allCompetitorNames.length; i++ ) {
     let numberOfCompetitors = demographicInformation[i];
     let tempArr = [];
 
     //iterating on each competitor
     for ( let j = 0; j < numberOfCompetitors; j++ ) {
-      let competitor = finishedCompeting[i][j][compNamesInBrackets[i][j]];
+      let competitor = finishedCompeting[i][j][allCompetitorNames[i][j]];
       tempArr.push(competitor.rating)
     }
     allCompetitorRatings.push(tempArr);
@@ -496,14 +488,6 @@ var reporter = function(finishedCompeting, demographicInformation, compNamesInBr
 // k is the maximal number of points a player can win/lose in a given match
 mundialTournament(demographicInformation,25);
 
-// Notes:
-// Now that I've developed simple automated reports
-// Which for a given belt output -->
-// the range of ratings
-// the average rating
-// the number of competitors
-// and the distances between averageBeltRatings
-
 // The next step is to write a function that'll run mundialTournament
 // while incrementing K and recording the simple automated reports.
 // if any values for k match my expected outcome, hone in your search!
@@ -511,4 +495,4 @@ mundialTournament(demographicInformation,25);
 // if the tournament will follow approximately the same results
 // as mundialTournament.js with the biasedReferee()!
 // ^^The Ultimate Sanity Check^^
-reporter(finishedCompeting, demographicInformation, compNamesInBrackets);
+reporter(finishedCompeting, demographicInformation, allCompetitorNames);
