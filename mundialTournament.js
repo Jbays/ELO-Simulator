@@ -2,15 +2,12 @@
 var fs = require('fs');
 var _  = require('lodash');
 
-// for the Mundials 2015 -- 1861 competitors
-// var demographicInformation = [144,306,551,642,198];
-// for 25 competitors
-// var demographicInformation = [2,4,7,9,3];
-// for 101 competitors
-var demographicInformation = [8,17,30,35,11];
-// for 202 competitors
-// var demographicInformation = [16,34,60,70,22];
+/*********************************
+ ** BEGIN VARIABLE DECLARATIONS **
+ *********************************/
 
+// for the Mundials 2015 -- 1861 competitors
+var demographicInformation = null;
 var jiujitsuBelts = ['black','brown','purple','blue','white'];
 var beltAbbreviations = ['b','br','p','u','w'];
 
@@ -55,6 +52,72 @@ var totalCompetitors = null;
 
 var varianceArray = [];
 var standDevArray = [];
+
+/*********************************
+ *** END VARIABLE DECLARATIONS ***
+ *********************************/
+
+/*******************************
+ * BEGIN MATHEMATICAL FUNCTIONS *
+ *******************************/
+
+//Mathematical functions
+var calculateRange = function(beltLineRatingsArray){
+  let min = Math.min.apply(null,beltLineRatingsArray);
+  let max = Math.max.apply(null,beltLineRatingsArray);
+  let diff = max-min;
+
+  return [min,max,diff]
+};
+
+var calculateAverage = function(beltLineRatingsArray){
+  let sum = beltLineRatingsArray.reduce((prev, curr) => prev + curr);
+  let roundedAvg = Math.round(sum/beltLineRatingsArray.length);
+  averagesArr.push(roundedAvg);
+
+  return roundedAvg;
+};
+
+var calculateDistanceBetweenBelts = function(averagesArr){
+  //don't need to start at i=0, because averagesArr[i-1] is NaN
+  for ( let i = 1; i < averagesArr.length; i++ ) {
+    let diff = averagesArr[i-1]-averagesArr[i];
+    distancesArr.push(diff);
+  }
+};
+
+var calculateVariance = function(averagesArr, allCompetitorRatings){
+  //for each average in averagesArr
+  for ( let i = 0; i < averagesArr.length; i++ ) {
+    let tempArr = [];
+    let average = averagesArr[i];
+    let wholeBeltLine = allCompetitorRatings[i];
+    let numberOfBelts = wholeBeltLine.length;
+
+    //for each competitor rating in competitorRating
+    for ( let j = 0; j < numberOfBelts; j++ ) {
+      let individualCompetitorRating = wholeBeltLine[j];
+      let deviations = Math.pow(average-individualCompetitorRating,2);
+      tempArr.push(deviations);
+    }
+    let tempArrVariance = tempArr.reduce((prev,curr) => prev+curr)/numberOfBelts;
+    varianceArray.push(tempArrVariance);
+  }
+};
+
+var calculateStandardDeviation = function(varianceArray){
+  for ( let i = 0; i < varianceArray.length; i++ ) {
+    standDevArray.push(Math.sqrt(varianceArray[i]));
+  }
+};
+
+/*******************************
+ * END MATHEMATICAL FUNCTIONS *
+ *******************************/
+
+/************************************
+ **** BEGIN TOURNAMENT FUNCTIONS ****
+ ************************************/
 
 /**
  * @name - generateDemographicInformation
@@ -295,57 +358,6 @@ var mundialTournamentPrintouts = function(){
   // console.log("compMats:",compMats);
 };
 
-//Mathematical functions
-var calculateRange = function(beltLineRatingsArray){
-  let min = Math.min.apply(null,beltLineRatingsArray);
-  let max = Math.max.apply(null,beltLineRatingsArray);
-  let diff = max-min;
-
-  return [min,max,diff]
-};
-
-var calculateAverage = function(beltLineRatingsArray){
-  let sum = beltLineRatingsArray.reduce((prev, curr) => prev + curr);
-  let roundedAvg = Math.round(sum/beltLineRatingsArray.length);
-  averagesArr.push(roundedAvg);
-
-  return roundedAvg;
-};
-
-var calculateDistanceBetweenBelts = function(averagesArr){
-  //don't need to start at i=0, because averagesArr[i-1] is NaN
-  for ( let i = 1; i < averagesArr.length; i++ ) {
-    let diff = averagesArr[i-1]-averagesArr[i];
-    distancesArr.push(diff);
-  }
-};
-
-var calculateVariance = function(averagesArr, allCompetitorRatings){
-  //for each average in averagesArr
-  for ( let i = 0; i < averagesArr.length; i++ ) {
-    let tempArr = [];
-    let average = averagesArr[i];
-    let wholeBeltLine = allCompetitorRatings[i];
-    let numberOfBelts = wholeBeltLine.length;
-
-    //for each competitor rating in competitorRating
-    for ( let j = 0; j < numberOfBelts; j++ ) {
-      let individualCompetitorRating = wholeBeltLine[j];
-      let deviations = Math.pow(average-individualCompetitorRating,2);
-      tempArr.push(deviations);
-    }
-    let tempArrVariance = tempArr.reduce((prev,curr) => prev+curr)/numberOfBelts;
-    varianceArray.push(tempArrVariance);
-  }
-};
-
-var calculateStandardDeviation = function(varianceArray){
-  for ( let i = 0; i < varianceArray.length; i++ ) {
-    standDevArray.push(Math.sqrt(varianceArray[i]));
-  }
-};
-
-
 /**
  * @name - mundialTournament
  * @description - Makes all competitors in generalPopulationArray compete
@@ -354,16 +366,16 @@ var calculateStandardDeviation = function(varianceArray){
  **/
 var mundialTournament = function(integer,k){
 
-
+  //populates demographicInformation array with competitors
+  //proportional to the mundialTournament.js
   generateDemographicInformation(integer);
-
 
   //generates competitors
   //separates competitors by belt
   //Enters all into generalPopulationArray
   assembleGeneralPopulationArray(demographicInformation);
 
-  let numberOfDifferentBelts = generalPopulationArray.length
+  let numberOfDifferentBelts = generalPopulationArray.length;
 
   //for each beltLine
   for ( let i = 0; i < numberOfDifferentBelts; i++ ) {
@@ -382,7 +394,6 @@ var mundialTournament = function(integer,k){
 
         //for each white belt
         for ( let i = 0; i < bullPen[1].length; i++ ) {
-
           //first white belt on compMats
           compMats.push(bullPen[1].shift());
 
@@ -407,6 +418,14 @@ var mundialTournament = function(integer,k){
   // this function'll print out all arrays for mundialTournament
   // mundialTournamentPrintouts();
 };
+
+/**********************************
+ **** END TOURNAMENT FUNCTIONS ****
+ **********************************/
+
+/*********************************
+ *** BEGIN PRINTOUTS FUNCTIONS ***
+ *********************************/
 
 /**
  * @name - printoutStatistics
@@ -501,7 +520,6 @@ var printoutStatistics = function() {
   console.log("........................................");
 };
 
-
 // this function needs to be refactored
 // the central question is -- why is the reporter function dynamically nesting competitor ratings?
 // no good answer.
@@ -527,12 +545,20 @@ var reporter = function(finishedCompeting, demographicInformation, allCompetitor
   printoutStatistics();
 };
 
+/*********************************
+ **** END PRINTOUTS FUNCTIONS ****
+ *********************************/
+
+/********************************
+ ****** BEGIN TRIGGER-PULL ******
+ ********************************/
+
 // Will generate competitors equal to sum of demographicInformation which will
 // Compete each belt vs each other belt
 // Until a winner is declared.
 // k is the maximal number of points a player can win/lose in a given match
 // mundialTournament(demographicInformation,25);
-mundialTournament(2,25);
+mundialTournament(1,25);
 
 // The next step is to write a function that'll run mundialTournament
 // while incrementing K and recording the simple automated reports.
@@ -542,3 +568,7 @@ mundialTournament(2,25);
 // as mundialTournament.js with the biasedReferee()!
 // ^^The Ultimate Sanity Check^^
 reporter(finishedCompeting, demographicInformation, allCompetitorNames);
+
+/********************************
+ ******* END TRIGGER-PULL *******
+ ********************************/
