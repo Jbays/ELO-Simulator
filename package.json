@@ -4,7 +4,8 @@
   "description": "elo rating system applied to a brazilian jiu-jitsu tournament",
   "main": "mundialTournament-compiled.js",
   "dependencies": {
-    "mailgun.js": "^2.0.1"
+    "mailgun.js": "^2.0.1",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {},
   "scripts": {

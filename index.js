@@ -1,3 +1,7 @@
+'use strict';
+
+const _ = require('underscore');
+
 /**
  * @name: generateCompetitors
  * @description: creates "n" number of com
@@ -5,7 +9,32 @@
  * @returns: allCompetitors
  **/
 function generateCompetitors(numOfCompetitors){
-	return numOfCompetitors
+	let outputArr = [];
+
+	for (let i=0; i<numOfCompetitors ;i++ ){
+    let competitorBlueprint = '{"c' + i.toString() + '":{"rating":1600,"wins":0,"losses":0,"compHistory":"","record":""}}';
+
+    outputArr.push(JSON.parse(competitorBlueprint))
+	}
+	return outputArr
+}
+
+/**
+ * @name: makeCompetitorsCompete
+ * @description: 
+ * @param: 
+ * @returns:
+ **/
+function makeCompetitorsCompete(numberOfRounds,everySingleCompetitorArr){
+	console.log("numberOfRounds>>>>",numberOfRounds);
+	console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
+
+	//what needs to happen to make two competitors compete?
+
+	//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
+	
+
+
 }
 
 
@@ -17,15 +46,15 @@ function generateCompetitors(numOfCompetitors){
  * @returns: results of tournament
  **/
 function runTournament(roundNum,tournSize){
-	console.log("runTournament invoked!");
-
-
 	console.log("running a tournament of !!!",roundNum,"rounds !!!")
 	console.log("and                     !!!",tournSize,"competitors !!!")
 
-	allCompetitors = generateCompetitors(roundNum)
+	const allCompetitors = generateCompetitors(tournSize)
 
-	console.log("these are our competitors>>>>",allCompetitors)
+	makeCompetitorsCompete(roundNum,generateCompetitors(tournSize))
+
+
+	// console.log("these are our competitors>>>>",allCompetitors)
 
 	//creator competitors
 
