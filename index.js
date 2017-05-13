@@ -31,15 +31,41 @@ function generateCompetitors(numOfCompetitors){
 	return outputArr
 }
 
+function runCompetitionMats (tuple,kFactor,classSize){
+	//this accesses the competitor information
+	let leftSideComp  = tuple[0][Object.keys(tuple[0])[0]];
+	let rightSideComp = tuple[1][Object.keys(tuple[1])[0]];
+
+	let leftSideProbabilityOfVictory  = 1 / (1+Math.pow(10, ((rightSideComp.rating-leftSideComp.rating) /classSize) ))
+	let rightSideProbabilityOfVictory = 1 / (1+Math.pow(10, (( leftSideComp.rating-rightSideComp.rating)/classSize) ))
+	
+	// [pointsLeftSideWillGain, pointsLeftSideWillLose]
+	let leftSidePoints  = calculatePointsAtStake(leftSideProbabilityOfVictory,kFactor)	
+	let rightSidePoints = calculatePointsAtStake(rightSideProbabilityOfVictory,kFactor)	
+
+	console.log("leftSidePoints>>>",leftSidePoints)
+	console.log("rightSidePoints>>>",rightSidePoints)
+
+
+}
+
+function calculatePointsAtStake(probabilityOfVictory,kFactor){
+	//NOTE: index=0 is the probability of victory
+	//      index=1 is the probability of loss
+	return [(1-probabilityOfVictory),-probabilityOfVictory].map(function(outcomeProbability,index){
+		return kFactor*outcomeProbability
+	})
+}
+
 /**
  * @name: makeAllCompete
  * @description: 
  * @param: 
  * @returns:
  **/
-function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor){
-	console.log("numberOfRounds>>>>",numberOfRounds);
-	console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
+function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSize){
+	// console.log("numberOfRounds>>>>",numberOfRounds);
+	// console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
 
 	//for every pair of competitors
 	//push them into the competition mats
@@ -58,9 +84,12 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor){
 		//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
 		compMats.push(everySingleCompetitorArr.pop(),everySingleCompetitorArr.pop())
 
-		console.log("compMats",compMats)
+		// console.log("compMats",compMats)
 
 		//take two competitors out of everySingleCompetitorArr
+
+		runCompetitionMats(compMats,kFactor,classSize)
+
 		//calculate likelihood of each competitors's victory
 		//pick random number
 		//declare a competitor the winner
@@ -103,7 +132,7 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor){
  * @param: tournSize (integer) - the amount of bjj competitors
  * @returns: results of tournament
  **/
-function runTournament(roundNum,tournSize,kFactor){
+function runTournament(roundNum,tournSize,kFactor,classSize){
 	console.log("running a tournament of !!!",roundNum,"rounds !!!")
 	console.log("and                     !!!",tournSize,"competitors !!!")
 
@@ -112,7 +141,7 @@ function runTournament(roundNum,tournSize,kFactor){
 	//generateCompetitors(tournSize)
 
 	//make them compete
-	makeAllCompete(roundNum,generateCompetitors(tournSize),kFactor)
+	makeAllCompete(roundNum,generateCompetitors(tournSize),kFactor,classSize)
 
 
 	//afterward I'll have some interesting choices:
@@ -127,7 +156,8 @@ function runTournament(roundNum,tournSize,kFactor){
 	// return ...what?
 }
 
-//the simplest tournament is two rounds, four competitors, using 32 as k-factor
+//the simplest tournament is two rounds, four competitors
+// using 32 as k-factor
 //with k-factor
-runTournament(2,4,32)
+runTournament(2,4,32,400)
 
