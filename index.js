@@ -37,7 +37,7 @@ function generateCompetitors(numOfCompetitors){
  * @param: 
  * @returns:
  **/
-function makeAllCompete(numberOfRounds,everySingleCompetitorArr){
+function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor){
 	console.log("numberOfRounds>>>>",numberOfRounds);
 	console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
 
@@ -55,9 +55,23 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr){
 	let compMats = [];
 
 	for (let j = 0; j < everySingleCompetitorArr.length;j++){
+		//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
 		compMats.push(everySingleCompetitorArr.pop(),everySingleCompetitorArr.pop())
 
 		console.log("compMats",compMats)
+
+		//take two competitors out of everySingleCompetitorArr
+		//calculate likelihood of each competitors's victory
+		//pick random number
+		//declare a competitor the winner
+		//increment their stats
+		//push them into finishedArr
+
+
+
+		//we need a ref
+		//we need a scorekeeper
+		//we need competition mats
 
 		finishedArr.push(compMats.pop(),compMats.pop())
 	}
@@ -74,11 +88,6 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr){
 	//make competitors compete 
 	
 
-	//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
-
-	//we need a ref
-	//we need a scorekeeper
-	//we need competition mats
 
 
 
@@ -94,7 +103,7 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr){
  * @param: tournSize (integer) - the amount of bjj competitors
  * @returns: results of tournament
  **/
-function runTournament(roundNum,tournSize){
+function runTournament(roundNum,tournSize,kFactor){
 	console.log("running a tournament of !!!",roundNum,"rounds !!!")
 	console.log("and                     !!!",tournSize,"competitors !!!")
 
@@ -103,7 +112,7 @@ function runTournament(roundNum,tournSize){
 	//generateCompetitors(tournSize)
 
 	//make them compete
-	makeAllCompete(roundNum,generateCompetitors(tournSize))
+	makeAllCompete(roundNum,generateCompetitors(tournSize),kFactor)
 
 
 	//afterward I'll have some interesting choices:
@@ -118,6 +127,7 @@ function runTournament(roundNum,tournSize){
 	// return ...what?
 }
 
-//the simplest tournament is two rounds, four competitors
-runTournament(2,4)
+//the simplest tournament is two rounds, four competitors, using 32 as k-factor
+//with k-factor
+runTournament(2,4,32)
 
