@@ -13,7 +13,7 @@ const _ = require('underscore');
 
 /**
  * @name: generateCompetitors
- * @description: creates "n" number of com
+ * @description: creates "n" number of competitors
  * @param: numOfCompetitors (integer) - the total amount of competitors in a tournament
  * @returns: allCompetitors
  **/
@@ -22,7 +22,7 @@ function generateCompetitors(numOfCompetitors){
 
 	//for-loop which will generate competitors equaling to numOfCompetitors
 	for (let i=0;i<numOfCompetitors;i++){
-    let competitorBlueprint = '{"c'+(i+1).toString()+'":{"rating":1600,"wins":0,"losses":0,"streak":"","record":"0-0"}}';
+    let competitorBlueprint = '{"c'+(i+1).toString()+'":{"rating":1600,"streak":"","record":"0-0"}}';
 
     outputArr.push(JSON.parse(competitorBlueprint))
 	}
@@ -43,9 +43,9 @@ function generateCompetitors(numOfCompetitors){
 function decideWinner(competitionMats,probabilityOfVictoryLeft,probabilityOfVictoryRight,leftPointsArr,rightPointsArr){
 	let randomNumber = Math.random()
 
-	console.log("here's randomNumber>>>>",randomNumber)
-	console.log("probabilityOfVictoryLeft>>>>",probabilityOfVictoryLeft)
-	console.log("probabilityOfVictoryRight>>>>",probabilityOfVictoryRight)
+	// console.log("here's randomNumber>>>>",randomNumber)
+	// console.log("probabilityOfVictoryLeft>>>>",probabilityOfVictoryLeft)
+	// console.log("probabilityOfVictoryRight>>>>",probabilityOfVictoryRight)
 
 	if (probabilityOfVictoryLeft>randomNumber) {
 		console.log("leftSide won!")
@@ -71,8 +71,8 @@ function decideWinner(competitionMats,probabilityOfVictoryLeft,probabilityOfVict
 function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftResult,rightResult){
 	
 	console.log("the competitionMats>>>",competitionMats)
-	console.log("the pointsAtStakeLeft>>>",pointsAtStakeLeft)
-	console.log("the pointsAtStakeRight>>>",pointsAtStakeRight)
+	// console.log("the pointsAtStakeLeft>>>",pointsAtStakeLeft)
+	// console.log("the pointsAtStakeRight>>>",pointsAtStakeRight)
 
 	competitionMats.forEach(function(competitor,index){
 		let competitorStats = Object.keys(competitor)
@@ -92,10 +92,17 @@ function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftR
 
 }
 
+/**
+ * @name: writeToTheirRecord
+ * @description: 
+ * @param1: competitionMats 
+ * @param2: pointsAtStakeLeft
+ * @returns: 
+ **/
 function writeToTheirRecord(recordString,letterResultsArr){
 	let splitRecord = recordString.split('-')
-	console.log("splitRecord>>",splitRecord)
-	console.log("letterResultsArr>>",letterResultsArr)
+	// console.log("splitRecord>>",splitRecord)
+	// console.log("letterResultsArr>>",letterResultsArr)
 
 	if ( letterResultsArr === "w" ) {
 		splitRecord[0] = parseInt(splitRecord[0])+1
@@ -103,9 +110,7 @@ function writeToTheirRecord(recordString,letterResultsArr){
 		splitRecord[1] = parseInt(splitRecord[1])+1
 	}
 
-	console.log("splitRecord.join('-')>>>",splitRecord.join('-'));
-
-
+	// console.log("splitRecord.join('-')>>>",splitRecord.join('-'));
 	return splitRecord.join('-')
 }
 
@@ -122,15 +127,15 @@ function runCompetitionMats (tuple,kFactor,classSize){
 	let leftSideComp  = tuple[0][Object.keys(tuple[0])[0]];
 	let rightSideComp = tuple[1][Object.keys(tuple[1])[0]];
 
-	let leftSideProbabilityOfVictory  = 1 / (1+Math.pow(10, ((rightSideComp.rating-leftSideComp.rating) /classSize) ))
-	let rightSideProbabilityOfVictory = 1 / (1+Math.pow(10, (( leftSideComp.rating-rightSideComp.rating)/classSize) ))
+	let leftSideProbabilityOfVictory  = 1 / (1+Math.pow(10, ((rightSideComp.rating- leftSideComp.rating)/(2*classSize) )))
+	let rightSideProbabilityOfVictory = 1 / (1+Math.pow(10, (( leftSideComp.rating-rightSideComp.rating)/(2*classSize) )))
 	
 	// [pointsLeftSideWillGain, pointsLeftSideWillLose]
 	let leftSidePoints  = calculatePointsAtStake(leftSideProbabilityOfVictory,kFactor)	
 	let rightSidePoints = calculatePointsAtStake(rightSideProbabilityOfVictory,kFactor)	
 
-	console.log("leftSidePoints>>>",leftSidePoints)
-	console.log("rightSidePoints>>>",rightSidePoints)
+	// console.log("leftSidePoints>>>",leftSidePoints)
+	// console.log("rightSidePoints>>>",rightSidePoints)
 
 	decideWinner(tuple,leftSideProbabilityOfVictory,rightSideProbabilityOfVictory,leftSidePoints,rightSidePoints)
 
@@ -162,59 +167,35 @@ function calculatePointsAtStake(probabilityOfVictory,kFactor){
  **/
 function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSize){
 	// console.log("numberOfRounds>>>>",numberOfRounds);
-	// console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
 
 	//make them compete
 	//return them to the finishedCompeting line
 
 	// this will run once for each number of rounds
-	// for (let i = 1;i<numberOfRounds+1;i++){
-	// 	console.log("this is the round number",i)
-	// }
+	for (let i = 1;i<numberOfRounds+1;i++){
+		console.log("this is the round number",i)
 
-	let finishedArr = [];
-	let compMats = [];
+		console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
 
-	for (let j = 0; j < everySingleCompetitorArr.length;j++){
-		//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
-		compMats.push(everySingleCompetitorArr.pop(),everySingleCompetitorArr.pop())
+		let finishedArr = [];
+		let compMats = [];
 
-		// console.log("compMats",compMats)
-
-		//take two competitors out of everySingleCompetitorArr
-
-		runCompetitionMats(compMats,kFactor,classSize)
-
-		//pick random number
-		//declare a competitor the winner
-		//increment their stats
-		//push them into finishedArr
+		for (let j = 0; j < everySingleCompetitorArr.length;j++){
+			//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
+			compMats.push(everySingleCompetitorArr.pop(),everySingleCompetitorArr.pop())
 
 
+			runCompetitionMats(compMats,kFactor,classSize)
 
-		//we need a scorekeeper
-		//we need competition mats
+			//we need a scorekeeper
+			//we need competition mats
 
-		finishedArr.push(compMats.pop(),compMats.pop())
+			finishedArr.push(compMats.pop(),compMats.pop())
+		}
+		
+		console.log("these competitors finished competing",finishedArr)
+
 	}
-
-	console.log("these competitors finished competing",finishedArr)
-
-
-
-
-
-
-	//what needs to happen to make two competitors compete?
-
-	//make competitors compete 
-	
-
-
-
-
-
-
 }
 
 
@@ -252,5 +233,5 @@ function runTournament(roundNum,tournSize,kFactor,classSize){
 //the simplest tournament is two rounds, four competitors
 // using 32 as k-factor
 //with k-factor
-runTournament(2,4,32,400)
+runTournament(2,4,32,200)
 
