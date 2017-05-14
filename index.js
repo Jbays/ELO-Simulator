@@ -43,19 +43,13 @@ function generateCompetitors(numOfCompetitors){
 function decideWinner(competitionMats,probabilityOfVictoryLeft,probabilityOfVictoryRight,leftPointsArr,rightPointsArr){
 	let randomNumber = Math.random()
 
-	// console.log("here's randomNumber>>>>",randomNumber)
-	// console.log("probabilityOfVictoryLeft>>>>",probabilityOfVictoryLeft)
-	// console.log("probabilityOfVictoryRight>>>>",probabilityOfVictoryRight)
-
+	//leftSide won!
 	if (probabilityOfVictoryLeft>randomNumber) {
-		console.log("leftSide won!")
 		recordResult(competitionMats,leftPointsArr[0],rightPointsArr[1],"w","l")
 
-	} else {
-		console.log("rightSide won!")
+	} else {//rightSide won!
 		recordResult(competitionMats,leftPointsArr[1],rightPointsArr[0],"l","w")
 	}
-
 }
 
 /**
@@ -69,16 +63,8 @@ function decideWinner(competitionMats,probabilityOfVictoryLeft,probabilityOfVict
  * @returns: 
  **/
 function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftResult,rightResult){
-	
-	console.log("the competitionMats>>>",competitionMats)
-	// console.log("the pointsAtStakeLeft>>>",pointsAtStakeLeft)
-	// console.log("the pointsAtStakeRight>>>",pointsAtStakeRight)
-
 	competitionMats.forEach(function(competitor,index){
 		let competitorStats = Object.keys(competitor)
-		console.log("competitor>>",competitor)
-
-		//this recursively adds this match to their 
 
 		//this recursively adds points to their rating
 		competitor[competitorStats].rating = competitor[competitorStats].rating + [pointsAtStakeLeft,pointsAtStakeRight][index]
@@ -86,10 +72,7 @@ function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftR
 		competitor[competitorStats].streak = competitor[competitorStats].streak + [leftResult,rightResult][index]
 		//this recursively tallies their record
 		competitor[competitorStats].record = writeToTheirRecord(competitor[competitorStats].record,[leftResult,rightResult][index])
-
 	})
-
-
 }
 
 /**
@@ -101,8 +84,6 @@ function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftR
  **/
 function writeToTheirRecord(recordString,letterResultsArr){
 	let splitRecord = recordString.split('-')
-	// console.log("splitRecord>>",splitRecord)
-	// console.log("letterResultsArr>>",letterResultsArr)
 
 	if ( letterResultsArr === "w" ) {
 		splitRecord[0] = parseInt(splitRecord[0])+1
@@ -110,7 +91,6 @@ function writeToTheirRecord(recordString,letterResultsArr){
 		splitRecord[1] = parseInt(splitRecord[1])+1
 	}
 
-	// console.log("splitRecord.join('-')>>>",splitRecord.join('-'));
 	return splitRecord.join('-')
 }
 
@@ -134,14 +114,7 @@ function runCompetitionMats (tuple,kFactor,classSize){
 	let leftSidePoints  = calculatePointsAtStake(leftSideProbabilityOfVictory,kFactor)	
 	let rightSidePoints = calculatePointsAtStake(rightSideProbabilityOfVictory,kFactor)	
 
-	// console.log("leftSidePoints>>>",leftSidePoints)
-	// console.log("rightSidePoints>>>",rightSidePoints)
-
 	decideWinner(tuple,leftSideProbabilityOfVictory,rightSideProbabilityOfVictory,leftSidePoints,rightSidePoints)
-
-	//calculated points to be lost or won
-
-
 }
 
 /**
@@ -155,7 +128,8 @@ function calculatePointsAtStake(probabilityOfVictory,kFactor){
 	//NOTE: return array's index=0 is the probability of victory
 	//      index=1 is the probability of loss
 	return [(1-probabilityOfVictory),-probabilityOfVictory].map(function(outcomeProbability,index){
-		return kFactor*outcomeProbability
+		//NOTE: this must return a rounded number
+		return parseInt((kFactor*outcomeProbability).toFixed())
 	})
 }
 
@@ -166,16 +140,11 @@ function calculatePointsAtStake(probabilityOfVictory,kFactor){
  * @returns:
  **/
 function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSize){
-	// console.log("numberOfRounds>>>>",numberOfRounds);
-
-	//make them compete
-	//return them to the finishedCompeting line
+	console.log("this is the tournament's every competitor>>>>",everySingleCompetitorArr);
 
 	// this will run once for each number of rounds
 	for (let i = 1;i<numberOfRounds+1;i++){
 		console.log("this is the round number",i)
-
-		console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
 
 		let finishedArr = [];
 		let compMats = [];
@@ -183,21 +152,13 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSiz
 		for (let j = 0; j < everySingleCompetitorArr.length;j++){
 			//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
 			compMats.push(everySingleCompetitorArr.pop(),everySingleCompetitorArr.pop())
-
-
 			runCompetitionMats(compMats,kFactor,classSize)
-
-			//we need a scorekeeper
-			//we need competition mats
-
 			finishedArr.push(compMats.pop(),compMats.pop())
 		}
-		
-		console.log("these competitors finished competing",finishedArr)
-
+		everySingleCompetitorArr = finishedArr;
 	}
+	console.log("These are the results of the tournament!!!",everySingleCompetitorArr)
 }
-
 
 /**
  * @name: runTournament
@@ -210,13 +171,7 @@ function runTournament(roundNum,tournSize,kFactor,classSize){
 	console.log("running a tournament of !!!",roundNum,"rounds !!!")
 	console.log("and                     !!!",tournSize,"competitors !!!")
 
-	//this line will create all competitorObjs
-	//and put them in an array
-	//generateCompetitors(tournSize)
-
-	//make them compete
 	makeAllCompete(roundNum,generateCompetitors(tournSize),kFactor,classSize)
-
 
 	//afterward I'll have some interesting choices:
 
@@ -225,13 +180,10 @@ function runTournament(roundNum,tournSize,kFactor,classSize){
 
 	//2. or make basic ui?
 
-
-
 	// return ...what?
 }
 
 //the simplest tournament is two rounds, four competitors
 // using 32 as k-factor
 //with k-factor
-runTournament(2,4,32,200)
-
+runTournament(4,16,32,200)
