@@ -22,10 +22,12 @@ function generateCompetitors(numOfCompetitors){
 
 	//for-loop which will generate competitors equaling to numOfCompetitors
 	for (let i=0;i<numOfCompetitors;i++){
-    let competitorBlueprint = '{"c'+(i+1).toString()+'":{"rating":1600,"streak":"","record":"0-0"}}';
+    let competitorBlueprint = '{"c'+(i+1).toString()+'":{"rating":1600,"record":"0-0","streak":""}}';
 
     outputArr.push(JSON.parse(competitorBlueprint))
 	}
+
+	_.shuffle(outputArr)
 
 	//10:35am - what to do about competitors's belts??
 
@@ -64,22 +66,25 @@ function decideWinner(competitionMats,probabilityOfVictoryLeft,probabilityOfVict
  **/
 function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftResult,rightResult){
 	competitionMats.forEach(function(competitor,index){
+		//NOTE: isn't this the competitor's name??
 		let competitorStats = Object.keys(competitor)
+
+		//TODO: Can I change the shape of competitor to make accessing key-values easier?
 
 		//this recursively adds points to their rating
 		competitor[competitorStats].rating = competitor[competitorStats].rating + [pointsAtStakeLeft,pointsAtStakeRight][index]
-		//this recursively tallies their wins and losses
-		competitor[competitorStats].streak = competitor[competitorStats].streak + [leftResult,rightResult][index]
 		//this recursively tallies their record
 		competitor[competitorStats].record = writeToTheirRecord(competitor[competitorStats].record,[leftResult,rightResult][index])
+		//this recursively tallies their wins and losses
+		competitor[competitorStats].streak = competitor[competitorStats].streak + [leftResult,rightResult][index]
 	})
 }
 
 /**
  * @name: writeToTheirRecord
  * @description: 
- * @param1: competitionMats 
- * @param2: pointsAtStakeLeft
+ * @param1: recordString 
+ * @param2: letterResultsArr
  * @returns: 
  **/
 function writeToTheirRecord(recordString,letterResultsArr){
@@ -102,10 +107,10 @@ function writeToTheirRecord(recordString,letterResultsArr){
  * @param3: classSize
  * @returns: allCompetitors
  **/
-function runCompetitionMats (tuple,kFactor,classSize){
+function runCompetitionMats (competitionMats,kFactor,classSize){
 	//this accesses the competitor information
-	let leftSideComp  = tuple[0][Object.keys(tuple[0])[0]];
-	let rightSideComp = tuple[1][Object.keys(tuple[1])[0]];
+	let leftSideComp  = competitionMats[0][Object.keys(competitionMats[0])[0]];
+	let rightSideComp = competitionMats[1][Object.keys(competitionMats[1])[0]];
 
 	let leftSideProbabilityOfVictory  = 1 / (1+Math.pow(10, ((rightSideComp.rating- leftSideComp.rating)/(2*classSize) )))
 	let rightSideProbabilityOfVictory = 1 / (1+Math.pow(10, (( leftSideComp.rating-rightSideComp.rating)/(2*classSize) )))
@@ -114,7 +119,7 @@ function runCompetitionMats (tuple,kFactor,classSize){
 	let leftSidePoints  = calculatePointsAtStake(leftSideProbabilityOfVictory,kFactor)	
 	let rightSidePoints = calculatePointsAtStake(rightSideProbabilityOfVictory,kFactor)	
 
-	decideWinner(tuple,leftSideProbabilityOfVictory,rightSideProbabilityOfVictory,leftSidePoints,rightSidePoints)
+	return decideWinner(competitionMats,leftSideProbabilityOfVictory,rightSideProbabilityOfVictory,leftSidePoints,rightSidePoints)
 }
 
 /**
@@ -127,7 +132,7 @@ function runCompetitionMats (tuple,kFactor,classSize){
 function calculatePointsAtStake(probabilityOfVictory,kFactor){
 	//NOTE: return array's index=0 is the probability of victory
 	//      index=1 is the probability of loss
-	return [(1-probabilityOfVictory),-probabilityOfVictory].map(function(outcomeProbability,index){
+	return [(1-probabilityOfVictory),-probabilityOfVictory].map(function(outcomeProbability){
 		//NOTE: this must return a rounded number
 		return parseInt((kFactor*outcomeProbability).toFixed())
 	})
@@ -135,21 +140,20 @@ function calculatePointsAtStake(probabilityOfVictory,kFactor){
 
 /**
  * @name: makeAllCompete
- * @description: 
+ * @description: forEach everySingleCompetitorArr
  * @param: 
  * @returns:
  **/
 function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSize){
-	console.log("this is the tournament's every competitor>>>>",everySingleCompetitorArr);
-
 	// this will run once for each number of rounds
 	for (let i = 1;i<numberOfRounds+1;i++){
 		console.log("this is the round number",i)
+		console.log("participating in this round are competitors>>>>",everySingleCompetitorArr);
 
 		let finishedArr = [];
 		let compMats = [];
 
-		for (let j = 0; j < everySingleCompetitorArr.length;j++){
+		for (let j=0;j<everySingleCompetitorArr.length;j++){
 			//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
 			compMats.push(everySingleCompetitorArr.pop(),everySingleCompetitorArr.pop())
 			runCompetitionMats(compMats,kFactor,classSize)
@@ -157,7 +161,8 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSiz
 		}
 		everySingleCompetitorArr = finishedArr;
 	}
-	console.log("These are the results of the tournament!!!",everySingleCompetitorArr)
+
+	return everySingleCompetitorArr
 }
 
 /**
@@ -165,13 +170,37 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSiz
  * @description: Calculates the elo rating of bjj competitors after a tournament
  * @param: roundNum (integer) - the amount of tournament rounds for each bjj competitor
  * @param: tournSize (integer) - the amount of bjj competitors
- * @returns: results of tournament
+ * @param: kFactor (integer) - the MOST amount of points a competitor can win or loser.
+ * @param: classSize (integer) - the amount of bjj competitors
+ * @returns: all competitors after competition
  **/
 function runTournament(roundNum,tournSize,kFactor,classSize){
 	console.log("running a tournament of !!!",roundNum,"rounds !!!")
 	console.log("and                     !!!",tournSize,"competitors !!!")
+	let allCompetitors = generateCompetitors(tournSize);
+	console.log("this is the tournament's every competitor>>>>",allCompetitors);
 
-	makeAllCompete(roundNum,generateCompetitors(tournSize),kFactor,classSize)
+	// TODO: 5-14-2017 --> 12:24pm - I know there's a much simpler solution.
+	// BUT I should get it working to at least above 1851 competitors BEFORE I refactor cleanly
+	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	// for rounds = roundNum
+	// and forEach tournSize
+	// with highest stakes = kFactor &  class separation
+
+	// for ( let i = 1; i < roundNum+1; i++ ) {
+		// 	//let all the magic happen at the level of the competitionMats
+		// 	//at the level of the tuple
+		// allCompetitors.forEach(function(competitor){
+		// })
+	// }
+
+	// return allCompetitors
+	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	//this must return allCompetitors AFTER the competition
+	return makeAllCompete(roundNum,allCompetitors,kFactor,classSize)
+
 
 	//afterward I'll have some interesting choices:
 
@@ -183,7 +212,5 @@ function runTournament(roundNum,tournSize,kFactor,classSize){
 	// return ...what?
 }
 
-//the simplest tournament is two rounds, four competitors
-// using 32 as k-factor
-//with k-factor
-runTournament(4,16,32,200)
+
+console.log("These are the results of the tournament",runTournament(3,8,32,200));
