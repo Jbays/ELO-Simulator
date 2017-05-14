@@ -20,8 +20,9 @@ const _ = require('underscore');
 function generateCompetitors(numOfCompetitors){
 	let outputArr = [];
 
-	for (let i=0; i<numOfCompetitors ;i++ ){
-    let competitorBlueprint = '{"c' + (i+1).toString() + '":{"rating":1600,"wins":0,"losses":0,"compHistory":"","record":""}}';
+	//for-loop which will generate competitors equaling to numOfCompetitors
+	for (let i=0;i<numOfCompetitors;i++){
+    let competitorBlueprint = '{"c'+(i+1).toString()+'":{"rating":1600,"wins":0,"losses":0,"streak":"","record":"0-0"}}';
 
     outputArr.push(JSON.parse(competitorBlueprint))
 	}
@@ -77,22 +78,35 @@ function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftR
 		let competitorStats = Object.keys(competitor)
 		console.log("competitor>>",competitor)
 
+		//this recursively adds this match to their 
+
 		//this recursively adds points to their rating
 		competitor[competitorStats].rating = competitor[competitorStats].rating + [pointsAtStakeLeft,pointsAtStakeRight][index]
 		//this recursively tallies their wins and losses
-		competitor[competitorStats].compHistory = competitor[competitorStats].compHistory + [leftResult,rightResult][index]
-		console.log(competitor[competitorStats])
-
-		writeToTheirRecord(competitor,competitor[competitorStats],[leftResult,rightResult])
-
+		competitor[competitorStats].streak = competitor[competitorStats].streak + [leftResult,rightResult][index]
+		//this recursively tallies their record
+		competitor[competitorStats].record = writeToTheirRecord(competitor[competitorStats].record,[leftResult,rightResult][index])
 
 	})
 
 
 }
 
-function writeToTheirRecord(competitor,competitorBody,letterResultsArr){
-	console.log("competitorBody>>",competitorBody)
+function writeToTheirRecord(recordString,letterResultsArr){
+	let splitRecord = recordString.split('-')
+	console.log("splitRecord>>",splitRecord)
+	console.log("letterResultsArr>>",letterResultsArr)
+
+	if ( letterResultsArr === "w" ) {
+		splitRecord[0] = parseInt(splitRecord[0])+1
+	} else {//letterResultArr === "l"
+		splitRecord[1] = parseInt(splitRecord[1])+1
+	}
+
+	console.log("splitRecord.join('-')>>>",splitRecord.join('-'));
+
+
+	return splitRecord.join('-')
 }
 
 /**
