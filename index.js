@@ -168,38 +168,35 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSiz
 /**
  * @name: runTournament
  * @description: Calculates the elo rating of bjj competitors after a tournament
- * @param: roundNum (integer) - the amount of tournament rounds for each bjj competitor
- * @param: tournSize (integer) - the amount of bjj competitors
+ * @param: numOfRounds (integer) - the amount of tournament rounds for each bjj competitor
+ * @param: numOfCompetitors (integer) - the amount of bjj competitors
  * @param: kFactor (integer) - the MOST amount of points a competitor can win or loser.
  * @param: classSize (integer) - the amount of bjj competitors
  * @returns: all competitors after competition
  **/
-function runTournament(roundNum,tournSize,kFactor,classSize){
-	console.log("running a tournament of !!!",roundNum,"rounds !!!")
-	console.log("and                     !!!",tournSize,"competitors !!!")
-	let allCompetitors = generateCompetitors(tournSize);
-	console.log("this is the tournament's every competitor>>>>",allCompetitors);
+function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
+	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
+	console.log("and                     !!!",numOfCompetitors,"competitors !!!")
+	let allCompetitorsArr = generateCompetitors(numOfCompetitors);
+	// console.log("this is the tournament's every competitor>>>>",allCompetitorsArr);
 
-	// TODO: 5-14-2017 --> 12:24pm - I know there's a much simpler solution.
-	// BUT I should get it working to at least above 1851 competitors BEFORE I refactor cleanly
+	//tuplizes first half with second half of allCompetitorsArr
+	let tuplizeCompetitors = _.zip(allCompetitorsArr.slice(0,(allCompetitorsArr.length/2)),
+														allCompetitorsArr.slice((allCompetitorsArr.length/2),allCompetitorsArr.length));
+
+	//This runs one round of competition for rounds = numOfRounds
+	for (let i=1;i<numOfRounds+1;i++) {
+		tuplizeCompetitors.forEach(function(competitionMats){
+			runCompetitionMats(competitionMats,kFactor,classSize)
+		})
+	}
+
+	return allCompetitorsArr
 	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	// for rounds = roundNum
-	// and forEach tournSize
-	// with highest stakes = kFactor &  class separation
-
-	// for ( let i = 1; i < roundNum+1; i++ ) {
-		// 	//let all the magic happen at the level of the competitionMats
-		// 	//at the level of the tuple
-		// allCompetitors.forEach(function(competitor){
-		// })
-	// }
-
-	// return allCompetitors
-	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+	//THIS IS HOW IT ORIGINALLY WORKED!
 	//this must return allCompetitors AFTER the competition
-	return makeAllCompete(roundNum,allCompetitors,kFactor,classSize)
+	// return makeAllCompete(roundNum,allCompetitors,kFactor,classSize)
 
 
 	//afterward I'll have some interesting choices:
@@ -213,4 +210,4 @@ function runTournament(roundNum,tournSize,kFactor,classSize){
 }
 
 
-console.log("These are the results of the tournament",runTournament(3,8,32,200));
+console.log("These are the results of the tournament",runTournament(11,2048,32,200));
