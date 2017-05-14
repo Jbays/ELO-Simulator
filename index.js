@@ -25,41 +25,40 @@ function generateCompetitors(numOfCompetitors){
 
 /**
  * @name: recordResult
- * @description: detects outcome out of 
+ * @description: For each competitor on the competitionMats,
+ **							 (1). Recursively adds points to their rating
+ **							 (2). Tallies their record
+ **							 (3). Recursively tallies their streak
  * @param1: competitionMats 
- * @param2: pointsAtStakeLeft
- * @param3: pointsAtStakeRight
- * @param4: leftResult
- * @param5: rightResult
+ * @param2: pointsForLeft
+ * @param3: pointsForRight
+ * @param4: matchOutcomeForLeft
+ * @param5: matchOutcomeForRight
  * @returns: 
  **/
-function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftResult,rightResult){
+function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
 	competitionMats.forEach(function(competitor,index){
-		//NOTE: isn't this the competitor's name??
-		let competitorStats = Object.keys(competitor)
-
-		//TODO: Can I change the shape of competitor to make accessing key-values easier?
-
-		//this recursively adds points to their rating
-		competitor[competitorStats].rating = competitor[competitorStats].rating + [pointsAtStakeLeft,pointsAtStakeRight][index]
-		//this recursively tallies their record
-		competitor[competitorStats].record = writeToTheirRecord(competitor[competitorStats].record,[leftResult,rightResult][index])
-		//this recursively tallies their wins and losses
-		competitor[competitorStats].streak = competitor[competitorStats].streak + [leftResult,rightResult][index]
+		let competitorNameStr = Object.keys(competitor)
+		
+		competitor[competitorNameStr].rating = competitor[competitorNameStr].rating + pointsAwarded[index]
+		competitor[competitorNameStr].record = writeToTheirRecord(competitor[competitorNameStr].record,matchOutcomeArr[index])
+		competitor[competitorNameStr].streak = competitor[competitorNameStr].streak + matchOutcomeArr[index]
 	})
+
+	return competitionMats
 }
 
 /**
  * @name: writeToTheirRecord
- * @description: 
+ * @description: Toggles the competitor's record equal to their match result
  * @param1: recordString 
- * @param2: letterResultsArr
- * @returns: 
+ * @param2: letterResultStr
+ * @returns: newlyToggledRecord 
  **/
-function writeToTheirRecord(recordString,letterResultsArr){
+function writeToTheirRecord(recordString,letterResultStr){
 	let splitRecord = recordString.split('-')
 
-	if ( letterResultsArr === "w" ) {
+	if ( letterResultStr === "w" ) {
 		splitRecord[0] = parseInt(splitRecord[0])+1
 	} else {//letterResultArr === "l"
 		splitRecord[1] = parseInt(splitRecord[1])+1
@@ -70,10 +69,12 @@ function writeToTheirRecord(recordString,letterResultsArr){
 
 /**
  * @name: runCompetitionMats
- * @description: 
- * @param1: tuple (the competition mats)
- * @param2: kFactor 
- * @param3: classSize
+ * @description: Triggers competition.
+ **							(1) A winner is declared
+ **							(2) Stats for both competitors are toggled
+ * @param1: comeptitionMats
+ * @param2: victoryProbabilities
+ * @param3: pointsAtStake
  * @returns: allCompetitors
  **/
 function runCompetitionMats (competitionMats,victoryProbabilities,pointsAtStake){
@@ -82,9 +83,9 @@ function runCompetitionMats (competitionMats,victoryProbabilities,pointsAtStake)
 
 	//leftSide won!
 	if (victoryProbabilities[0]>randomNumber) {
-		recordResult(competitionMats,pointsAtStake[0][0],pointsAtStake[1][1],"w","l")
+		recordResult(competitionMats,[pointsAtStake[0][0],pointsAtStake[1][1]],["w","l"])
 	} else {//rightSide won!
-		recordResult(competitionMats,pointsAtStake[0][1],pointsAtStake[1][0],"l","w")
+		recordResult(competitionMats,[pointsAtStake[0][1],pointsAtStake[1][0]],["l","w"])
 	}
 
 	return competitionMats
@@ -107,8 +108,10 @@ function calculateProbabilityOfVictory(competitionMats,classSize){
 
 /**
  * @name: calculatePointsAtStake
- * @description: 
- * @param1: probabilityOfVictory
+ * @description: Calculates the amount of points each competitor should:
+ **							 (1) Gain in victory
+ **							 (2) Lose in defeat							
+ * @param1: victoryProbTuple
  * @param2: kFactor 
  * @returns: [pointsGainedInVictory,pointsLostInDefeat]
  **/
@@ -130,7 +133,7 @@ function calculatePointsAtStake(victoryProbTuple,kFactor){
 
 /**
  * @name: runTournament
- * @description: Calculates the elo rating of bjj competitors after a tournament
+ * @description: Applies ELO rating system to a brazilian jiu-jitsu tournament
  * @param0: numOfRounds (integer) - the amount of tournament rounds for each bjj competitor
  * @param1: numOfCompetitors (integer) - the amount of bjj competitors
  * @param2: kFactor (integer) - the MOST amount of points a competitor can win or loser.
@@ -162,16 +165,6 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 	}
 
 	return allCompetitorsArr
-	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	//afterward I'll have some interesting choices:
-
-	//Choices:
-	//1. save competitors to db then run competition again
-
-	//2. or make basic ui?
-
-	// return ...what?
 }
 
 console.log("These are the results of the tournament",runTournament(4,16,32,200));
