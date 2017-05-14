@@ -2,15 +2,6 @@
 
 const _ = require('underscore');
 
-//NOTE: 5-13-2017
-//the 2015 Mundials had 1861 competitors
-//whose proportions between belts were:
-//if 25 competitors --> = [2,4,7,9,3];
-//WHERE index=0 is black belts
-//index=1 is brown belts
-//...
-//index=4 is white belts
-
 /**
  * @name: generateCompetitors
  * @description: creates "n" number of competitors
@@ -27,31 +18,9 @@ function generateCompetitors(numOfCompetitors){
     outputArr.push(JSON.parse(competitorBlueprint))
 	}
 
-	_.shuffle(outputArr)
-
 	//10:35am - what to do about competitors's belts??
 
-	return outputArr
-}
-
-/**
- * @name: decideWinner
- * @description: This is a referee function.  This function decides who won and who lost.
- * @param1: tuple (the competition mats)
- * @param2: probabilityOfVictoryLeft 
- * @param3: probabilityOfVictoryRight
- * @returns: allCompetitors
- **/
-function decideWinner(competitionMats,probabilityOfVictoryLeft,probabilityOfVictoryRight,leftPointsArr,rightPointsArr){
-	let randomNumber = Math.random()
-
-	//leftSide won!
-	if (probabilityOfVictoryLeft>randomNumber) {
-		recordResult(competitionMats,leftPointsArr[0],rightPointsArr[1],"w","l")
-
-	} else {//rightSide won!
-		recordResult(competitionMats,leftPointsArr[1],rightPointsArr[0],"l","w")
-	}
+	return _.shuffle(outputArr)
 }
 
 /**
@@ -107,19 +76,33 @@ function writeToTheirRecord(recordString,letterResultsArr){
  * @param3: classSize
  * @returns: allCompetitors
  **/
-function runCompetitionMats (competitionMats,kFactor,classSize){
-	//this accesses the competitor information
-	let leftSideComp  = competitionMats[0][Object.keys(competitionMats[0])[0]];
-	let rightSideComp = competitionMats[1][Object.keys(competitionMats[1])[0]];
+function runCompetitionMats (competitionMats,victoryProbabilities,pointsAtStake){
+	//decide winner && record result
+	let randomNumber = Math.random()
 
-	let leftSideProbabilityOfVictory  = 1 / (1+Math.pow(10, ((rightSideComp.rating- leftSideComp.rating)/(2*classSize) )))
-	let rightSideProbabilityOfVictory = 1 / (1+Math.pow(10, (( leftSideComp.rating-rightSideComp.rating)/(2*classSize) )))
-	
-	// [pointsLeftSideWillGain, pointsLeftSideWillLose]
-	let leftSidePoints  = calculatePointsAtStake(leftSideProbabilityOfVictory,kFactor)	
-	let rightSidePoints = calculatePointsAtStake(rightSideProbabilityOfVictory,kFactor)	
+	//leftSide won!
+	if (victoryProbabilities[0]>randomNumber) {
+		recordResult(competitionMats,pointsAtStake[0][0],pointsAtStake[1][1],"w","l")
+	} else {//rightSide won!
+		recordResult(competitionMats,pointsAtStake[0][1],pointsAtStake[1][0],"l","w")
+	}
 
-	return decideWinner(competitionMats,leftSideProbabilityOfVictory,rightSideProbabilityOfVictory,leftSidePoints,rightSidePoints)
+	return competitionMats
+}
+
+/**
+ * @name: calculateProbabilityOfVictory
+ * @description: calculates the probability of victory for each competitor,
+ **							 then returns those probabilities in an array
+ * @param1: competitionMats
+ * @returns: [probabilityOfVictoryForLeft,probabilityOfVictoryForRight]
+ **/
+function calculateProbabilityOfVictory(competitionMats,classSize){
+	let leftSideCompStats  = competitionMats[0][Object.keys(competitionMats[0])[0]];
+	let rightSideCompStats = competitionMats[1][Object.keys(competitionMats[1])[0]];
+
+	return [(1/(1+Math.pow(10,((rightSideCompStats.rating- leftSideCompStats.rating)/(2*classSize))))),
+					(1/(1+Math.pow(10,(( leftSideCompStats.rating-rightSideCompStats.rating)/(2*classSize)))))]
 }
 
 /**
@@ -129,56 +112,35 @@ function runCompetitionMats (competitionMats,kFactor,classSize){
  * @param2: kFactor 
  * @returns: [pointsGainedInVictory,pointsLostInDefeat]
  **/
-function calculatePointsAtStake(probabilityOfVictory,kFactor){
-	//NOTE: return array's index=0 is the probability of victory
-	//      index=1 is the probability of loss
-	return [(1-probabilityOfVictory),-probabilityOfVictory].map(function(outcomeProbability){
-		//NOTE: this must return a rounded number
-		return parseInt((kFactor*outcomeProbability).toFixed())
+function calculatePointsAtStake(victoryProbTuple,kFactor){
+	let outputArr = []
+
+	//for each competitor's victoryProbability
+	victoryProbTuple.forEach(function(victoryProbability){
+		//map kFactor to both victoryProbability and lossProbability
+		let pointsAtStake = [victoryProbability,-(1-victoryProbability)].map(function(outcomeProbability){
+			return parseInt((kFactor*outcomeProbability).toFixed())
+		})
+
+		outputArr.push(pointsAtStake);
 	})
-}
 
-/**
- * @name: makeAllCompete
- * @description: forEach everySingleCompetitorArr
- * @param: 
- * @returns:
- **/
-function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSize){
-	// this will run once for each number of rounds
-	for (let i = 1;i<numberOfRounds+1;i++){
-		console.log("this is the round number",i)
-		console.log("participating in this round are competitors>>>>",everySingleCompetitorArr);
-
-		let finishedArr = [];
-		let compMats = [];
-
-		for (let j=0;j<everySingleCompetitorArr.length;j++){
-			//we need to isolate two competitors from the bullPen (aka everySingleCompetitorArr)
-			compMats.push(everySingleCompetitorArr.pop(),everySingleCompetitorArr.pop())
-			runCompetitionMats(compMats,kFactor,classSize)
-			finishedArr.push(compMats.pop(),compMats.pop())
-		}
-		everySingleCompetitorArr = finishedArr;
-	}
-
-	return everySingleCompetitorArr
+	return outputArr
 }
 
 /**
  * @name: runTournament
  * @description: Calculates the elo rating of bjj competitors after a tournament
- * @param: numOfRounds (integer) - the amount of tournament rounds for each bjj competitor
- * @param: numOfCompetitors (integer) - the amount of bjj competitors
- * @param: kFactor (integer) - the MOST amount of points a competitor can win or loser.
- * @param: classSize (integer) - the amount of bjj competitors
+ * @param0: numOfRounds (integer) - the amount of tournament rounds for each bjj competitor
+ * @param1: numOfCompetitors (integer) - the amount of bjj competitors
+ * @param2: kFactor (integer) - the MOST amount of points a competitor can win or loser.
+ * @param3: classSize (integer) - the amount of bjj competitors
  * @returns: all competitors after competition
  **/
 function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
 	console.log("and                     !!!",numOfCompetitors,"competitors !!!")
 	let allCompetitorsArr = generateCompetitors(numOfCompetitors);
-	// console.log("this is the tournament's every competitor>>>>",allCompetitorsArr);
 
 	//tuplizes first half with second half of allCompetitorsArr
 	let tuplizeCompetitors = _.zip(allCompetitorsArr.slice(0,(allCompetitorsArr.length/2)),
@@ -187,17 +149,20 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 	//This runs one round of competition for rounds = numOfRounds
 	for (let i=1;i<numOfRounds+1;i++) {
 		tuplizeCompetitors.forEach(function(competitionMats){
-			runCompetitionMats(competitionMats,kFactor,classSize)
+
+			//calculate probability of victory for each competitor
+			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
+			//calculate the points at stake for each competitor
+			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor); 
+			//NOTE: low likelihood of victory means low points lost & high points gained 
+			//high likelihood of victory means high points lost & low points gained 
+
+			runCompetitionMats(competitionMats,victoryProbTuple,pointsStakesTuple)
 		})
 	}
 
 	return allCompetitorsArr
 	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	//THIS IS HOW IT ORIGINALLY WORKED!
-	//this must return allCompetitors AFTER the competition
-	// return makeAllCompete(roundNum,allCompetitors,kFactor,classSize)
-
 
 	//afterward I'll have some interesting choices:
 
@@ -209,5 +174,16 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 	// return ...what?
 }
 
+console.log("These are the results of the tournament",runTournament(4,16,32,200));
 
-console.log("These are the results of the tournament",runTournament(11,2048,32,200));
+//NOTE: 5-13-2017
+//the 2015 Mundials had 1861 competitors
+//whose proportions between belts were:
+//if 25 competitors --> = [2,4,7,9,3];
+//WHERE index=0 is black belts
+//index=1 is brown belts
+//...
+//index=4 is white belts
+
+// The system is functional IF an 11-round tournament runs with 2048 competitors WITHOUT ERROR
+// console.log("These are the results of the tournament",runTournament(11,2048,32,200));
