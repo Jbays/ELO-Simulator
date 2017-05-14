@@ -31,6 +31,78 @@ function generateCompetitors(numOfCompetitors){
 	return outputArr
 }
 
+/**
+ * @name: decideWinner
+ * @description: This is a referee function.  This function decides who won and who lost.
+ * @param1: tuple (the competition mats)
+ * @param2: probabilityOfVictoryLeft 
+ * @param3: probabilityOfVictoryRight
+ * @returns: allCompetitors
+ **/
+function decideWinner(competitionMats,probabilityOfVictoryLeft,probabilityOfVictoryRight,leftPointsArr,rightPointsArr){
+	let randomNumber = Math.random()
+
+	console.log("here's randomNumber>>>>",randomNumber)
+	console.log("probabilityOfVictoryLeft>>>>",probabilityOfVictoryLeft)
+	console.log("probabilityOfVictoryRight>>>>",probabilityOfVictoryRight)
+
+	if (probabilityOfVictoryLeft>randomNumber) {
+		console.log("leftSide won!")
+		recordResult(competitionMats,leftPointsArr[0],rightPointsArr[1],"w","l")
+
+	} else {
+		console.log("rightSide won!")
+		recordResult(competitionMats,leftPointsArr[1],rightPointsArr[0],"l","w")
+	}
+
+}
+
+/**
+ * @name: recordResult
+ * @description: detects outcome out of 
+ * @param1: competitionMats 
+ * @param2: pointsAtStakeLeft
+ * @param3: pointsAtStakeRight
+ * @param4: leftResult
+ * @param5: rightResult
+ * @returns: 
+ **/
+function recordResult(competitionMats,pointsAtStakeLeft,pointsAtStakeRight,leftResult,rightResult){
+	
+	console.log("the competitionMats>>>",competitionMats)
+	console.log("the pointsAtStakeLeft>>>",pointsAtStakeLeft)
+	console.log("the pointsAtStakeRight>>>",pointsAtStakeRight)
+
+	competitionMats.forEach(function(competitor,index){
+		let competitorStats = Object.keys(competitor)
+		console.log("competitor>>",competitor)
+
+		//this recursively adds points to their rating
+		competitor[competitorStats].rating = competitor[competitorStats].rating + [pointsAtStakeLeft,pointsAtStakeRight][index]
+		//this recursively tallies their wins and losses
+		competitor[competitorStats].compHistory = competitor[competitorStats].compHistory + [leftResult,rightResult][index]
+		console.log(competitor[competitorStats])
+
+		writeToTheirRecord(competitor,competitor[competitorStats],[leftResult,rightResult])
+
+
+	})
+
+
+}
+
+function writeToTheirRecord(competitor,competitorBody,letterResultsArr){
+	console.log("competitorBody>>",competitorBody)
+}
+
+/**
+ * @name: runCompetitionMats
+ * @description: 
+ * @param1: tuple (the competition mats)
+ * @param2: kFactor 
+ * @param3: classSize
+ * @returns: allCompetitors
+ **/
 function runCompetitionMats (tuple,kFactor,classSize){
 	//this accesses the competitor information
 	let leftSideComp  = tuple[0][Object.keys(tuple[0])[0]];
@@ -46,11 +118,22 @@ function runCompetitionMats (tuple,kFactor,classSize){
 	console.log("leftSidePoints>>>",leftSidePoints)
 	console.log("rightSidePoints>>>",rightSidePoints)
 
+	decideWinner(tuple,leftSideProbabilityOfVictory,rightSideProbabilityOfVictory,leftSidePoints,rightSidePoints)
+
+	//calculated points to be lost or won
+
 
 }
 
+/**
+ * @name: calculatePointsAtStake
+ * @description: 
+ * @param1: probabilityOfVictory
+ * @param2: kFactor 
+ * @returns: [pointsGainedInVictory,pointsLostInDefeat]
+ **/
 function calculatePointsAtStake(probabilityOfVictory,kFactor){
-	//NOTE: index=0 is the probability of victory
+	//NOTE: return array's index=0 is the probability of victory
 	//      index=1 is the probability of loss
 	return [(1-probabilityOfVictory),-probabilityOfVictory].map(function(outcomeProbability,index){
 		return kFactor*outcomeProbability
@@ -67,8 +150,6 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSiz
 	// console.log("numberOfRounds>>>>",numberOfRounds);
 	// console.log("everySingleCompetitorArr>>>>",everySingleCompetitorArr);
 
-	//for every pair of competitors
-	//push them into the competition mats
 	//make them compete
 	//return them to the finishedCompeting line
 
@@ -90,7 +171,6 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSiz
 
 		runCompetitionMats(compMats,kFactor,classSize)
 
-		//calculate likelihood of each competitors's victory
 		//pick random number
 		//declare a competitor the winner
 		//increment their stats
@@ -98,7 +178,6 @@ function makeAllCompete(numberOfRounds,everySingleCompetitorArr,kFactor,classSiz
 
 
 
-		//we need a ref
 		//we need a scorekeeper
 		//we need competition mats
 
