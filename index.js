@@ -30,10 +30,8 @@ function generateCompetitors(numOfCompetitors){
  **							 (2). Tallies their record
  **							 (3). Recursively tallies their streak
  * @param1: competitionMats 
- * @param2: pointsForLeft
- * @param3: pointsForRight
- * @param4: matchOutcomeForLeft
- * @param5: matchOutcomeForRight
+ * @param2: pointsAwarded
+ * @param3: matchOutcomeArr
  * @returns: 
  **/
 function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
