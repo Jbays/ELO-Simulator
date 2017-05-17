@@ -4,10 +4,13 @@
   "description": "elo rating system applied to a brazilian jiu-jitsu tournament",
   "main": "mundialTournament-compiled.js",
   "dependencies": {
+    "chai": "^3.5.0",
     "mailgun.js": "^2.0.1",
     "underscore": "^1.8.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^3.4.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

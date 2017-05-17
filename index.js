@@ -102,7 +102,6 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 	return allCompetitorsArr
 }
 
-console.log("These are the results of the tournament",runTournament(4,16,32,200));
 
 //NOTE: 5-13-2017
 //the 2015 Mundials had 1861 competitors
@@ -113,5 +112,11 @@ console.log("These are the results of the tournament",runTournament(4,16,32,200)
 //...
 //index=4 is white belts
 
+
+// 4-round 16-person tournament
+// console.log("These are the results of the tournament",runTournament(4,16,32,200));
+
 // The system is functional IF an 11-round tournament runs with 2048 competitors WITHOUT ERROR
 // console.log("These are the results of the tournament",runTournament(11,2048,32,200));
+
+module.exports = runTournament;

@@ -68,4 +68,4 @@ function writeToTheirRecord(recordString,letterResultStr){
 	return splitRecord.join('-')
 }
 
-module.exports = decideTheWinner
+module.exports = decideTheWinner;
