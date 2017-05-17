@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('underscore');
+const runCompetitionMats = require('./runCompMats.js');
 
 /**
  * @name: generateCompetitors
@@ -23,71 +24,6 @@ function generateCompetitors(numOfCompetitors){
 	return _.shuffle(outputArr)
 }
 
-/**
- * @name: recordResult
- * @description: For each competitor on the competitionMats,
- **							 (1). Recursively adds points to their rating
- **							 (2). Tallies their record
- **							 (3). Recursively tallies their streak
- * @param1: competitionMats 
- * @param2: pointsAwarded
- * @param3: matchOutcomeArr
- * @returns: 
- **/
-function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
-	competitionMats.forEach(function(competitor,index){
-		let competitorNameStr = Object.keys(competitor)
-		
-		competitor[competitorNameStr].rating = competitor[competitorNameStr].rating + pointsAwarded[index]
-		competitor[competitorNameStr].record = writeToTheirRecord(competitor[competitorNameStr].record,matchOutcomeArr[index])
-		competitor[competitorNameStr].streak = competitor[competitorNameStr].streak + matchOutcomeArr[index]
-	})
-
-	return competitionMats
-}
-
-/**
- * @name: writeToTheirRecord
- * @description: Toggles the competitor's record equal to their match result
- * @param1: recordString 
- * @param2: letterResultStr
- * @returns: newlyToggledRecord 
- **/
-function writeToTheirRecord(recordString,letterResultStr){
-	let splitRecord = recordString.split('-')
-
-	if ( letterResultStr === "w" ) {
-		splitRecord[0] = parseInt(splitRecord[0])+1
-	} else {//letterResultArr === "l"
-		splitRecord[1] = parseInt(splitRecord[1])+1
-	}
-
-	return splitRecord.join('-')
-}
-
-/**
- * @name: runCompetitionMats
- * @description: Triggers competition.
- **							(1) A winner is declared
- **							(2) Stats for both competitors are toggled
- * @param1: comeptitionMats
- * @param2: victoryProbabilities
- * @param3: pointsAtStake
- * @returns: allCompetitors
- **/
-function runCompetitionMats (competitionMats,victoryProbabilities,pointsAtStake){
-	//decide winner && record result
-	let randomNumber = Math.random()
-
-	//leftSide won!
-	if (victoryProbabilities[0]>randomNumber) {
-		recordResult(competitionMats,[pointsAtStake[0][0],pointsAtStake[1][1]],["w","l"])
-	} else {//rightSide won!
-		recordResult(competitionMats,[pointsAtStake[0][1],pointsAtStake[1][0]],["l","w"])
-	}
-
-	return competitionMats
-}
 
 /**
  * @name: calculateProbabilityOfVictory
@@ -155,8 +91,9 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
 			//calculate the points at stake for each competitor
 			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor); 
-			//NOTE: low likelihood of victory means low points lost & high points gained 
-			//high likelihood of victory means high points lost & low points gained 
+
+			//NOTE: low likelihood of victory means few points lost & many points gained 
+			//high likelihood of victory means many points lost & few points gained 
 
 			runCompetitionMats(competitionMats,victoryProbTuple,pointsStakesTuple)
 		})
