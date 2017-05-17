@@ -24,7 +24,6 @@ function generateCompetitors(numOfCompetitors){
 	return _.shuffle(outputArr)
 }
 
-
 /**
  * @name: calculateProbabilityOfVictory
  * @description: calculates the probability of victory for each competitor,
@@ -99,6 +98,7 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 		})
 	}
 
+	//numOfCompetitors competitors AFTER numOfRounds-round tournament
 	return allCompetitorsArr
 }
 

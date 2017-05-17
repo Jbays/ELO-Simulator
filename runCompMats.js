@@ -16,8 +16,10 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
 
 	//leftSide won!
 	if (victoryProbabilities[0]>randomNumber) {
+		//pointsAtStake[pointsForVictory,pointsForLoss]
 		recordResult(competitionMats,[pointsAtStake[0][0],pointsAtStake[1][1]],["w","l"])
 	} else {//rightSide won!
+		//pointsAtStake[pointsForLoss,pointsForVictory]
 		recordResult(competitionMats,[pointsAtStake[0][1],pointsAtStake[1][0]],["l","w"])
 	}
 
