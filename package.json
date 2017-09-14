@@ -5,6 +5,7 @@
   "main": "mundialTournament-compiled.js",
   "dependencies": {
     "chai": "^3.5.0",
+    "csv-parse": "^1.2.2",
     "mailgun.js": "^2.0.1",
     "underscore": "^1.8.3"
   },
