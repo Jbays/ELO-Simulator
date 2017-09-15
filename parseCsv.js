@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const records = `,,,
   ,EDDIE BRAVO INVITATIONAL 2,,
   ,"October 10, 2014",,
@@ -42,15 +40,122 @@ const records = `,,,
   ,16,Baret Yoshida,Baret Submissions
 `;
 
-// const data = Papa.parse('./ebi2.js');
+const _ = require('underscore');
 const csvParse = require('csv-parse');
 const dataObj = csvParse(records);
-// const data = csvParse.parse(records)
 
-// console.log("dataObj>>>",dataObj.options);
-
+/**
+ * @name: cleanUpObj
+ * @description: removes irrelevant keys from stringifiedCsv
+ * @param: stringifiedCsv (obj)
+ * @returns: output (obj)
+ **/
 function cleanUpObj(obj){
-  console.log("this is input obj>>",obj);
+  let output = {};
+  Object.keys(obj).forEach((key)=>{
+    let numberized = Number(key)
+    if ( !Number.isNaN(numberized) ) {
+      output[key] = obj[key];
+    }
+  })
+
+  const zip = _.zip(Object.keys(output),_.values(output));
+
+  let everyCompetitor = [];
+  let min = 0;
+  let max = null;
+  zip.forEach((nestedArr)=>{
+    if ( nestedArr[1] === '\n' ) {
+      max = Number(nestedArr[0])+1;
+      everyCompetitor.push(zip.slice(min,max));
+      //this should reset the slicing mechanism logic
+      min = max;
+      max = null;
+    }
+  })
+
+  let outputArr = [];
+  everyCompetitor.forEach((internalArr)=>{
+    let str = '';
+    internalArr.forEach((letter)=>{
+      if (!!letter[1]){
+        str = str+letter[1];
+      }
+    })
+    outputArr.push(str);
+  })
+
+  //removing the annoying characters
+  outputArr = _.without(outputArr,",,,\n","  ,,,\n")
+  outputArr.shift()
+  outputArr.shift()
+
+  let newArr = outputArr.map((string)=>{
+    //removes the '  ,' at the string's beginning
+    string = string.slice(3);
+    //removes the '\n' at the string's end
+    return string.slice(0,string.length-1);
+  })
+
+  newArr = [newArr.slice(0,17),newArr.slice(17,newArr.length)]
+
+  return newArr;
 }
 
-cleanUpObj(dataObj.options)
+const sanitizedArr = cleanUpObj(dataObj.options);
+
+// console.log("sanitizedArr",sanitizedArr);
+
+function buildCompetitors(arr){
+  let output = [];
+  arr.forEach((weightClass)=>{
+    let bracket = weightClass.shift();
+    bracket = bracket.split(',');
+    //bracket = [ '135', 'NAME', 'ACADEMY' ]
+
+    weightClass.forEach((nameString)=>{
+      //formatting the name
+      nameString = nameString.split(',');
+      let formattedName = '';
+      const fullName = nameString[1];
+
+      for ( let i = 0; i < fullName.length; i++ ) {
+        //if fullName[i] is truthy && fullName[i] is not an empty space
+        if (!!fullName[i] ) {
+          if ( fullName[i] !== ' ' ) {
+            formattedName = formattedName + fullName[i].toLowerCase();
+          } else {
+            formattedName = formattedName + "-";
+          }
+        }
+      }
+      let formattedTeamName = '';
+      const fullTeamName = nameString[2];
+
+      for ( let i = 0; i < fullTeamName.length; i++ ) {
+        //if fullTeamName[i] is truthy && fullTeamName[i] is not an empty space
+        if (!!fullTeamName[i] ) {
+          if ( fullTeamName[i] !== ' ' ) {
+            formattedTeamName = formattedTeamName + fullTeamName[i].toLowerCase();
+          } else {
+            formattedTeamName = formattedTeamName + "-";
+          }
+        }
+      }
+
+      console.log("formattedTeamName",formattedTeamName);
+
+
+      //now I have formattedName
+      //and formattedTeamName
+      //and their bracket
+
+      //what to do now??
+
+
+
+    })
+  })
+}
+
+console.log("buildCompetitors(sanitizedArr)",buildCompetitors(sanitizedArr));
