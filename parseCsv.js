@@ -102,20 +102,19 @@ function cleanUpObj(obj){
   return newArr;
 }
 
-const sanitizedArr = cleanUpObj(dataObj.options);
-
-// console.log("sanitizedArr",sanitizedArr);
-
 function buildCompetitors(arr){
   let output = [];
   arr.forEach((weightClass)=>{
     let bracket = weightClass.shift();
     bracket = bracket.split(',');
-    //bracket = [ '135', 'NAME', 'ACADEMY' ]
+    //NOTE: bracket = [ '135', 'NAME', 'ACADEMY' ]
 
     weightClass.forEach((nameString)=>{
       //formatting the name
       nameString = nameString.split(',');
+
+      //NOTE: notice that ln 120-146 contain two identical steps.  Refactor?!
+      ///////////////////////////
       let formattedName = '';
       const fullName = nameString[1];
 
@@ -142,20 +141,28 @@ function buildCompetitors(arr){
           }
         }
       }
+      ///////////////////////////
 
-      console.log("formattedTeamName",formattedTeamName);
+      //NOTE: create competitor here!
+      let competitor = {
+        name: formattedName,
+        // teamName: formattedTeamName,
+        bracket: parseInt(bracket[0]),
+        rating: 1600,
+        wins:0,
+        losses:0,
+        compRecord: ''
+      }
 
-
-      //now I have formattedName
-      //and formattedTeamName
-      //and their bracket
-
-      //what to do now??
-
-
-
+      output.push(competitor)
     })
   })
+  return output;
 }
 
-console.log("buildCompetitors(sanitizedArr)",buildCompetitors(sanitizedArr));
+const sanitizedArr = cleanUpObj(dataObj.options);
+const allCompetitors = buildCompetitors(sanitizedArr);
+
+
+console.log("allCompetitors",allCompetitors);
+console.log("allCompetitors.length",allCompetitors.length);
