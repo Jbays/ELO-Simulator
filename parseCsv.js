@@ -146,7 +146,7 @@ function buildCompetitors(arr){
       //NOTE: create competitor here!
       let competitor = {
         name: formattedName,
-        // teamName: formattedTeamName,
+        teamName: formattedTeamName,
         bracket: parseInt(bracket[0]),
         rating: 1600,
         wins:0,
@@ -164,5 +164,4 @@ const sanitizedArr = cleanUpObj(dataObj.options);
 const allCompetitors = buildCompetitors(sanitizedArr);
 
 
-console.log("allCompetitors",allCompetitors);
-console.log("allCompetitors.length",allCompetitors.length);
+module.exports = allCompetitors

@@ -2,6 +2,7 @@
 
 const _ = require('underscore');
 const runCompetitionMats = require('./runCompMats.js');
+const runCompetitionMats2 = require('./runRealCompMats.js');
 
 /**
  * @name: generateCompetitors
@@ -43,9 +44,9 @@ function calculateProbabilityOfVictory(competitionMats,classSize){
  * @name: calculatePointsAtStake
  * @description: Calculates the amount of points each competitor should:
  **							 (1) Gain in victory
- **							 (2) Lose in defeat							
+ **							 (2) Lose in defeat
  * @param1: victoryProbTuple
- * @param2: kFactor 
+ * @param2: kFactor
  * @returns: [pointsGainedInVictory,pointsLostInDefeat]
  **/
 function calculatePointsAtStake(victoryProbTuple,kFactor){
@@ -89,12 +90,51 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 			//calculate probability of victory for each competitor
 			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
 			//calculate the points at stake for each competitor
-			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor); 
+			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor);
 
-			//NOTE: low likelihood of victory means few points lost & many points gained 
-			//high likelihood of victory means many points lost & few points gained 
+			//NOTE: low likelihood of victory means few points lost & many points gained
+			//high likelihood of victory means many points lost & few points gained
 
 			runCompetitionMats(competitionMats,victoryProbTuple,pointsStakesTuple)
+		})
+	}
+
+	//numOfCompetitors competitors AFTER numOfRounds-round tournament
+	return allCompetitorsArr
+}
+
+/**
+ * @name: runTournament2
+ * @description: Applies ELO rating system to a brazilian jiu-jitsu tournament
+ * @param0: numOfRounds (integer) - the amount of tournament rounds for each bjj competitor
+ * @param1: numOfCompetitors (integer) - the amount of bjj competitors
+ * @param2: kFactor (integer) - the MOST amount of points a competitor can win or loser.
+ * @param3: classSize (integer) - the amount of bjj competitors
+ * @returns: all competitors after competition
+ **/
+
+ //NOTE: How to change this function such that competitors need not be generated??
+function runTournament2(numOfRounds,numOfCompetitors,kFactor,classSize){
+	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
+	console.log("and                     !!!",numOfCompetitors,"competitors !!!")
+	// let allCompetitorsArr = generateCompetitors(numOfCompetitors);
+	//tuplizes first half with second half of allCompetitorsArr
+	let tuplizeCompetitors = _.zip(numOfCompetitors.slice(0,(numOfCompetitors.length/2)),
+														numOfCompetitors.slice((numOfCompetitors.length/2),numOfCompetitors.length));
+
+	//This runs one round of competition for rounds = numOfRounds
+	for (let i=1;i<numOfRounds+1;i++) {
+		tuplizeCompetitors.forEach(function(competitionMats){
+
+			//calculate probability of victory for each competitor
+			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
+			//calculate the points at stake for each competitor
+			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor);
+
+			//NOTE: low likelihood of victory means few points lost & many points gained
+			//high likelihood of victory means many points lost & few points gained
+
+			runCompetitionMats2(competitionMats,victoryProbTuple,pointsStakesTuple)
 		})
 	}
 
@@ -119,4 +159,4 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 // The system is functional IF an 11-round tournament runs with 2048 competitors WITHOUT ERROR
 // console.log("These are the results of the tournament",runTournament(11,2048,32,200));
 
-module.exports = runTournament;
+module.exports = runTournament2;
