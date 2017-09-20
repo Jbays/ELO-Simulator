@@ -44,9 +44,9 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
  * @returns:
  **/
 function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
-	console.log("competitionMats",competitionMats)
-	console.log("pointsAwarded",pointsAwarded)
-	console.log("matchOutcomeArr",matchOutcomeArr)
+	// console.log("competitionMats",competitionMats)
+	// console.log("pointsAwarded",pointsAwarded)
+	// console.log("matchOutcomeArr",matchOutcomeArr)
 
 	competitionMats.forEach(function(competitor,index){
 		// console.log("this is competitor>>>",competitor);

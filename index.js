@@ -33,11 +33,12 @@ function generateCompetitors(numOfCompetitors){
  * @returns: [probabilityOfVictoryForLeft,probabilityOfVictoryForRight]
  **/
 function calculateProbabilityOfVictory(competitionMats,classSize){
-	let leftSideCompStats  = competitionMats[0][Object.keys(competitionMats[0])[0]];
-	let rightSideCompStats = competitionMats[1][Object.keys(competitionMats[1])[0]];
+	let leftSideComp  = competitionMats[0]
+	// console.log("leftSideComp",leftSideComp);
+	let rightSideComp = competitionMats[1]
 
-	return [(1/(1+Math.pow(10,((rightSideCompStats.rating- leftSideCompStats.rating)/(2*classSize))))),
-					(1/(1+Math.pow(10,(( leftSideCompStats.rating-rightSideCompStats.rating)/(2*classSize)))))]
+	return [(1/(1+Math.pow(10,((rightSideComp.rating- leftSideComp.rating)/(2*classSize))))),
+					(1/(1+Math.pow(10,(( leftSideComp.rating-rightSideComp.rating)/(2*classSize)))))]
 }
 
 /**
@@ -106,30 +107,34 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 /**
  * @name: runTournament2
  * @description: Applies ELO rating system to a brazilian jiu-jitsu tournament
- * @param0: numOfRounds (integer) - the amount of tournament rounds for each bjj competitor
- * @param1: numOfCompetitors (integer) - the amount of bjj competitors
- * @param2: kFactor (integer) - the MOST amount of points a competitor can win or loser.
- * @param3: classSize (integer) - the amount of bjj competitors
+ * NOTE: THIS IS THE DUP!
  * @returns: all competitors after competition
  **/
 
  //NOTE: How to change this function such that competitors need not be generated??
 function runTournament2(numOfRounds,numOfCompetitors,kFactor,classSize){
 	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
-	console.log("and                     !!!",numOfCompetitors,"competitors !!!")
+	console.log("and                     !!!",numOfCompetitors.length,"competitors !!!")
 	// let allCompetitorsArr = generateCompetitors(numOfCompetitors);
 	//tuplizes first half with second half of allCompetitorsArr
 	let tuplizeCompetitors = _.zip(numOfCompetitors.slice(0,(numOfCompetitors.length/2)),
 														numOfCompetitors.slice((numOfCompetitors.length/2),numOfCompetitors.length));
 
+	//NOTE: 9-19-2017
+	//NOTE: tuplizeCompetitors appears functional
+
 	//This runs one round of competition for rounds = numOfRounds
 	for (let i=1;i<numOfRounds+1;i++) {
 		tuplizeCompetitors.forEach(function(competitionMats){
+
+			//NOTE: 9-19-2017
+			//NOTE: both victoryProbTuple and pointsStakesTuple are FUNCTIONING!
 
 			//calculate probability of victory for each competitor
 			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
 			//calculate the points at stake for each competitor
 			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor);
+
 
 			//NOTE: low likelihood of victory means few points lost & many points gained
 			//high likelihood of victory means many points lost & few points gained
