@@ -151,6 +151,7 @@ function buildCompetitors(arr){
         rating: 1600,
         wins:0,
         losses:0,
+        streak:'',
         compRecord: ''
       }
 

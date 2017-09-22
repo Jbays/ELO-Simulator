@@ -44,19 +44,32 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
  * @returns:
  **/
 function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
-	// console.log("competitionMats",competitionMats)
-	// console.log("pointsAwarded",pointsAwarded)
-	// console.log("matchOutcomeArr",matchOutcomeArr)
-
 	competitionMats.forEach(function(competitor,index){
-		// console.log("this is competitor>>>",competitor);
-		let competitorNameStr = Object.keys(competitor);
-		// console.log("this is competitorNameStr>>>",competitorNameStr);
+		let matchOutcome = matchOutcomeArr[index];
 
-		competitor[competitorNameStr].rating = competitor[competitorNameStr].rating + pointsAwarded[index]
-		competitor[competitorNameStr].record = writeToTheirRecord(competitor[competitorNameStr].record,matchOutcomeArr[index])
-		competitor[competitorNameStr].streak = competitor[competitorNameStr].streak + matchOutcomeArr[index]
-	})
+		//NOTE: For technical reasons, toggle compRecord first!
+		//NOTE: Looks like the compRecord is not being written as I would want.
+		//NOTE: compRecord should be "***competitorsRating-opponentName-opponentRating***"
+		//^^BEFORE the match outcome was determined!
+		
+		//if index is 0, opponent's name is at index 1
+		//if index is 1, opponent's name is at index 0
+		competitor.compRecord = competitor.compRecord +"***"+ ((index === 0) ?
+			competitor.rating+"-"+competitionMats[1].name+"-"+competitionMats[1].rating :
+			competitor.rating+"-"+competitionMats[0].name+"-"+competitionMats[0].rating);
+
+		competitor.rating = competitor.rating + pointsAwarded[index];
+
+		if ( matchOutcome === 'w' ) {
+			competitor.wins += 1;
+		} else if ( matchOutcome === 'l' ) {
+			competitor.losses += 1;
+		}
+
+
+		//the ternary assignment prevents undefined values from being added to streak
+		competitor.streak = (competitor.streak ? competitor.streak: "") + matchOutcomeArr[index]
+	});
 
 	return competitionMats
 }
@@ -68,16 +81,16 @@ function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
  * @param2: letterResultStr
  * @returns: newlyToggledRecord
  **/
-function writeToTheirRecord(recordString,letterResultStr){
-	let splitRecord = recordString.split('-')
-
-	if ( letterResultStr === "w" ) {
-		splitRecord[0] = parseInt(splitRecord[0])+1
-	} else {//letterResultArr === "l"
-		splitRecord[1] = parseInt(splitRecord[1])+1
-	}
-
-	return splitRecord.join('-')
+function writeToTheirRecord(yourRating,recordString,opponentsRating){
+	// let splitRecord = recordString.split('-')
+	//
+	// if ( letterResultStr === "w" ) {
+	// 	splitRecord[0] = parseInt(splitRecord[0])+1
+	// } else {//letterResultArr === "l"
+	// 	splitRecord[1] = parseInt(splitRecord[1])+1
+	// }
+	//
+	// return splitRecord.join('-')
 }
 
 module.exports = decideTheWinner;

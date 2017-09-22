@@ -112,21 +112,24 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
  **/
 
  //NOTE: How to change this function such that competitors need not be generated??
-function runTournament2(numOfRounds,numOfCompetitors,kFactor,classSize){
+function runTournament2(numOfRounds,allCompetitors,kFactor,classSize){
 	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
-	console.log("and                     !!!",numOfCompetitors.length,"competitors !!!")
-	// let allCompetitorsArr = generateCompetitors(numOfCompetitors);
-	//tuplizes first half with second half of allCompetitorsArr
-	let tuplizeCompetitors = _.zip(numOfCompetitors.slice(0,(numOfCompetitors.length/2)),
-														numOfCompetitors.slice((numOfCompetitors.length/2),numOfCompetitors.length));
+	console.log("and                     !!!",allCompetitors.length,"competitors !!!")
 
 	//NOTE: 9-19-2017
 	//NOTE: tuplizeCompetitors appears functional
 
 	//This runs one round of competition for rounds = numOfRounds
 	for (let i=1;i<numOfRounds+1;i++) {
-		tuplizeCompetitors.forEach(function(competitionMats){
+		//shuffle competitors every time before competition!
+		allCompetitors = _.shuffle(allCompetitors);
+		//tuplizes first half with second half of allCompetitorsArr
+		let tuplizeCompetitors = _.zip(allCompetitors.slice(0,(allCompetitors.length/2)),
+			allCompetitors.slice((allCompetitors.length/2),allCompetitors.length));
 
+		console.log("tuplizeCompetitors",tuplizeCompetitors)
+
+		tuplizeCompetitors.forEach(function(competitionMats){
 			//NOTE: 9-19-2017
 			//NOTE: both victoryProbTuple and pointsStakesTuple are FUNCTIONING!
 
@@ -143,8 +146,8 @@ function runTournament2(numOfRounds,numOfCompetitors,kFactor,classSize){
 		})
 	}
 
-	//numOfCompetitors competitors AFTER numOfRounds-round tournament
-	return allCompetitorsArr
+	//allCompetitors competitors AFTER numOfRounds-round tournament
+	// return allCompetitors
 }
 
 
