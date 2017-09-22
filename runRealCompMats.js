@@ -44,14 +44,20 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
  * @returns:
  **/
 function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
+	console.log("competitionMats",competitionMats);
 	competitionMats.forEach(function(competitor,index){
+		console.log("competitor",competitor);
 		let matchOutcome = matchOutcomeArr[index];
+		//I think the problem is I'm not accessing the correct value for opponent's rating
+		//^^This is the simplest explanation
+		let opponent = index === 0 ? competitionMats[1] : competitionMats[0];
+		console.log("opponent",opponent);
 
 		//NOTE: For technical reasons, toggle compRecord first!
 		//NOTE: Looks like the compRecord is not being written as I would want.
 		//NOTE: compRecord should be "***competitorsRating-opponentName-opponentRating***"
 		//^^BEFORE the match outcome was determined!
-		
+
 		//if index is 0, opponent's name is at index 1
 		//if index is 1, opponent's name is at index 0
 		competitor.compRecord = competitor.compRecord +"***"+ ((index === 0) ?
@@ -66,31 +72,11 @@ function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
 			competitor.losses += 1;
 		}
 
-
 		//the ternary assignment prevents undefined values from being added to streak
 		competitor.streak = (competitor.streak ? competitor.streak: "") + matchOutcomeArr[index]
 	});
 
 	return competitionMats
-}
-
-/**
- * @name: writeToTheirRecord
- * @description: Toggles the competitor's record equal to their match result
- * @param1: recordString
- * @param2: letterResultStr
- * @returns: newlyToggledRecord
- **/
-function writeToTheirRecord(yourRating,recordString,opponentsRating){
-	// let splitRecord = recordString.split('-')
-	//
-	// if ( letterResultStr === "w" ) {
-	// 	splitRecord[0] = parseInt(splitRecord[0])+1
-	// } else {//letterResultArr === "l"
-	// 	splitRecord[1] = parseInt(splitRecord[1])+1
-	// }
-	//
-	// return splitRecord.join('-')
 }
 
 module.exports = decideTheWinner;

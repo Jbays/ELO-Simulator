@@ -123,31 +123,27 @@ function runTournament2(numOfRounds,allCompetitors,kFactor,classSize){
 	for (let i=1;i<numOfRounds+1;i++) {
 		//shuffle competitors every time before competition!
 		allCompetitors = _.shuffle(allCompetitors);
+
 		//tuplizes first half with second half of allCompetitorsArr
 		let tuplizeCompetitors = _.zip(allCompetitors.slice(0,(allCompetitors.length/2)),
 			allCompetitors.slice((allCompetitors.length/2),allCompetitors.length));
 
-		console.log("tuplizeCompetitors",tuplizeCompetitors)
+		// console.log("tuplizeCompetitors",tuplizeCompetitors)
 
 		tuplizeCompetitors.forEach(function(competitionMats){
-			//NOTE: 9-19-2017
-			//NOTE: both victoryProbTuple and pointsStakesTuple are FUNCTIONING!
-
 			//calculate probability of victory for each competitor
 			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
 			//calculate the points at stake for each competitor
 			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor);
 
-
 			//NOTE: low likelihood of victory means few points lost & many points gained
 			//high likelihood of victory means many points lost & few points gained
-
 			runCompetitionMats2(competitionMats,victoryProbTuple,pointsStakesTuple)
 		})
 	}
 
 	//allCompetitors competitors AFTER numOfRounds-round tournament
-	// return allCompetitors
+	return allCompetitors
 }
 
 
