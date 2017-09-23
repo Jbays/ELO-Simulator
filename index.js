@@ -1,8 +1,7 @@
 'use strict';
 
 const _ = require('underscore');
-const runCompetitionMats = require('./runCompMats.js');
-const runCompetitionMats2 = require('./runRealCompMats.js');
+const runCompetitionMats2 = require('./realTournament/runRealCompMats');
 
 /**
  * @name: generateCompetitors
