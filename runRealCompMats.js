@@ -4,8 +4,6 @@
 //NOTE:MAKING NECESSARY CHANGES TO GET THIS CODE TO WORK WITH REAL COMPETITORS
 //NOTE:ORIGINAL IS runCompMats.js
 
-
-
 /**
  * @name: decideTheWinner
  * @description: Triggers competition.
@@ -23,10 +21,10 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
 	//leftSide won!
 	if (victoryProbabilities[0]>randomNumber) {
 		//pointsAtStake[pointsForVictory,pointsForLoss]
-		recordResult(competitionMats,[pointsAtStake[0][0],pointsAtStake[1][1]],["w","l"])
+		recordResult(competitionMats,[pointsAtStake[0][0],pointsAtStake[1][1]],["w","l"],victoryProbabilities)
 	} else {//rightSide won!
 		//pointsAtStake[pointsForLoss,pointsForVictory]
-		recordResult(competitionMats,[pointsAtStake[0][1],pointsAtStake[1][0]],["l","w"])
+		recordResult(competitionMats,[pointsAtStake[0][1],pointsAtStake[1][0]],["l","w"],victoryProbabilities)
 	}
 
 	return competitionMats
@@ -43,28 +41,24 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
  * @param3: matchOutcomeArr
  * @returns:
  **/
-function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
-	console.log("competitionMats",competitionMats);
-	competitionMats.forEach(function(competitor,index){
-		console.log("competitor",competitor);
-		let matchOutcome = matchOutcomeArr[index];
-		//I think the problem is I'm not accessing the correct value for opponent's rating
-		//^^This is the simplest explanation
+function recordResult(competitionMats,pointsAwarded,matchOutcomeArr,victoryProbabilities){
+
+	//NOTE: For technical reasons, toggle compRecord first!
+	competitionMats = competitionMats.map((competitor,index)=>{
+		//if index is zero, then opponent is to @ index 1.
 		let opponent = index === 0 ? competitionMats[1] : competitionMats[0];
-		console.log("opponent",opponent);
+		//calculate chance of victory for competitor
+		let chanceOfVictory = Number((victoryProbabilities[index])*100).toFixed(2);
 
-		//NOTE: For technical reasons, toggle compRecord first!
-		//NOTE: Looks like the compRecord is not being written as I would want.
-		//NOTE: compRecord should be "***competitorsRating-opponentName-opponentRating***"
-		//^^BEFORE the match outcome was determined!
+		competitor.compRecord = competitor.compRecord+"***"+chanceOfVictory+"W%---"+
+			competitor.rating+"-"+opponent.name+"-"+opponent.rating;
 
-		//if index is 0, opponent's name is at index 1
-		//if index is 1, opponent's name is at index 0
-		competitor.compRecord = competitor.compRecord +"***"+ ((index === 0) ?
-			competitor.rating+"-"+competitionMats[1].name+"-"+competitionMats[1].rating :
-			competitor.rating+"-"+competitionMats[0].name+"-"+competitionMats[0].rating);
+		return competitor;
+	})
 
-		competitor.rating = competitor.rating + pointsAwarded[index];
+
+	competitionMats.forEach(function(competitor,index){
+		let matchOutcome = matchOutcomeArr[index];
 
 		if ( matchOutcome === 'w' ) {
 			competitor.wins += 1;
@@ -74,6 +68,7 @@ function recordResult(competitionMats,pointsAwarded,matchOutcomeArr){
 
 		//the ternary assignment prevents undefined values from being added to streak
 		competitor.streak = (competitor.streak ? competitor.streak: "") + matchOutcomeArr[index]
+		competitor.rating += pointsAwarded[index];
 	});
 
 	return competitionMats
