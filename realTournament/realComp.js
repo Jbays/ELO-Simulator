@@ -8,7 +8,6 @@ let shuffledCompetitors = _.shuffle(allCompetitors);
 //then shuffle the competitors into the real competitor data
 let artificialCompetitors = makeDummyCompetitors(32);
 shuffledCompetitors = _.shuffle(shuffledCompetitors.concat(artificialCompetitors));
-console.log("shuffledCompetitors>>>",shuffledCompetitors);
 
 /**
  * @name: makeDummyCompetitors
