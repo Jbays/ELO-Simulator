@@ -42,7 +42,6 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
  * @returns:
  **/
 function recordResult(competitionMats,pointsAwarded,matchOutcomeArr,victoryProbabilities){
-
 	//NOTE: For technical reasons, toggle compRecord first!
 	competitionMats = competitionMats.map((competitor,index)=>{
 		//if index is zero, then opponent is to @ index 1.
@@ -50,12 +49,12 @@ function recordResult(competitionMats,pointsAwarded,matchOutcomeArr,victoryProba
 		//calculate chance of victory for competitor
 		let chanceOfVictory = Number((victoryProbabilities[index])*100).toFixed(2);
 
-		competitor.compRecord = competitor.compRecord+"***"+chanceOfVictory+"W%---"+
+		competitor.compRecord = competitor.compRecord+
+			"***"+chanceOfVictory+"W%-"+(competitor.rating-opponent.rating)+"DIFF-"+
 			competitor.rating+"-"+opponent.name+"-"+opponent.rating;
 
 		return competitor;
 	})
-
 
 	competitionMats.forEach(function(competitor,index){
 		let matchOutcome = matchOutcomeArr[index];
