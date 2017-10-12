@@ -56,7 +56,10 @@ function calculatePointsAtStake(victoryProbTuple,kFactor){
 	victoryProbTuple.forEach(function(victoryProbability){
 		//map kFactor to both victoryProbability and lossProbability
 		let pointsAtStake = [victoryProbability,-(1-victoryProbability)].map(function(outcomeProbability){
-			return parseInt((kFactor*outcomeProbability).toFixed())
+			//dividing points at stake by 2.  Needs to be rounded.
+			return Math.round((parseInt((kFactor*outcomeProbability).toFixed())/2))
+			//NOTE: this is the original --> just in case
+			// return (parseInt((kFactor*outcomeProbability).toFixed())/2)
 		})
 
 		outputArr.push(pointsAtStake);
