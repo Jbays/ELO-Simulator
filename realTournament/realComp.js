@@ -20,9 +20,7 @@ function makeDummyCompetitors(numOfCompetitors){
 
 	//for-loop which will generate competitors equaling to numOfCompetitors
 	for (let i=0;i<numOfCompetitors;i++){
-    let competitorBlueprint = '{"name":"'+
-															'c'+(i+1).toString()+
-															'","teamName":"generic","bracket":"n/a","rating":1600,"wins":0,"losses":0,"streak":"","compRecord":""}';
+    let competitorBlueprint = '{"name":"'+'c'+(i+1).toString()+'","teamName":"generic","bracket":"n/a","rating":1600,"wins":0,"losses":0,"streak":"","compRecord":""}';
 
     outputArr.push(JSON.parse(competitorBlueprint))
 	}
@@ -30,25 +28,6 @@ function makeDummyCompetitors(numOfCompetitors){
 	return _.shuffle(outputArr)
 }
 
-const seasonedCompetitors = runCompetitionMats(5,shuffledCompetitors,64,200);
-
-// console.log("seasonedCompetitors>>>",seasonedCompetitors);
-//NOTE: I don't think points are being added to the rating 100% correctly.
-//NOTE: The first batch appears to work.  seasonedCompetitors.
-//NOTE: But I'm unsure about the second.
-// console.log("second batch of competitions!",runCompetitionMats(1,seasonedCompetitors,32,200));
-
-/**
- * @name: runTypicalTournament
- * @description:
- * @param: allCompetitors
- * @returns: allCompetitors after completing a proper, single-elimination tournament
- **/
-function runTypicalTournament(allCompetitors){
-	console.log("this is allCompetitors>>>",allCompetitors);
-}
-
-runTypicalTournament(seasonedCompetitors);
 
 //where runCompetitionMats(numberOfRounds,competitors,kFactor,classSize)
 //Param1: numberOfRounds is the number of rounds each competitor will compete!
@@ -68,7 +47,7 @@ runTypicalTournament(seasonedCompetitors);
 //NOTE:   Rating separation of TWO classes
 //NOTE:   91%/9% WHERE 91% prob of victory belongs to the higher-rated player.
 //NOTE:   91%/9% WHERE 9% prob of victory belongs to the lower-rated player.
-// console.log(runCompetitionMats(30,shuffledCompetitors,64,200));
+console.log(runCompetitionMats(5,shuffledCompetitors,64,200));
 
 // ** Note, that FIDE changed the K-factors as of July 2014 (see FIDE rating regulations - chapter 8.56):
 // K = 40 for a player new to the rating list until he has completed events with at least 30 games

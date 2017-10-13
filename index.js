@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('underscore');
-const runCompetitionMats = require('./runCompMats.js');
+const runCompetitionMats = require('./oldFiles/runCompMats.js');
 
 /**
  * @name: generateCompetitors
@@ -43,9 +43,9 @@ function calculateProbabilityOfVictory(competitionMats,classSize){
  * @name: calculatePointsAtStake
  * @description: Calculates the amount of points each competitor should:
  **							 (1) Gain in victory
- **							 (2) Lose in defeat							
+ **							 (2) Lose in defeat
  * @param1: victoryProbTuple
- * @param2: kFactor 
+ * @param2: kFactor
  * @returns: [pointsGainedInVictory,pointsLostInDefeat]
  **/
 function calculatePointsAtStake(victoryProbTuple,kFactor){
@@ -74,8 +74,8 @@ function calculatePointsAtStake(victoryProbTuple,kFactor){
  * @returns: all competitors after competition
  **/
 function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
-	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
-	console.log("and                     !!!",numOfCompetitors,"competitors !!!")
+	console.log("Running a tournament of !!!",numOfRounds,"rounds !!!")
+	console.log("and                     !!!",numOfCompetitors.length,"competitors !!!")
 	let allCompetitorsArr = generateCompetitors(numOfCompetitors);
 
 	//tuplizes first half with second half of allCompetitorsArr
@@ -89,10 +89,10 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 			//calculate probability of victory for each competitor
 			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
 			//calculate the points at stake for each competitor
-			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor); 
+			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor);
 
-			//NOTE: low likelihood of victory means few points lost & many points gained 
-			//high likelihood of victory means many points lost & few points gained 
+			//NOTE: low likelihood of victory means few points lost & many points gained
+			//high likelihood of victory means many points lost & few points gained
 
 			runCompetitionMats(competitionMats,victoryProbTuple,pointsStakesTuple)
 		})
