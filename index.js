@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('underscore');
-const runCompetitionMats = require('./oldFiles/runCompMats.js');
+const runCompetitionMats2 = require('./realTournament/runRealCompMats');
 
 /**
  * @name: generateCompetitors
@@ -32,11 +32,12 @@ function generateCompetitors(numOfCompetitors){
  * @returns: [probabilityOfVictoryForLeft,probabilityOfVictoryForRight]
  **/
 function calculateProbabilityOfVictory(competitionMats,classSize){
-	let leftSideCompStats  = competitionMats[0][Object.keys(competitionMats[0])[0]];
-	let rightSideCompStats = competitionMats[1][Object.keys(competitionMats[1])[0]];
+	let leftSideComp  = competitionMats[0]
+	// console.log("leftSideComp",leftSideComp);
+	let rightSideComp = competitionMats[1]
 
-	return [(1/(1+Math.pow(10,((rightSideCompStats.rating- leftSideCompStats.rating)/(2*classSize))))),
-					(1/(1+Math.pow(10,(( leftSideCompStats.rating-rightSideCompStats.rating)/(2*classSize)))))]
+	return [(1/(1+Math.pow(10,((rightSideComp.rating- leftSideComp.rating)/(2*classSize))))),
+					(1/(1+Math.pow(10,(( leftSideComp.rating-rightSideComp.rating)/(2*classSize)))))]
 }
 
 /**
@@ -55,7 +56,10 @@ function calculatePointsAtStake(victoryProbTuple,kFactor){
 	victoryProbTuple.forEach(function(victoryProbability){
 		//map kFactor to both victoryProbability and lossProbability
 		let pointsAtStake = [victoryProbability,-(1-victoryProbability)].map(function(outcomeProbability){
-			return parseInt((kFactor*outcomeProbability).toFixed())
+			//dividing points at stake by 2.  Needs to be rounded.
+			return Math.round((parseInt((kFactor*outcomeProbability).toFixed())/2))
+			//NOTE: this is the original --> just in case
+			// return (parseInt((kFactor*outcomeProbability).toFixed())/2)
 		})
 
 		outputArr.push(pointsAtStake);
@@ -74,8 +78,8 @@ function calculatePointsAtStake(victoryProbTuple,kFactor){
  * @returns: all competitors after competition
  **/
 function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
-	console.log("Running a tournament of !!!",numOfRounds,"rounds !!!")
-	console.log("and                     !!!",numOfCompetitors.length,"competitors !!!")
+	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
+	console.log("and                     !!!",numOfCompetitors,"competitors !!!")
 	let allCompetitorsArr = generateCompetitors(numOfCompetitors);
 
 	//tuplizes first half with second half of allCompetitorsArr
@@ -102,7 +106,6 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 	return allCompetitorsArr
 }
 
-
 //NOTE: 5-13-2017
 //the 2015 Mundials had 1861 competitors
 //whose proportions between belts were:
@@ -112,11 +115,50 @@ function runTournament(numOfRounds,numOfCompetitors,kFactor,classSize){
 //...
 //index=4 is white belts
 
-
 // 4-round 16-person tournament
 // console.log("These are the results of the tournament",runTournament(4,16,32,200));
 
 // The system is functional IF an 11-round tournament runs with 2048 competitors WITHOUT ERROR
 // console.log("These are the results of the tournament",runTournament(11,2048,32,200));
 
-module.exports = runTournament;
+/**
+ * @name: runTournament2
+ * @description: Applies ELO rating system to a brazilian jiu-jitsu tournament
+ * NOTE: THIS IS THE DUP!
+ * @returns: all competitors after competition
+ **/
+
+function runTournament2(numOfRounds,allCompetitors,kFactor,classSize){
+	console.log("running a tournament of !!!",numOfRounds,"rounds !!!")
+	console.log("and                     !!!",allCompetitors.length,"competitors !!!")
+
+	//This runs one round of competition for rounds = numOfRounds
+	for (let i=1;i<numOfRounds+1;i++) {
+		//shuffle competitors every time before competition!
+		allCompetitors = _.shuffle(allCompetitors);
+
+		//tuplizes first half with second half of allCompetitorsArr
+		let tuplizeCompetitors = _.zip(allCompetitors.slice(0,(allCompetitors.length/2)),
+			allCompetitors.slice((allCompetitors.length/2),allCompetitors.length));
+
+		// console.log("tuplizeCompetitors",tuplizeCompetitors)
+
+		tuplizeCompetitors.forEach(function(competitionMats){
+			//calculate probability of victory for each competitor
+			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
+			//calculate the points at stake for each competitor
+			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor);
+			console.log("competitionMats>>>>",competitionMats);
+			console.log("pointsStakesTuple>>>>",pointsStakesTuple);
+
+			//NOTE: low likelihood of victory means few points lost & many points gained
+			//high likelihood of victory means many points lost & few points gained
+			runCompetitionMats2(competitionMats,victoryProbTuple,pointsStakesTuple)
+		})
+	}
+
+	//allCompetitors competitors AFTER numOfRounds-round tournament
+	return allCompetitors
+}
+
+module.exports = runTournament2;
