@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('underscore');
-const runCompetitionMats2 = require('./realTournament/runRealCompMats');
+const runCompetitionMats2 = require('./realTournament/recordRealResults.js');
 
 /**
  * @name: generateCompetitors
@@ -52,17 +52,34 @@ function calculateProbabilityOfVictory(competitionMats,classSize){
 function calculatePointsAtStake(victoryProbTuple,kFactor){
 	let outputArr = []
 
+	console.log("victoryProbTuple",victoryProbTuple);
+
+	// victoryProbTuple = victoryProbTuple.reverse();
+	// console.log("after reverse>>>",victoryProbTuple);
+
 	//for each competitor's victoryProbability
 	victoryProbTuple.forEach(function(victoryProbability){
 		//map kFactor to both victoryProbability and lossProbability
+
+		// let pointsAtStake = [(1-victoryProbability),]
+		// console.log("victoryProbability",victoryProbability);
+		// console.log("kFactor*victoryProbability",kFactor*victoryProbability);
+		let correctStakes = [(1-victoryProbability),-victoryProbability].map(function(outcomeProbability){
+			return Math.round((parseInt((kFactor*outcomeProbability).toFixed())/2))
+		})
+
 		let pointsAtStake = [victoryProbability,-(1-victoryProbability)].map(function(outcomeProbability){
+
+
+		// NOTE: this must be the point of failure
+		// let pointsAtStake = [victoryProbability,-(1-victoryProbability)].map(function(outcomeProbability){
 			//dividing points at stake by 2.  Needs to be rounded.
 			return Math.round((parseInt((kFactor*outcomeProbability).toFixed())/2))
 			//NOTE: this is the original --> just in case
 			// return (parseInt((kFactor*outcomeProbability).toFixed())/2)
 		})
 
-		outputArr.push(pointsAtStake);
+		outputArr.push(correctStakes);
 	})
 
 	return outputArr

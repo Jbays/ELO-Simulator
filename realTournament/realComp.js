@@ -29,6 +29,7 @@ let shuffledCompetitors = _.shuffle(allCompetitors);
 //NOTE:   91%/9% WHERE 9% prob of victory belongs to the lower-rated player.
 const seasonedCompetitors = runCompetitionMats(16,shuffledCompetitors,64,200);
 singleEliminationTournament(seasonedCompetitors);
+// console.log("seasonedCompetitors",seasonedCompetitors)
 
 /**
  * @name: makeDummyCompetitors

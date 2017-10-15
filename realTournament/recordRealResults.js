@@ -20,9 +20,11 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
 
 	//leftSide won!
 	if (victoryProbabilities[0]>randomNumber) {
+		console.log("leftSide won!")
 		//pointsAtStake[pointsForVictory,pointsForLoss]
 		recordResult(competitionMats,[pointsAtStake[0][0],pointsAtStake[1][1]],["w","l"],victoryProbabilities)
 	} else {//rightSide won!
+		console.log("rightSide won!")
 		//pointsAtStake[pointsForLoss,pointsForVictory]
 		recordResult(competitionMats,[pointsAtStake[0][1],pointsAtStake[1][0]],["l","w"],victoryProbabilities)
 	}
@@ -42,6 +44,7 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
  * @returns:
  **/
 function recordResult(competitionMats,pointsAwarded,matchOutcomeArr,victoryProbabilities){
+	console.log("pointsAwarded>>>>",pointsAwarded);
 	//NOTE: For technical reasons, toggle compRecord first!
 	competitionMats = competitionMats.map((competitor,index)=>{
 		//if index is zero, then opponent is to @ index 1.
