@@ -9,7 +9,7 @@
  * @description: Triggers competition.
  **							(1) A winner is declared
  **							(2) Stats for both competitors are toggled
- * @param1: comeptitionMats
+ * @param1: competitionMats
  * @param2: victoryProbabilities
  * @param3: pointsAtStake
  * @returns: allCompetitors
@@ -20,12 +20,8 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
 
 	//leftSide won!
 	if (victoryProbabilities[0]>randomNumber) {
-		console.log("leftSide won!")
-		//pointsAtStake[pointsForVictory,pointsForLoss]
 		recordResult(competitionMats,[pointsAtStake[0][0],pointsAtStake[1][1]],["w","l"],victoryProbabilities)
 	} else {//rightSide won!
-		console.log("rightSide won!")
-		//pointsAtStake[pointsForLoss,pointsForVictory]
 		recordResult(competitionMats,[pointsAtStake[0][1],pointsAtStake[1][0]],["l","w"],victoryProbabilities)
 	}
 
@@ -44,7 +40,6 @@ function decideTheWinner (competitionMats,victoryProbabilities,pointsAtStake){
  * @returns:
  **/
 function recordResult(competitionMats,pointsAwarded,matchOutcomeArr,victoryProbabilities){
-	console.log("pointsAwarded>>>>",pointsAwarded);
 	//NOTE: For technical reasons, toggle compRecord first!
 	competitionMats = competitionMats.map((competitor,index)=>{
 		//if index is zero, then opponent is to @ index 1.
@@ -53,11 +48,11 @@ function recordResult(competitionMats,pointsAwarded,matchOutcomeArr,victoryProba
 		let chanceOfVictory = Number((victoryProbabilities[index])*100).toFixed(2);
 
 		competitor.compRecord = competitor.compRecord+
-			"***"+chanceOfVictory+"W%-"+(competitor.rating-opponent.rating)+"DIFF-"+
+			"***"+chanceOfVictory+"W%-("+(competitor.rating-opponent.rating)+")DIFF-"+
 			competitor.rating+"-"+opponent.name+"-"+opponent.rating;
 
 		return competitor;
-	})
+	});
 
 	competitionMats.forEach(function(competitor,index){
 		let matchOutcome = matchOutcomeArr[index];

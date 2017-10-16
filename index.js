@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('underscore');
-const runCompetitionMats2 = require('./realTournament/recordRealResults.js');
+const decideTheWinner = require('./realTournament/recordRealResults.js');;
 
 /**
  * @name: generateCompetitors
@@ -33,7 +33,6 @@ function generateCompetitors(numOfCompetitors){
  **/
 function calculateProbabilityOfVictory(competitionMats,classSize){
 	let leftSideComp  = competitionMats[0]
-	// console.log("leftSideComp",leftSideComp);
 	let rightSideComp = competitionMats[1]
 
 	return [(1/(1+Math.pow(10,((rightSideComp.rating- leftSideComp.rating)/(2*classSize))))),
@@ -52,28 +51,11 @@ function calculateProbabilityOfVictory(competitionMats,classSize){
 function calculatePointsAtStake(victoryProbTuple,kFactor){
 	let outputArr = []
 
-	console.log("victoryProbTuple",victoryProbTuple);
-
-	// victoryProbTuple = victoryProbTuple.reverse();
-	// console.log("after reverse>>>",victoryProbTuple);
-
 	//for each competitor's victoryProbability
 	victoryProbTuple.forEach(function(victoryProbability){
-		//map kFactor to both victoryProbability and lossProbability
 
-		// let pointsAtStake = [(1-victoryProbability),]
-		// console.log("victoryProbability",victoryProbability);
-		// console.log("kFactor*victoryProbability",kFactor*victoryProbability);
 		let correctStakes = [(1-victoryProbability),-victoryProbability].map(function(outcomeProbability){
-			return Math.round((parseInt((kFactor*outcomeProbability).toFixed())/2))
-		})
-
-		let pointsAtStake = [victoryProbability,-(1-victoryProbability)].map(function(outcomeProbability){
-
-
-		// NOTE: this must be the point of failure
-		// let pointsAtStake = [victoryProbability,-(1-victoryProbability)].map(function(outcomeProbability){
-			//dividing points at stake by 2.  Needs to be rounded.
+			//NOTE: dividing points at stake by 2.  Needs to be rounded.
 			return Math.round((parseInt((kFactor*outcomeProbability).toFixed())/2))
 			//NOTE: this is the original --> just in case
 			// return (parseInt((kFactor*outcomeProbability).toFixed())/2)
@@ -158,19 +140,15 @@ function runTournament2(numOfRounds,allCompetitors,kFactor,classSize){
 		let tuplizeCompetitors = _.zip(allCompetitors.slice(0,(allCompetitors.length/2)),
 			allCompetitors.slice((allCompetitors.length/2),allCompetitors.length));
 
-		// console.log("tuplizeCompetitors",tuplizeCompetitors)
-
 		tuplizeCompetitors.forEach(function(competitionMats){
 			//calculate probability of victory for each competitor
 			let victoryProbTuple  = calculateProbabilityOfVictory(competitionMats,classSize);
 			//calculate the points at stake for each competitor
 			let pointsStakesTuple = calculatePointsAtStake(victoryProbTuple,kFactor);
-			console.log("competitionMats>>>>",competitionMats);
-			console.log("pointsStakesTuple>>>>",pointsStakesTuple);
 
 			//NOTE: low likelihood of victory means few points lost & many points gained
 			//high likelihood of victory means many points lost & few points gained
-			runCompetitionMats2(competitionMats,victoryProbTuple,pointsStakesTuple)
+			decideTheWinner(competitionMats,victoryProbTuple,pointsStakesTuple);
 		})
 	}
 
@@ -178,4 +156,8 @@ function runTournament2(numOfRounds,allCompetitors,kFactor,classSize){
 	return allCompetitors
 }
 
-module.exports = runTournament2;
+module.exports = {
+	calculateProbabilityOfVictory:calculateProbabilityOfVictory,
+	calculatePointsAtStake:calculatePointsAtStake,
+	runTournament2:runTournament2
+};
